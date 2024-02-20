@@ -1,20 +1,18 @@
 // @ts-strict-ignore
 import { useUser } from "@dashboard/auth";
-import { channelsListUrl } from "@dashboard/channels/urls";
 import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import { hasPermissions } from "@dashboard/components/RequirePermissions";
 import {
-  OrderStatusFilter,
   PermissionEnum,
-  StockAvailability,
-  useHomeQuery,
+  useHomeActivitiesQuery,
+  useHomeAnaliticsQuery,
+  useHomeNotificationsQuery,
+  useHomeTopProductsQuery,
 } from "@dashboard/graphql";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
 import React from "react";
 
-import { getDatePeriod, getUserName } from "../../misc";
-import { orderListUrl } from "../../orders/urls";
-import { productListUrl } from "../../products/urls";
+import { getUserName } from "../../misc";
 import HomePage from "../components/HomePage";
 
 const HomeSection = () => {
@@ -24,44 +22,84 @@ const HomeSection = () => {
   const noChannel = !channel && typeof channel !== "undefined";
 
   const userPermissions = user?.userPermissions || [];
+  const hasPermissionToManageOrders = hasPermissions(userPermissions, [
+    PermissionEnum.MANAGE_ORDERS,
+  ]);
+  const hasPermissionToManageProducts = hasPermissions(userPermissions, [
+    PermissionEnum.MANAGE_PRODUCTS,
+  ]);
 
-  const { data } = useHomeQuery({
-    displayLoader: true,
+  const {
+    data: homeActivities,
+    loading: homeActivitiesLoading,
+    error: homeActivitiesError,
+  } = useHomeActivitiesQuery({
+    skip: noChannel,
+    variables: {
+      hasPermissionToManageOrders,
+    },
+  });
+
+  const {
+    data: homeTopProducts,
+    loading: homeTopProductsLoading,
+    error: homeTopProductsError,
+  } = useHomeTopProductsQuery({
     skip: noChannel,
     variables: {
       channel: channel?.slug,
-      datePeriod: getDatePeriod(1),
-      hasPermissionToManageOrders: hasPermissions(userPermissions, [
-        PermissionEnum.MANAGE_ORDERS,
-      ]),
-      hasPermissionToManageProducts: hasPermissions(userPermissions, [
-        PermissionEnum.MANAGE_PRODUCTS,
-      ]),
+      hasPermissionToManageProducts,
+    },
+  });
+
+  const {
+    data: homeNotificationsData,
+    loading: homeNotificationsLoaing,
+    error: homeNotificationsError,
+  } = useHomeNotificationsQuery({
+    skip: noChannel,
+    variables: { channel: channel?.slug },
+  });
+
+  const {
+    data: homeAnaliticsData,
+    loading: homeAnaliticsLoading,
+    error: homeAnaliticsError,
+  } = useHomeAnaliticsQuery({
+    skip: noChannel,
+    variables: {
+      channel: channel?.slug,
+      hasPermissionToManageOrders,
     },
   });
 
   return (
     <HomePage
-      activities={mapEdgesToItems(data?.activities)?.reverse()}
-      orders={data?.ordersToday?.totalCount}
-      sales={data?.salesToday?.gross}
-      topProducts={mapEdgesToItems(data?.productTopToday)}
-      createNewChannelHref={channelsListUrl()}
-      ordersToCaptureHref={orderListUrl({
-        status: [OrderStatusFilter.READY_TO_CAPTURE],
-        channel: [channel?.id],
-      })}
-      ordersToFulfillHref={orderListUrl({
-        status: [OrderStatusFilter.READY_TO_FULFILL],
-        channel: [channel?.id],
-      })}
-      productsOutOfStockHref={productListUrl({
-        stockStatus: StockAvailability.OUT_OF_STOCK,
-        channel: channel?.slug,
-      })}
-      ordersToCapture={data?.ordersToCapture?.totalCount}
-      ordersToFulfill={data?.ordersToFulfill?.totalCount}
-      productsOutOfStock={data?.productsOutOfStock.totalCount}
+      activities={{
+        data: mapEdgesToItems(homeActivities?.activities)?.reverse(),
+        loading: homeActivitiesLoading,
+        hasError: !!homeActivitiesError,
+      }}
+      topProducts={{
+        data: mapEdgesToItems(homeTopProducts?.productTopToday),
+        loading: homeTopProductsLoading,
+        hasError: !!homeTopProductsError,
+      }}
+      notifications={{
+        data: {
+          productsOutOfStock:
+            homeNotificationsData?.productsOutOfStock.totalCount,
+        },
+        loading: homeNotificationsLoaing,
+        hasError: !!homeNotificationsError,
+      }}
+      analitics={{
+        data: {
+          sales: homeAnaliticsData?.salesToday?.gross,
+        },
+        loading: homeAnaliticsLoading,
+        hasError: !!homeAnaliticsError,
+      }}
       userName={getUserName(user, true)}
       noChannel={noChannel}
     />

@@ -23,7 +23,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -46,7 +46,7 @@ const initialForm: AddMemberFormData = {
 const useStyles = makeStyles(
   theme => ({
     hr: {
-      backgroundColor: vars.colors.border.neutralPlain,
+      backgroundColor: vars.colors.border.default1,
       border: "none",
       height: 1,
       marginBottom: 0,

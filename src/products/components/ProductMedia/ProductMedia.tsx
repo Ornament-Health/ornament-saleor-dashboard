@@ -13,7 +13,7 @@ import {
   List,
   sprinkles,
   Text,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
@@ -137,8 +137,8 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
               <List
                 padding={2}
                 borderRadius={4}
-                boxShadow="overlay"
-                backgroundColor="surfaceNeutralPlain"
+                boxShadow="defaultOverlay"
+                backgroundColor="default1"
               >
                 <Dropdown.Item>
                   <List.Item
@@ -212,9 +212,9 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
                     preview={imagesToUpload}
                     onSortEnd={onImageReorder}
                     className={sprinkles({
-                      display: "grid",
+                      display: "flex",
                       gap: 5,
-                      gridTemplateColumns: { mobile: 2, tablet: 3, desktop: 4 },
+                      flexWrap: "wrap",
                       opacity: isDragActive ? "0.2" : "1",
                     })}
                     onDelete={onImageDelete}

@@ -12,7 +12,7 @@ import { CustomerListUrlSortField } from "@dashboard/customers/urls";
 import { PermissionEnum } from "@dashboard/graphql";
 import { ListProps, SortPage } from "@dashboard/types";
 import { Item } from "@glideapps/glide-data-grid";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React, { useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
 
@@ -128,7 +128,7 @@ export const CustomerListDatagrid = ({
       <Datagrid
         readonly
         loading={loading}
-        rowMarkers="checkbox"
+        rowMarkers="checkbox-visible"
         columnSelect="single"
         hasRowHover={hasRowHover}
         onColumnMoved={handlers.onMove}

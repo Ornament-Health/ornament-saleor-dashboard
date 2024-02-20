@@ -215,6 +215,18 @@ export const commonMessages = defineMessages({
     defaultMessage: "Product",
     id: "x/ZVlU",
   },
+  metadata: {
+    defaultMessage: "Metadata",
+    id: "8Q504V",
+  },
+  viewMetadata: {
+    defaultMessage: "View metadata",
+    id: "E/yzIO",
+  },
+  loading: {
+    defaultMessage: "Loading...",
+    id: "gjBiyj",
+  },
 });
 
 export const errorMessages = defineMessages({
@@ -234,6 +246,14 @@ export const errorMessages = defineMessages({
   baseCodeErrorMessage: {
     id: "7+GBlj",
     defaultMessage: "Error code {errorCode} {fieldError}",
+  },
+  voucherCodesErrorMessage: {
+    id: "2dgbGR",
+    defaultMessage: "Those codes already exist",
+  },
+  voucherCodeErrorMessage: {
+    id: "WY3IXU",
+    defaultMessage: "This code already exists",
   },
   codeErrorFieldMessage: {
     id: "Qox+kb",
@@ -386,6 +406,10 @@ export const buttonMessages = defineMessages({
     id: "KMxiiF",
     defaultMessage: "Retry",
     description: "button",
+  },
+  close: {
+    id: "rbrahO",
+    defaultMessage: "Close",
   },
 });
 

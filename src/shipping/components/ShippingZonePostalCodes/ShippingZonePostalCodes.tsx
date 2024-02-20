@@ -87,10 +87,17 @@ const ShippingZonePostalCodes: React.FC<ShippingZonePostalCodesProps> = ({
     );
   };
 
-  const onInclusionRadioChange = (event: React.ChangeEvent<any>) => {
+  const onInclusionRadioChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = event.target.value;
+    const postalType =
+      value === "EXCLUDE"
+        ? PostalCodeRuleInclusionTypeEnum.EXCLUDE
+        : PostalCodeRuleInclusionTypeEnum.INCLUDE;
+
     setInclusionType(value);
-    onPostalCodeInclusionChange(value);
+    onPostalCodeInclusionChange(postalType);
   };
 
   const getPostalCodeRangeLabel = (
@@ -218,7 +225,10 @@ const ShippingZonePostalCodes: React.FC<ShippingZonePostalCodesProps> = ({
             {renderCollection(
               postalCodes,
               postalCodeRange => (
-                <TableRowLink key={postalCodeRange?.id}>
+                <TableRowLink
+                  key={postalCodeRange?.id}
+                  data-test-id="assigned-postal-codes-rows"
+                >
                   <TableCell>
                     {getPostalCodeRangeLabel(postalCodeRange)}
                   </TableCell>

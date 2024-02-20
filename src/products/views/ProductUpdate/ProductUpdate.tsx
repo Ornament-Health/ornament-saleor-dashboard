@@ -16,7 +16,6 @@ import {
   useProductMediaCreateMutation,
   useProductMediaDeleteMutation,
   useProductMediaReorderMutation,
-  useWarehouseListQuery,
 } from "@dashboard/graphql";
 import { getSearchFetchMoreProps } from "@dashboard/hooks/makeTopLevelSearch/utils";
 import useNavigator from "@dashboard/hooks/useNavigator";
@@ -164,12 +163,6 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
   const product = data?.product;
 
   const getAttributeValuesSuggestions = useSearchAttributeValuesSuggestions();
-  const warehousesQuery = useWarehouseListQuery({
-    displayLoader: true,
-    variables: {
-      first: 50,
-    },
-  });
 
   const [createProductMedia, createProductMediaOpts] =
     useProductMediaCreateMutation({
@@ -211,11 +204,6 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
 
   const [submit, submitOpts] = useProductUpdateHandler(product);
 
-  const warehouses = React.useMemo(
-    () => mapEdgesToItems(warehousesQuery.data?.warehouses) || [],
-    [warehousesQuery.data],
-  );
-
   const handleImageUpload = createImageUploadHandler(id, variables =>
     createProductImage({ variables }),
   );
@@ -226,6 +214,7 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
   const handleAssignAttributeReferenceClick = (attribute: AttributeInput) =>
     navigate(
       productUrl(id, {
+        ...params,
         action: "assign-attribute-value",
         id: attribute.id,
       }),
@@ -312,7 +301,6 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
         media={data?.product?.media}
         header={product?.name}
         product={product}
-        warehouses={warehouses}
         taxClasses={taxClasses ?? []}
         fetchMoreTaxClasses={fetchMoreTaxClasses}
         variants={product?.variants}

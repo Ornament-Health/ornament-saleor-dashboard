@@ -1,5 +1,4 @@
 // @ts-strict-ignore
-import { ChannelsAction } from "@dashboard/channels/urls";
 import {
   ChannelVoucherData,
   createSortedVoucherData,
@@ -7,6 +6,7 @@ import {
 import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import ChannelsAvailabilityDialog from "@dashboard/components/ChannelsAvailabilityDialog";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
+import { VoucherDetailsPageFormData } from "@dashboard/discounts/components/VoucherDetailsPage";
 import {
   useUpdateMetadataMutation,
   useUpdatePrivateMetadataMutation,
@@ -27,6 +27,7 @@ import {
   voucherAddUrl,
   VoucherCreateUrlQueryParams,
   voucherUrl,
+  VoucherUrlDialog,
 } from "../../urls";
 import { createHandler } from "./handlers";
 import { VOUCHER_CREATE_FORM_ID } from "./types";
@@ -43,7 +44,7 @@ export const VoucherCreateView: React.FC<VoucherCreateProps> = ({ params }) => {
   const [updateMetadata] = useUpdateMetadataMutation({});
   const [updatePrivateMetadata] = useUpdatePrivateMetadataMutation({});
   const [openModal, closeModal] = createDialogActionHandlers<
-    ChannelsAction,
+    VoucherUrlDialog,
     VoucherCreateUrlQueryParams
   >(navigate, params => voucherAddUrl(params), params);
 
@@ -87,9 +88,25 @@ export const VoucherCreateView: React.FC<VoucherCreateProps> = ({ params }) => {
     },
   });
 
+  const handleFormValidate = (data: VoucherDetailsPageFormData) => {
+    if (data.codes.length === 0) {
+      notify({
+        status: "error",
+        text: intl.formatMessage({
+          id: "GTCg9O",
+          defaultMessage: "You must add at least one voucher code",
+        }),
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleCreate = createHandler(
     variables => voucherCreate({ variables }),
     updateChannels,
+    handleFormValidate,
   );
   const handleSubmit = createMetadataCreateHandler(
     handleCreate,

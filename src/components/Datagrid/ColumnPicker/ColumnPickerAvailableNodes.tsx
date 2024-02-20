@@ -1,5 +1,5 @@
 import { CircularProgress } from "@material-ui/core";
-import { Box, Checkbox, Text } from "@saleor/macaw-ui/next";
+import { Box, Checkbox, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -42,7 +42,7 @@ export const ColumnPickerAvailableNodes = ({
 
     if (areNodesEmpty) {
       return (
-        <Text size="small" color="textNeutralSubdued">
+        <Text size="small" color="default2">
           <FormattedMessage {...messages.noResultsFound} />
         </Text>
       );
@@ -58,10 +58,10 @@ export const ColumnPickerAvailableNodes = ({
           <Text
             data-test-id={`dynamic-column-name-${node.title}`}
             size="small"
-            color="textNeutralSubdued"
+            color="default2"
             ellipsis
           >
-            {node.title}
+            {node.pickerTitle ?? node.title}
           </Text>
         </Checkbox>
       </Box>

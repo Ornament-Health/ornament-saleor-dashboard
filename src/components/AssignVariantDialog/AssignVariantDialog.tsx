@@ -27,16 +27,18 @@ import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { FormattedMessage, useIntl } from "react-intl";
 
+import { Container } from "../AssignContainerDialog";
 import BackButton from "../BackButton";
 import Checkbox from "../Checkbox";
 import { messages } from "./messages";
 import { useStyles } from "./styles";
 import {
+  getCompositeLabel,
   handleProductAssign,
   handleVariantAssign,
   hasAllVariantsSelected,
   isVariantSelected,
-  SearchVariant,
+  VariantWithProductLabel,
 } from "./utils";
 
 export interface AssignVariantDialogFormData {
@@ -48,7 +50,7 @@ export interface AssignVariantDialogProps extends FetchMoreProps, DialogProps {
   products: RelayToFlat<SearchProductsQuery["search"]>;
   loading: boolean;
   onFetch: (value: string) => void;
-  onSubmit: (data: string[]) => void;
+  onSubmit: (data: Container[]) => void;
 }
 
 const scrollableTargetId = "assignVariantScrollableDialog";
@@ -69,8 +71,8 @@ const AssignVariantDialog: React.FC<AssignVariantDialogProps> = props => {
   const scrollableDialogClasses = useScrollableDialogStyle({});
 
   const intl = useIntl();
-  const [query, onQueryChange] = useSearchQuery(onFetch);
-  const [variants, setVariants] = React.useState<SearchVariant[]>([]);
+  const [query, onQueryChange, queryReset] = useSearchQuery(onFetch);
+  const [variants, setVariants] = React.useState<VariantWithProductLabel[]>([]);
 
   const productChoices =
     products?.filter(product => product?.variants?.length > 0) || [];
@@ -87,11 +89,22 @@ const AssignVariantDialog: React.FC<AssignVariantDialogProps> = props => {
       )
     : [];
 
-  const handleSubmit = () => onSubmit(variants.map(variant => variant.id));
+  const handleSubmit = () =>
+    onSubmit(
+      variants.map(variant => ({
+        name: getCompositeLabel(variant),
+        id: variant.id,
+      })),
+    );
+
+  const handleClose = () => {
+    queryReset();
+    onClose();
+  };
 
   return (
     <Dialog
-      onClose={onClose}
+      onClose={handleClose}
       open={open}
       classes={{ paper: scrollableDialogClasses.dialog }}
       fullWidth
@@ -184,6 +197,7 @@ const AssignVariantDialog: React.FC<AssignVariantDialogProps> = props => {
                               onChange={() =>
                                 handleVariantAssign(
                                   variant,
+                                  product,
                                   variantIndex,
                                   productIndex,
                                   variants,

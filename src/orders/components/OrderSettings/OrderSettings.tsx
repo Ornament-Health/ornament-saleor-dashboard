@@ -2,7 +2,7 @@ import CardSpacer from "@dashboard/components/CardSpacer";
 import CardTitle from "@dashboard/components/CardTitle";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import { Card, CardContent } from "@material-ui/core";
-import { Box, Text } from "@saleor/macaw-ui/next";
+import { Box, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -42,7 +42,7 @@ const OrderSettings: React.FC<OrderSettingsProps> = ({
                   description="checkbox label"
                 />
               </Text>
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage
                   id="wpAXKX"
                   defaultMessage="All orders will be automatically confirmed and all payments will be captured."
@@ -68,7 +68,7 @@ const OrderSettings: React.FC<OrderSettingsProps> = ({
                   description="checkbox gift cards label"
                 />
               </Text>
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage
                   id="EewziG"
                   defaultMessage="When activated non-shippable gift cards will be automatically set as fulfilled and sent to customer"

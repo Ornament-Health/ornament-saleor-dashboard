@@ -1,9 +1,12 @@
 // @ts-strict-ignore
+import { useUser } from "@dashboard/auth";
 import { ConfirmButton } from "@dashboard/components/ConfirmButton";
 import PriceField from "@dashboard/components/PriceField";
+import { hasPermissions } from "@dashboard/components/RequirePermissions";
 import {
-  OrderDetailsDocument,
   OrderDetailsFragment,
+  OrderDetailsWithMetadataDocument,
+  PermissionEnum,
   TransactionActionEnum,
   TransactionItemFragment,
   useOrderSendRefundMutation,
@@ -53,12 +56,20 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   const intl = useIntl();
   const id = useId();
 
+  const user = useUser();
+  const isStaffUser = hasPermissions(user?.user?.userPermissions ?? [], [
+    PermissionEnum.MANAGE_STAFF,
+  ]);
+
   const [value, setValue] = React.useState<number | undefined>();
 
   const [sendRefund, { status, loading, error, data }] =
     useOrderSendRefundMutation({
       refetchQueries: [
-        { query: OrderDetailsDocument, variables: { id: orderId } },
+        {
+          query: OrderDetailsWithMetadataDocument,
+          variables: { id: orderId, isStaffUser },
+        },
       ],
       variables: {
         transactionId: transaction.id,
@@ -110,12 +121,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
                 <FormattedMessage {...refundPageMessages.setMax} />
               </Button>
               <PriceField
-                InputLabelProps={{ shrink: value !== undefined }}
-                inputProps={{
-                  id: inputId,
-                  "aria-invalid": !!submitError ? "true" : "false",
-                  "aria-describedby": errorId,
-                }}
+                id={inputId}
+                aria-invalid={!!submitError ? "true" : "false"}
+                aria-describedby={errorId}
                 disabled={loading}
                 className={classes.input}
                 label={intl.formatMessage(refundPageMessages.refundAmount)}

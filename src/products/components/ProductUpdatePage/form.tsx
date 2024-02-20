@@ -10,6 +10,7 @@ import {
   createAttributeFileChangeHandler,
   createAttributeMultiChangeHandler,
   createAttributeReferenceChangeHandler,
+  createAttributeReferenceMetadataHandler,
   createAttributeValueReorderHandler,
   createFetchMoreReferencesHandler,
   createFetchReferencesHandler,
@@ -30,7 +31,7 @@ import {
   getProductUpdatePageFormData,
 } from "@dashboard/products/utils/data";
 import { PRODUCT_UPDATE_FORM_ID } from "@dashboard/products/views/ProductUpdate/consts";
-import createMultiAutocompleteSelectHandler from "@dashboard/utils/handlers/multiAutocompleteSelectChangeHandler";
+import createMultiselectChangeHandler from "@dashboard/utils/handlers/multiselectChangeHandler";
 import createSingleAutocompleteSelectHandler from "@dashboard/utils/handlers/singleAutocompleteSelectChangeHandler";
 import getMetadata from "@dashboard/utils/metadata/getMetadata";
 import useMetadataChangeTrigger from "@dashboard/utils/metadata/useMetadataChangeTrigger";
@@ -50,7 +51,7 @@ import {
 } from "./types";
 import { prepareVariantChangeData } from "./utils";
 
-function useProductUpdateForm(
+export function useProductUpdateForm(
   product: ProductFragment,
   onSubmit: (data: ProductUpdateSubmitData) => SubmitResult,
   disabled: boolean,
@@ -70,7 +71,7 @@ function useProductUpdateForm(
   const {
     handleChange,
     triggerChange,
-    toggleValue,
+    toggleValues,
     data: formData,
     setIsSubmitDisabled,
   } = form;
@@ -123,11 +124,9 @@ function useProductUpdateForm(
     touched: touchedChannels,
   } = useProductChannelListingsForm(product, triggerChange);
 
-  const handleCollectionSelect = createMultiAutocompleteSelectHandler(
-    event => toggleValue(event),
+  const handleCollectionSelect = createMultiselectChangeHandler(
+    toggleValues,
     opts.setSelectedCollections,
-    opts.selectedCollections,
-    opts.collections,
   );
   const handleCategorySelect = createSingleAutocompleteSelectHandler(
     handleChange,
@@ -145,6 +144,10 @@ function useProductUpdateForm(
   );
   const handleAttributeReferenceChange = createAttributeReferenceChangeHandler(
     attributes.change,
+    triggerChange,
+  );
+  const handleAttributeMetadataChange = createAttributeReferenceMetadataHandler(
+    attributes.setMetadata,
     triggerChange,
   );
   const handleFetchReferences = createFetchReferencesHandler(
@@ -256,6 +259,11 @@ function useProductUpdateForm(
           ),
     );
     datagrid.setRemoved([]);
+    variants.current = {
+      added: [],
+      removed: [],
+      updates: [],
+    };
 
     return result;
   }, [datagrid, handleFormSubmit, getSubmitData]);
@@ -301,6 +309,7 @@ function useProductUpdateForm(
       selectAttributeFile: handleAttributeFileChange,
       selectAttributeMultiple: handleAttributeMultiChange,
       selectAttributeReference: handleAttributeReferenceChange,
+      selectAttributeReferenceMetadata: handleAttributeMetadataChange,
       selectCategory: handleCategorySelect,
       selectCollection: handleCollectionSelect,
       selectTaxClass: handleTaxClassSelect,

@@ -1,5 +1,5 @@
 import Debounce from "@dashboard/components/Debounce";
-import { SearchInput } from "@saleor/macaw-ui/next";
+import { SearchInput } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -25,7 +25,9 @@ export const ColumnPickerSearch: React.FC<ColumnPickerSearchProps> = ({
       time={500}
     >
       {debounceSearchChange => {
-        const handleSearchChange = (event: React.ChangeEvent<any>) => {
+        const handleSearchChange = (
+          event: React.ChangeEvent<HTMLInputElement>,
+        ) => {
           const value = event.target.value ?? "";
           setQuery(value);
           debounceSearchChange(value);

@@ -13,7 +13,7 @@ import { getFormErrors } from "@dashboard/utils/errors";
 import getOrderErrorMessage from "@dashboard/utils/errors/order";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { Box, Button, Popover, sprinkles } from "@saleor/macaw-ui/next";
+import { Box, Button, Popover, sprinkles } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -194,7 +194,7 @@ const OrderDraftDetailsSummary: React.FC<
                 align="start"
                 className={sprinkles({ zIndex: "3" })}
               >
-                <Box boxShadow="overlay">
+                <Box boxShadow="defaultOverlay">
                   <OrderDiscountCommonModal
                     modalType={ORDER_DISCOUNT}
                     existingDiscount={orderDiscount}

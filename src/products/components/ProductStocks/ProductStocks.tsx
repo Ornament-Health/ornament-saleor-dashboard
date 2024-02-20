@@ -1,17 +1,11 @@
 // @ts-strict-ignore
-import {
-  ChannelData,
-  ChannelPriceAndPreorderArgs,
-} from "@dashboard/channels/utils";
+import { ChannelData } from "@dashboard/channels/utils";
 import { DashboardCard } from "@dashboard/components/Card";
-import { DateTimeTimezoneField } from "@dashboard/components/DateTimeTimezoneField";
 import Link from "@dashboard/components/Link";
-import PreviewPill from "@dashboard/components/PreviewPill";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { ProductErrorFragment, WarehouseFragment } from "@dashboard/graphql";
-import { FormChange, FormErrors } from "@dashboard/hooks/useForm";
+import { FormChange } from "@dashboard/hooks/useForm";
 import { FormsetAtomicData, FormsetChange } from "@dashboard/hooks/useFormset";
-import { sectionNames } from "@dashboard/intl";
 import { renderCollection } from "@dashboard/misc";
 import { getFormErrors, getProductErrorMessage } from "@dashboard/utils/errors";
 import createNonNegativeValueChangeHandler from "@dashboard/utils/handlers/nonNegativeValueChangeHandler";
@@ -23,18 +17,13 @@ import {
   Dropdown,
   Input,
   List,
-  PlusIcon,
-  sprinkles,
   Text,
   TrashBinIcon,
   vars,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { ProductCreateData } from "../ProductCreatePage";
-import { ProductVariantCreateData } from "../ProductVariantCreatePage/form";
-import { ProductVariantUpdateData } from "../ProductVariantPage/form";
 import { messages } from "./messages";
 
 export interface ProductStockFormsetData {
@@ -47,7 +36,6 @@ export type ProductStockInput = FormsetAtomicData<
 export interface ProductStockFormData {
   sku: string;
   trackInventory: boolean;
-  isPreorder: boolean;
   globalThreshold: string;
   globalSoldUnits: number;
   hasPreorderEndDate: boolean;
@@ -59,20 +47,10 @@ export interface ProductStocksProps {
   data: ProductStockFormData;
   disabled: boolean;
   errors: ProductErrorFragment[];
-  formErrors:
-    | FormErrors<ProductVariantCreateData>
-    | FormErrors<ProductVariantUpdateData>
-    | FormErrors<ProductCreateData>;
   hasVariants: boolean;
   stocks: ProductStockInput[];
   warehouses: WarehouseFragment[];
-  onVariantChannelListingChange?: (
-    id: string,
-    data: Partial<ChannelPriceAndPreorderArgs>,
-  ) => void;
   onChange: FormsetChange;
-  onChangePreorderEndDate: FormChange;
-  onEndPreorderTrigger?: () => void;
   onFormDataChange: FormChange;
   onWarehouseStockAdd: (warehouseId: string) => void;
   onWarehouseStockDelete: (warehouseId: string) => void;
@@ -84,31 +62,23 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
   disabled,
   hasVariants,
   errors,
-  formErrors: localFormErrors,
-  onChangePreorderEndDate,
   stocks,
   warehouses,
   productVariantChannelListings = [],
   onChange,
-  onEndPreorderTrigger,
   onFormDataChange,
-  onVariantChannelListingChange,
   onWarehouseStockAdd,
   onWarehouseStockDelete,
   onWarehouseConfigure,
 }) => {
   const intl = useIntl();
   const [lastStockRowFocus, setLastStockRowFocus] = React.useState(false);
-  const unitsLeft = parseInt(data.globalThreshold, 10) - data.globalSoldUnits;
 
   const warehousesToAssign =
     warehouses?.filter(
       warehouse => !stocks.some(stock => stock.id === warehouse.id),
     ) || [];
   const formErrors = getFormErrors(["sku"], errors);
-
-  const onThresholdChange =
-    createNonNegativeValueChangeHandler(onFormDataChange);
 
   const handleWarehouseStockAdd = (warehouseId: string) => {
     onWarehouseStockAdd(warehouseId);
@@ -146,28 +116,8 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
           />
         </Box>
 
-        <Box paddingY={2} display="grid" gap={2}>
-          <Checkbox
-            checked={data.isPreorder}
-            name="isPreorder"
-            onCheckedChange={value => {
-              if (onEndPreorderTrigger && data.isPreorder) {
-                onEndPreorderTrigger();
-              } else {
-                onFormDataChange({ target: { name: "isPreorder", value } });
-              }
-            }}
-            disabled={disabled}
-          >
-            <Box display="flex" gap={1} paddingY={1.5}>
-              <Text>
-                <FormattedMessage {...messages.variantInPreorder} />
-              </Text>
-              <PreviewPill />
-            </Box>
-          </Checkbox>
-
-          {!data.isPreorder && (
+        <Box paddingTop={5}>
+          <Box>
             <Checkbox
               checked={data.trackInventory}
               name="trackInventory"
@@ -180,321 +130,164 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
                 <Text>
                   <FormattedMessage {...messages.trackInventory} />
                 </Text>
-                <Text variant="caption" color="textNeutralSubdued">
-                  <FormattedMessage {...messages.trackInventoryDescription} />
-                </Text>
               </Box>
             </Checkbox>
-          )}
 
-          {!data.isPreorder && (
-            <Box display="grid" gap={2}>
-              <Box display="flex" flexDirection="column">
-                <Text>
-                  <FormattedMessage {...messages.quantity} />
-                </Text>
-                {!productVariantChannelListings?.length && (
-                  <Text variant="caption" color="textNeutralSubdued">
-                    <FormattedMessage
-                      {...messages.noChannelWarehousesAllocation}
-                    />
-                  </Text>
-                )}
-              </Box>
-              {!warehouses?.length && (
-                <Text color="textNeutralSubdued">
-                  {hasVariants ? (
-                    <FormattedMessage
-                      {...messages.configureWarehouseForVariant}
-                      values={{
-                        a: chunks => (
-                          <Link onClick={onWarehouseConfigure}>{chunks}</Link>
-                        ),
-                      }}
-                    />
-                  ) : (
-                    <FormattedMessage
-                      {...messages.configureWarehouseForProduct}
-                      values={{
-                        a: chunks => (
-                          <Link onClick={onWarehouseConfigure}>{chunks}</Link>
-                        ),
-                      }}
-                    />
-                  )}
+            <Text marginLeft={5} variant="caption" color="default2">
+              <FormattedMessage {...messages.trackInventoryDescription} />
+            </Text>
+          </Box>
+          <Box display="grid" gap={2} marginTop={5}>
+            <Box display="flex" flexDirection="column">
+              <Text variant="heading" size="small">
+                <FormattedMessage {...messages.stock} />
+              </Text>
+              {!productVariantChannelListings?.length && (
+                <Text variant="caption" color="default2">
+                  <FormattedMessage
+                    {...messages.noChannelWarehousesAllocation}
+                  />
                 </Text>
               )}
             </Box>
-          )}
+            {!warehouses?.length && (
+              <Text color="default2">
+                {hasVariants ? (
+                  <FormattedMessage
+                    {...messages.configureWarehouseForVariant}
+                    values={{
+                      a: chunks => (
+                        <Link onClick={onWarehouseConfigure}>{chunks}</Link>
+                      ),
+                    }}
+                  />
+                ) : (
+                  <FormattedMessage
+                    {...messages.configureWarehouseForProduct}
+                    values={{
+                      a: chunks => (
+                        <Link onClick={onWarehouseConfigure}>{chunks}</Link>
+                      ),
+                    }}
+                  />
+                )}
+              </Text>
+            )}
+          </Box>
         </Box>
-      </DashboardCard.Content>
-      {productVariantChannelListings?.length > 0 &&
-        warehouses?.length > 0 &&
-        !data.isPreorder && (
-          <Table>
-            <TableHead>
-              <TableRowLink>
-                <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-                  <Text variant="caption" color="textNeutralSubdued">
-                    <FormattedMessage {...messages.warehouseName} />
-                  </Text>
-                </TableCell>
-                <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-                  <Text variant="caption" color="textNeutralSubdued">
-                    <FormattedMessage {...messages.allocated} />
-                  </Text>
-                </TableCell>
-                <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-                  <Text variant="caption" color="textNeutralSubdued">
-                    <FormattedMessage {...messages.quantity} />
-                  </Text>
-                </TableCell>
-                <TableCell />
-              </TableRowLink>
-            </TableHead>
-            <TableBody>
-              {renderCollection(stocks, (stock, index) => {
-                const handleQuantityChange =
-                  createNonNegativeValueChangeHandler(event =>
-                    onChange(stock.id, event.target.value),
-                  );
+        {productVariantChannelListings?.length > 0 &&
+          warehouses?.length > 0 &&
+          stocks?.length > 0 && (
+            <Table>
+              <TableHead>
+                <TableRowLink>
+                  <TableCell style={{ paddingLeft: vars.spacing[6] }}>
+                    <Text variant="caption" color="default2">
+                      <FormattedMessage {...messages.warehouseName} />
+                    </Text>
+                  </TableCell>
+                  <TableCell style={{ width: 100, verticalAlign: "middle" }}>
+                    <Text variant="caption" color="default2">
+                      <FormattedMessage {...messages.allocated} />
+                    </Text>
+                  </TableCell>
+                  <TableCell style={{ width: 200, verticalAlign: "middle" }}>
+                    <Text variant="caption" color="default2">
+                      <FormattedMessage {...messages.quantity} />
+                    </Text>
+                  </TableCell>
+                  <TableCell />
+                </TableRowLink>
+              </TableHead>
+              <TableBody>
+                {renderCollection(stocks, (stock, index) => {
+                  const handleQuantityChange =
+                    createNonNegativeValueChangeHandler(event =>
+                      onChange(stock.id, event.target.value),
+                    );
 
-                return (
-                  <TableRowLink key={stock.id}>
-                    <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-                      <Text>{stock.label}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Text>{stock.data?.quantityAllocated || 0}</Text>
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        data-test-id="stock-input"
-                        disabled={disabled}
-                        onChange={handleQuantityChange}
-                        value={stock.value}
-                        size="small"
-                        type="number"
-                        min={0}
-                        ref={input =>
-                          stocks.length === index + 1 &&
-                          handleStockInputFocus(input)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        icon={<TrashBinIcon />}
-                        onClick={() => onWarehouseStockDelete(stock.id)}
-                      />
-                    </TableCell>
-                  </TableRowLink>
-                );
-              })}
-              {warehousesToAssign.length > 0 && (
-                <Dropdown>
-                  <Dropdown.Trigger>
-                    <TableRowLink className={sprinkles({ cursor: "pointer" })}>
-                      <TableCell
-                        colSpan={3}
-                        style={{ paddingLeft: vars.spacing[6] }}
-                      >
-                        <Text>
-                          <FormattedMessage {...messages.assignWarehouse} />
-                        </Text>
+                  return (
+                    <TableRowLink data-test-id={stock.label} key={stock.id}>
+                      <TableCell style={{ paddingLeft: vars.spacing[6] }}>
+                        <Text>{stock.label}</Text>
                       </TableCell>
-                      <TableCell style={{ paddingRight: vars.spacing[6] }}>
+                      <TableCell>
+                        <Text>{stock.data?.quantityAllocated || 0}</Text>
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          data-test-id="stock-input"
+                          disabled={disabled}
+                          onChange={handleQuantityChange}
+                          value={stock.value}
+                          size="small"
+                          type="number"
+                          min={0}
+                          ref={input =>
+                            stocks.length === index + 1 &&
+                            handleStockInputFocus(input)
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           type="button"
-                          icon={<PlusIcon />}
                           variant="secondary"
+                          icon={<TrashBinIcon />}
+                          onClick={() => onWarehouseStockDelete(stock.id)}
                         />
                       </TableCell>
                     </TableRowLink>
-                  </Dropdown.Trigger>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
 
-                  <Dropdown.Content align="end">
-                    <Box>
-                      <List
-                        id="warehouse-list"
-                        padding={2}
-                        borderRadius={4}
-                        boxShadow="overlay"
-                        backgroundColor="surfaceNeutralPlain"
-                        __maxHeight={400}
-                        overflowY="auto"
-                      >
-                        {warehousesToAssign.map(warehouse => (
-                          <Dropdown.Item key={warehouse.id}>
-                            <List.Item
-                              paddingX={1.5}
-                              paddingY={2}
-                              borderRadius={4}
-                              onClick={() =>
-                                handleWarehouseStockAdd(warehouse.id)
-                              }
-                            >
-                              <Text>{warehouse.name}</Text>
-                            </List.Item>
-                          </Dropdown.Item>
-                        ))}
-                      </List>
-                    </Box>
-                  </Dropdown.Content>
-                </Dropdown>
-              )}
-            </TableBody>
-          </Table>
-        )}
-      {data.isPreorder && (
-        <DashboardCard.Content>
-          <Box display="grid" gap={2}>
-            <Text variant="caption">
-              <FormattedMessage {...messages.preorderEndDateSetup} />
-            </Text>
-            {data.hasPreorderEndDate && (
-              <Box>
-                <DateTimeTimezoneField
-                  name={"preorderEndDateTime"}
-                  disabled={disabled}
-                  futureDatesOnly
-                  fullWidth={false}
-                  error={localFormErrors.preorderEndDateTime}
-                  value={data?.preorderEndDateTime}
-                  onChange={event =>
-                    onChangePreorderEndDate({
-                      target: {
-                        name: "preorderEndDateTime",
-                        value: event,
-                      },
-                    })
-                  }
-                />
-              </Box>
-            )}
-            <Box __alignSelf="end">
-              <Button
-                name="hasPreorderEndDate"
-                variant="secondary"
-                disabled={disabled}
-                type="button"
-                onClick={() =>
-                  onFormDataChange({
-                    target: {
-                      name: "hasPreorderEndDate",
-                      value: !data.hasPreorderEndDate,
-                    },
-                  })
-                }
-              >
-                {data.hasPreorderEndDate
-                  ? intl.formatMessage(messages.endDateCancel)
-                  : intl.formatMessage(messages.endDateSetup)}
-              </Button>
-            </Box>
-          </Box>
+        {productVariantChannelListings?.length > 0 &&
+          warehouses?.length > 0 &&
+          warehousesToAssign.length > 0 && (
+            <Dropdown>
+              <Dropdown.Trigger>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  marginTop={5}
+                  data-test-id="assign-warehouse-button"
+                >
+                  <FormattedMessage {...messages.assignWarehouse} />
+                </Button>
+              </Dropdown.Trigger>
 
-          <Box display="grid" gap={1} paddingTop={2}>
-            <Text variant="caption" color="textNeutralSubdued">
-              <FormattedMessage {...messages.preorderProductsAvailability} />
-            </Text>
-            <Box display="grid" gap={1.5}>
-              <Box __width="50%">
-                <Input
-                  min={0}
-                  type="text"
-                  disabled={disabled}
-                  label={intl.formatMessage(messages.preorderTresholdLabel)}
-                  name="globalThreshold"
-                  onChange={onThresholdChange}
-                  value={data.globalThreshold ?? ""}
-                  size="small"
-                  helperText={intl.formatMessage(
-                    messages.preorderTresholdDescription,
-                  )}
-                />
-              </Box>
-
-              {productVariantChannelListings?.length > 0 && (
-                <Text variant="caption">
-                  {data.globalThreshold
-                    ? intl.formatMessage(messages.preorderTresholdUnitsLeft, {
-                        unitsLeft,
-                      })
-                    : intl.formatMessage(messages.preorderTresholdUnlimited)}
-                </Text>
-              )}
-            </Box>
-          </Box>
-        </DashboardCard.Content>
-      )}
-
-      {productVariantChannelListings?.length > 0 && data.isPreorder && (
-        <Table>
-          <TableHead>
-            <TableRowLink>
-              <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-                <Text variant="caption" color="textNeutralSubdued">
-                  <FormattedMessage {...sectionNames.channels} />
-                </Text>
-              </TableCell>
-              <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-                <Text variant="caption" color="textNeutralSubdued">
-                  <FormattedMessage {...messages.soldUnits} />
-                </Text>
-              </TableCell>
-              <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-                <Text variant="caption" color="textNeutralSubdued">
-                  <FormattedMessage {...messages.channelTreshold} />
-                </Text>
-              </TableCell>
-            </TableRowLink>
-          </TableHead>
-          <TableBody>
-            {renderCollection(productVariantChannelListings, listing => {
-              if (!listing) {
-                return;
-              }
-
-              return (
-                <TableRowLink key={listing.id}>
-                  <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-                    <Text>{listing.name}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text>{listing?.unitsSold || 0}</Text>
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      min={0}
-                      type="number"
-                      name="channel-threshold"
-                      disabled={disabled}
-                      onChange={e => {
-                        onVariantChannelListingChange(listing.id, {
-                          costPrice: listing.costPrice,
-                          price: listing.price,
-                          preorderThreshold:
-                            e.target.value === ""
-                              ? undefined
-                              : Number(e.target.value),
-                        });
-                      }}
-                      value={listing?.preorderThreshold ?? ""}
-                      size="small"
-                      placeholder={intl.formatMessage(
-                        messages.preorderTresholdUnlimited,
-                      )}
-                    />
-                  </TableCell>
-                </TableRowLink>
-              );
-            })}
-          </TableBody>
-        </Table>
-      )}
+              <Dropdown.Content align="end">
+                <Box>
+                  <List
+                    id="warehouse-list"
+                    padding={2}
+                    borderRadius={4}
+                    boxShadow="defaultOverlay"
+                    backgroundColor="default1"
+                    __maxHeight={400}
+                    overflowY="auto"
+                  >
+                    {warehousesToAssign.map(warehouse => (
+                      <Dropdown.Item key={warehouse.id}>
+                        <List.Item
+                          paddingX={1.5}
+                          paddingY={2}
+                          borderRadius={4}
+                          onClick={() => handleWarehouseStockAdd(warehouse.id)}
+                        >
+                          <Text>{warehouse.name}</Text>
+                        </List.Item>
+                      </Dropdown.Item>
+                    ))}
+                  </List>
+                </Box>
+              </Dropdown.Content>
+            </Dropdown>
+          )}
+      </DashboardCard.Content>
     </DashboardCard>
   );
 };

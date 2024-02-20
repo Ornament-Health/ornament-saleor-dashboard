@@ -5,7 +5,7 @@ import { orderHasTransactions } from "@dashboard/orders/types";
 import { mergeRepeatedOrderLines } from "@dashboard/orders/utils/data";
 import { CardContent } from "@material-ui/core";
 import { IconButton } from "@saleor/macaw-ui";
-import { Box, Divider } from "@saleor/macaw-ui/next";
+import { Box, Divider } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import OrderCardTitle from "../OrderCardTitle";
@@ -22,6 +22,7 @@ interface OrderFulfilledProductsCardProps {
   onOrderFulfillmentCancel: () => void;
   onTrackingCodeAdd: () => void;
   dataTestId?: string;
+  onShowMetadata: (id: string) => void;
 }
 
 const statusesToMergeLines = [
@@ -45,6 +46,7 @@ const OrderFulfilledProductsCard: React.FC<
     onOrderFulfillmentApprove,
     onOrderFulfillmentCancel,
     onTrackingCodeAdd,
+    onShowMetadata,
     dataTestId,
   } = props;
   const classes = useStyles(props);
@@ -98,7 +100,11 @@ const OrderFulfilledProductsCard: React.FC<
         }
       />
       <CardContent>
-        <OrderDetailsDatagrid lines={getLines()} loading={false} />
+        <OrderDetailsDatagrid
+          lines={getLines()}
+          loading={false}
+          onShowMetadata={onShowMetadata}
+        />
         <ExtraInfoLines fulfillment={fulfillment} />
       </CardContent>
       {props.children}

@@ -15,12 +15,12 @@ describe("getStockData", () => {
         row: 1,
       },
       { column: "attribute:2", row: 2, data: { value: { value: "test2" } } },
-      { column: "stock:Q2hhbm5lbDox", row: 1, data: { value: "12345" } },
-      { column: "stock:Q2hhbm5lbDot", row: 1, data: { value: "5666" } },
+      { column: "warehouse:Q2hhbm5lbDox", row: 1, data: { value: "12345" } },
+      { column: "warehouse:Q2hhbm5lbDot", row: 1, data: { value: "5666" } },
     ];
 
     // Act
-    const stocks = getStockData(changeData, 1, []);
+    const stocks = getStockData(changeData, 1);
 
     // Assert
     expect(stocks).toEqual([
@@ -42,7 +42,7 @@ describe("getStockData", () => {
     ];
 
     // Act
-    const stocks = getStockData(changeData, 1, []);
+    const stocks = getStockData(changeData, 1);
 
     // Assert
     expect(stocks).toEqual([]);
@@ -55,7 +55,7 @@ describe("getStockData", () => {
     ];
 
     // Act
-    const stocks = getStockData(changeData, 1, []);
+    const stocks = getStockData(changeData, 1);
 
     // Assert
     expect(stocks).toEqual([]);
@@ -81,12 +81,12 @@ describe("getVaraintUpdateStockData", () => {
   test("should handle update stocks", () => {
     // Arrange
     const changeData: DatagridChange[] = [
-      { column: "stock:Q2hhbm5lbDox", row: 1, data: { value: "12345" } },
-      { column: "stock:Q2hhbm5lbDot", row: 1, data: { value: "5666" } },
+      { column: "warehouse:Q2hhbm5lbDox", row: 1, data: { value: "12345" } },
+      { column: "warehouse:Q2hhbm5lbDot", row: 1, data: { value: "5666" } },
     ];
 
     // Act
-    const variantStocks = getVaraintUpdateStockData(changeData, 1, [], {
+    const variantStocks = getVaraintUpdateStockData(changeData, 1, {
       stocks,
     } as ProductFragment["variants"][number]);
 
@@ -111,19 +111,19 @@ describe("getVaraintUpdateStockData", () => {
     // Arrange
     const changeData: DatagridChange[] = [
       {
-        column: "stock:Q2hhbm5lbDox",
+        column: "warehouse:Q2hhbm5lbDox",
         row: 1,
         data: { value: numberCellEmptyValue },
       },
       {
-        column: "stock:Q2hhbm5lbDot",
+        column: "warehouse:Q2hhbm5lbDot",
         row: 1,
         data: { value: numberCellEmptyValue },
       },
     ];
 
     // Act
-    const variantStocks = getVaraintUpdateStockData(changeData, 1, [], {
+    const variantStocks = getVaraintUpdateStockData(changeData, 1, {
       stocks,
     } as ProductFragment["variants"][number]);
 
@@ -141,12 +141,12 @@ describe("getVaraintUpdateStockData", () => {
   test("should handle create stocks", () => {
     // Arrange
     const changeData: DatagridChange[] = [
-      { column: "stock:Q2hhbm5lbDof", row: 1, data: { value: "12345" } },
-      { column: "stock:Q2hhbm5lbDod", row: 1, data: { value: "5666" } },
+      { column: "warehouse:Q2hhbm5lbDof", row: 1, data: { value: "12345" } },
+      { column: "warehouse:Q2hhbm5lbDod", row: 1, data: { value: "5666" } },
     ];
 
     // Act
-    const variantStocks = getVaraintUpdateStockData(changeData, 1, [], {
+    const variantStocks = getVaraintUpdateStockData(changeData, 1, {
       stocks,
     } as ProductFragment["variants"][number]);
 
@@ -174,7 +174,7 @@ describe("getVaraintUpdateStockData", () => {
     ];
 
     // Act
-    const variantStocks = getVaraintUpdateStockData(changeData, 1, [], {
+    const variantStocks = getVaraintUpdateStockData(changeData, 1, {
       stocks,
     } as ProductFragment["variants"][number]);
 
@@ -189,7 +189,7 @@ describe("getVaraintUpdateStockData", () => {
     ];
 
     // Act
-    const variantStocks = getVaraintUpdateStockData(changeData, 1, [], {
+    const variantStocks = getVaraintUpdateStockData(changeData, 1, {
       stocks,
     } as ProductFragment["variants"][number]);
 

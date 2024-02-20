@@ -1,4 +1,4 @@
-import { Box, Dropdown, List, RemoveIcon, Text } from "@saleor/macaw-ui/next";
+import { Box, Dropdown, List, RemoveIcon, Text } from "@saleor/macaw-ui-next";
 import React, { MouseEvent } from "react";
 
 interface FilterPresetItemProps {
@@ -50,9 +50,9 @@ export const FilterPresetItem = ({
             <RemoveIcon
               data-test-id="preset-delete-button"
               color={{
-                default: "iconNeutralSubdued",
-                hover: "iconNeutralPlain",
-                focusVisible: "iconNeutralPlain",
+                default: "default2",
+                hover: "default1",
+                focusVisible: "default1",
               }}
             />
           </Box>

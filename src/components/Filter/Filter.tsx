@@ -2,7 +2,7 @@
 import { ClickAwayListener, Grow, Popper, Typography } from "@material-ui/core";
 import { alpha } from "@material-ui/core/styles";
 import { Button, makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React, { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -67,7 +67,7 @@ const useStyles = makeStyles(
       width: 240,
     },
     popover: {
-      backgroundColor: vars.colors.background.surfaceNeutralPlain,
+      backgroundColor: vars.colors.background.default1,
       overflowY: "scroll",
       boxShadow: `0px 6px 11px 9px ${theme.palette.divider}`,
       height: 450,

@@ -25,6 +25,12 @@ import {
   SaleUrlQueryParams,
 } from "@dashboard/discounts/urls";
 import {
+  getFilteredCategories,
+  getFilteredCollections,
+  getFilteredProducts,
+  getFilteredProductVariants,
+} from "@dashboard/discounts/utils";
+import {
   SaleDetailsQueryVariables,
   useSaleCataloguesAddMutation,
   useSaleCataloguesRemoveMutation,
@@ -50,7 +56,6 @@ import useCollectionSearch from "@dashboard/searches/useCollectionSearch";
 import useProductSearch from "@dashboard/searches/useProductSearch";
 import createDialogActionHandlers from "@dashboard/utils/handlers/dialogActionHandlers";
 import createMetadataUpdateHandler from "@dashboard/utils/handlers/metadataUpdateHandler";
-import { mapEdgesToItems } from "@dashboard/utils/maps";
 import { DialogContentText } from "@material-ui/core";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -414,14 +419,12 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({ id, params }) => {
               ...detailsQueryInclude,
               id,
               input: {
-                variants,
+                variants: variants.map(variant => variant.id),
               },
             },
           })
         }
-        products={mapEdgesToItems(searchProductsOpts?.data?.search)?.filter(
-          suggestedProduct => suggestedProduct.id,
-        )}
+        products={getFilteredProductVariants(data, searchProductsOpts)}
       />
       <AssignProductDialog
         confirmButtonState={saleCataloguesAddOpts.status}
@@ -438,19 +441,15 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({ id, params }) => {
               ...detailsQueryInclude,
               id,
               input: {
-                products,
+                products: products.map(product => product.id),
               },
             },
           })
         }
-        products={mapEdgesToItems(searchProductsOpts?.data?.search)?.filter(
-          suggestedProduct => suggestedProduct.id,
-        )}
+        products={getFilteredProducts(data, searchProductsOpts)}
       />
       <AssignCategoriesDialog
-        categories={mapEdgesToItems(searchCategoriesOpts?.data?.search)?.filter(
-          suggestedCategory => suggestedCategory.id,
-        )}
+        categories={getFilteredCategories(data, searchCategoriesOpts)}
         confirmButtonState={saleCataloguesAddOpts.status}
         hasMore={searchCategoriesOpts.data?.search.pageInfo.hasNextPage}
         open={params.action === "assign-category"}
@@ -465,16 +464,14 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({ id, params }) => {
               ...detailsQueryInclude,
               id,
               input: {
-                categories,
+                categories: categories.map(category => category.id),
               },
             },
           })
         }
       />
       <AssignCollectionDialog
-        collections={mapEdgesToItems(
-          searchCollectionsOpts?.data?.search,
-        )?.filter(suggestedCategory => suggestedCategory.id)}
+        collections={getFilteredCollections(data, searchCollectionsOpts)}
         confirmButtonState={saleCataloguesAddOpts.status}
         hasMore={searchCollectionsOpts.data?.search.pageInfo.hasNextPage}
         open={params.action === "assign-collection"}
@@ -489,7 +486,7 @@ export const SaleDetails: React.FC<SaleDetailsProps> = ({ id, params }) => {
               ...detailsQueryInclude,
               id,
               input: {
-                collections,
+                collections: collections.map(collection => collection.id),
               },
             },
           })

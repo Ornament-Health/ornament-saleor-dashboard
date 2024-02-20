@@ -1,15 +1,14 @@
 FROM node:18-alpine as builder
+RUN apk --no-cache add bash
 WORKDIR /app
 COPY package*.json ./
-COPY scripts/patchReactVirtualized.js scripts/
 ENV CI 1
 RUN npm ci --legacy-peer-deps
 
 COPY nginx/ nginx/
 COPY assets/ assets/
 COPY locale/ locale/
-COPY scripts/removeSourcemaps.js scripts/
-COPY scripts/build-types.js scripts/
+COPY scripts/ scripts/
 COPY vite.config.js ./
 COPY tsconfig.json ./
 COPY sw.js ./

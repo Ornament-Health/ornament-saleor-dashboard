@@ -1,4 +1,4 @@
-import { Box, List, sprinkles } from "@saleor/macaw-ui/next";
+import { Box, List, sprinkles } from "@saleor/macaw-ui-next";
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export const HomeProductListItem = ({
   children,
 }: HomeNotificationListItemProps) => (
   <List.Item
-    borderColor="neutralPlain"
+    borderColor="default1"
     borderWidth={1}
     borderBottomStyle="solid"
     data-test-id={dataTestId}

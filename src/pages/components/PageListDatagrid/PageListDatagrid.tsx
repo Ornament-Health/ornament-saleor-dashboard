@@ -10,7 +10,7 @@ import { Page, Pages } from "@dashboard/pages/types";
 import { PageListUrlSortField } from "@dashboard/pages/urls";
 import { ListProps, SortPage } from "@dashboard/types";
 import { Item } from "@glideapps/glide-data-grid";
-import { Box, useTheme } from "@saleor/macaw-ui/next";
+import { Box, useTheme } from "@saleor/macaw-ui-next";
 import React, { useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
 
@@ -69,13 +69,13 @@ export const PageListDatagrid = ({
     onSave: onColumnChange,
   });
 
-  const { themeValues } = useTheme();
+  const { theme: currentTheme } = useTheme();
   const getCellContent = useCallback(
     createGetCellContent({
       pages,
       columns: visibleColumns,
       intl,
-      themeValues,
+      currentTheme,
     }),
     [pages, visibleColumns],
   );
@@ -116,7 +116,7 @@ export const PageListDatagrid = ({
       <Datagrid
         readonly
         loading={loading}
-        rowMarkers="checkbox"
+        rowMarkers="checkbox-visible"
         columnSelect="single"
         hasRowHover={hasRowHover}
         onColumnMoved={handlers.onMove}

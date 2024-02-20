@@ -17,7 +17,7 @@ import {
   ExternalLinkIcon,
   sprinkles,
   TrashBinIcon,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React, { useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
 import { Link } from "react-router-dom";
@@ -35,6 +35,7 @@ interface OrderDraftDetailsDatagridProps {
   errors: OrderErrorFragment[];
   onOrderLineChange: (id: string, data: FormData) => void;
   onOrderLineRemove: (id: string) => void;
+  onShowMetadata: (id: string) => void;
 }
 
 export const OrderDraftDetailsDatagrid = ({
@@ -42,6 +43,7 @@ export const OrderDraftDetailsDatagrid = ({
   errors,
   onOrderLineChange,
   onOrderLineRemove,
+  onShowMetadata,
 }: OrderDraftDetailsDatagridProps) => {
   const intl = useIntl();
   const datagrid = useDatagridChangeState();
@@ -82,6 +84,7 @@ export const OrderDraftDetailsDatagrid = ({
     columns: visibleColumns,
     lines,
     errors,
+    onShowMetadata,
   });
 
   const getMenuItems = useCallback(
@@ -117,7 +120,7 @@ export const OrderDraftDetailsDatagrid = ({
           <Box
             data-test-id="delete-order-line"
             as="span"
-            color="iconCriticalDefault"
+            color="critical1"
             display="flex"
             alignItems="center"
             __marginLeft="-2px"
@@ -137,18 +140,17 @@ export const OrderDraftDetailsDatagrid = ({
 
   const handleDatagridChange = useCallback(
     async (
-      { updates }: DatagridChangeOpts,
+      { currentUpdate }: DatagridChangeOpts,
       setMarkCellsDirty: (areCellsDirty: boolean) => void,
     ) => {
-      await Promise.all(
-        updates.map(({ data, column, row }) => {
-          const orderId = lines[row].id;
+      if (!currentUpdate) return;
 
-          if (column === "quantity" && data.value !== "") {
-            return onOrderLineChange(orderId, { quantity: data.value });
-          }
-        }),
-      );
+      const { data, column, row } = currentUpdate;
+      const orderId = lines[row].id;
+
+      if (column === "quantity" && data.value !== "") {
+        await onOrderLineChange(orderId, { quantity: data.value });
+      }
 
       datagrid.changes.current = [];
       setMarkCellsDirty(false);

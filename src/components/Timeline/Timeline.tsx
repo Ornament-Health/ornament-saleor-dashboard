@@ -4,7 +4,7 @@ import { Button } from "@dashboard/components/Button";
 import { getUserInitials } from "@dashboard/misc";
 import { CardContent, TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -34,7 +34,7 @@ const useStyles = makeStyles(
           opacity: [[1], "!important"] as any,
         },
       },
-      background: vars.colors.background.surfaceNeutralPlain,
+      background: vars.colors.background.default1,
     },
     noteRoot: {
       marginBottom: theme.spacing(3),

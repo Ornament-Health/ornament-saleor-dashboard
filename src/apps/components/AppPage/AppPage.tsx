@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import {
   borderHeight,
   topBarHeight,
@@ -7,7 +6,7 @@ import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { APP_VERSION } from "@dashboard/config";
 import { AppQuery } from "@dashboard/graphql";
 import useShop from "@dashboard/hooks/useShop";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { AppFrame } from "../AppFrame";
@@ -38,7 +37,7 @@ export const AppPage: React.FC<AppPageProps> = ({
   return (
     <DetailPageLayout gridTemplateColumns={1} withSavebar={false}>
       <AppPageNav
-        appId={data?.id}
+        appId={data?.id || ""}
         name={data?.name}
         supportUrl={data?.supportUrl}
         homepageUrl={data?.homepageUrl}

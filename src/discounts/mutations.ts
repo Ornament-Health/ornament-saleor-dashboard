@@ -140,6 +140,7 @@ export const voucherUpdate = gql`
     voucherUpdate(id: $id, input: $input) {
       errors {
         ...DiscountError
+        voucherCodes
       }
       voucher {
         ...Voucher
@@ -199,6 +200,7 @@ export const voucherCreate = gql`
     voucherCreate(input: $input) {
       errors {
         ...DiscountError
+        voucherCodes
       }
       voucher {
         ...Voucher
@@ -212,6 +214,7 @@ export const voucherDelete = gql`
     voucherDelete(id: $id) {
       errors {
         ...DiscountError
+        voucherCodes
       }
     }
   }
@@ -222,6 +225,81 @@ export const voucherBulkDelete = gql`
     voucherBulkDelete(ids: $ids) {
       errors {
         ...VoucherBulkDeleteError
+      }
+    }
+  }
+`;
+
+export const promotionCreate = gql`
+  mutation PromotionCreate($input: PromotionCreateInput!) {
+    promotionCreate(input: $input) {
+      errors {
+        ...PromotionCreateError
+      }
+      promotion {
+        ...PromotionDetails
+      }
+    }
+  }
+`;
+
+export const promotionUpdate = gql`
+  mutation PromotionUpdate($id: ID!, $input: PromotionUpdateInput!) {
+    promotionUpdate(id: $id, input: $input) {
+      errors {
+        ...PromotionUpdateError
+      }
+      promotion {
+        ...PromotionDetails
+      }
+    }
+  }
+`;
+
+export const promotionDelete = gql`
+  mutation PromotionDelete($id: ID!) {
+    promotionDelete(id: $id) {
+      errors {
+        ...PromotionDeleteError
+      }
+    }
+  }
+`;
+
+export const promotionRuleUpdate = gql`
+  mutation PromotionRuleUpdate($id: ID!, $input: PromotionRuleUpdateInput!) {
+    promotionRuleUpdate(id: $id, input: $input) {
+      errors {
+        ...PromotionRuleUpdateError
+      }
+      promotionRule {
+        ...PromotionRuleDetails
+      }
+    }
+  }
+`;
+
+export const promotinRuleCreate = gql`
+  mutation PromotionRuleCreate($input: PromotionRuleCreateInput!) {
+    promotionRuleCreate(input: $input) {
+      errors {
+        ...PromotionRuleCreateError
+      }
+      promotionRule {
+        ...PromotionRuleDetails
+      }
+    }
+  }
+`;
+
+export const promotionRuleDelete = gql`
+  mutation PromotionRuleDelete($id: ID!) {
+    promotionRuleDelete(id: $id) {
+      errors {
+        ...PromotionRuleDeleteError
+      }
+      promotionRule {
+        id
       }
     }
   }

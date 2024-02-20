@@ -1,7 +1,7 @@
 import Link from "@dashboard/components/Link";
 import PreviewPill from "@dashboard/components/PreviewPill";
 import { FormChange } from "@dashboard/hooks/useForm";
-import { Box, Checkbox, Text } from "@saleor/macaw-ui/next";
+import { Box, Checkbox, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -35,12 +35,7 @@ export const DefaultTransactionFlowStrategy = ({
     </Checkbox>
     <Box paddingLeft={4}>
       {" "}
-      <Text
-        variant="caption"
-        color="textNeutralSubdued"
-        size="large"
-        paddingLeft={0.5}
-      >
+      <Text variant="caption" color="default2" size="large" paddingLeft={0.5}>
         <FormattedMessage
           {...messages.defaultTransactionFlowStrategyDescription}
           values={{

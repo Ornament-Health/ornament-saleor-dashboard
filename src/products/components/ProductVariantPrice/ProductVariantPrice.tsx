@@ -21,12 +21,12 @@ import {
 } from "@dashboard/utils/errors";
 import getProductErrorMessage from "@dashboard/utils/errors/product";
 import { TableBody, TableCell, TableHead } from "@material-ui/core";
-import { Text, vars } from "@saleor/macaw-ui/next";
+import { sprinkles, Text, vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, MessageDescriptor, useIntl } from "react-intl";
 
 interface ProductVariantPriceProps {
-  ProductVariantChannelListings?: ChannelData[];
+  productVariantChannelListings?: ChannelData[];
   errors: Array<ProductErrorFragment | ProductChannelListingErrorFragment>;
   loading?: boolean;
   disabled?: boolean;
@@ -45,7 +45,7 @@ export const ProductVariantPrice: React.FC<
   const {
     disabled = false,
     errors = [],
-    ProductVariantChannelListings = [],
+    productVariantChannelListings = [],
     loading,
     onChange,
     disabledMessage,
@@ -56,7 +56,7 @@ export const ProductVariantPrice: React.FC<
   ) as ProductChannelListingErrorFragment[];
   const apiErrors = getFormChannelErrors(["price", "costPrice"], channelErrors);
 
-  if (disabled || !ProductVariantChannelListings.length) {
+  if (disabled || !productVariantChannelListings.length) {
     return (
       <DashboardCard>
         <DashboardCard.Title>
@@ -95,7 +95,7 @@ export const ProductVariantPrice: React.FC<
         <TableHead>
           <TableRowLink>
             <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage
                   id="c8UT0c"
                   defaultMessage="Channel Name"
@@ -104,7 +104,7 @@ export const ProductVariantPrice: React.FC<
               </Text>
             </TableCell>
             <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage
                   id="JFtFgc"
                   defaultMessage="Selling Price"
@@ -113,7 +113,7 @@ export const ProductVariantPrice: React.FC<
               </Text>
             </TableCell>
             <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage
                   id="2zCmiR"
                   defaultMessage="Cost price"
@@ -125,7 +125,7 @@ export const ProductVariantPrice: React.FC<
         </TableHead>
         <TableBody>
           {renderCollection(
-            ProductVariantChannelListings,
+            productVariantChannelListings,
             (listing, index) => {
               const fieldName = `${listing.id}-channel-price`;
               const formErrors = getFormErrors([fieldName], errors);
@@ -140,18 +140,20 @@ export const ProductVariantPrice: React.FC<
               );
 
               return (
-                <TableRowLink key={listing?.id || `skeleton-${index}`}>
+                <TableRowLink
+                  key={listing?.id || `skeleton-${index}`}
+                  data-test-id={listing?.name}
+                >
                   <TableCell style={{ paddingLeft: vars.spacing[6] }}>
                     <Text>{listing?.name || <Skeleton />}</Text>
                   </TableCell>
                   <TableCell>
                     {listing ? (
                       <PriceField
-                        error={!!priceError}
-                        label={intl.formatMessage({
-                          id: "b1zuN9",
-                          defaultMessage: "Price",
+                        className={sprinkles({
+                          marginY: 2,
                         })}
+                        error={!!priceError}
                         name={fieldName}
                         value={listing.price || ""}
                         currencySymbol={listing.currency}
@@ -175,12 +177,10 @@ export const ProductVariantPrice: React.FC<
                   <TableCell>
                     {listing ? (
                       <PriceField
-                        error={!!costPriceError}
-                        label={intl.formatMessage({
-                          id: "KQSONM",
-                          defaultMessage: "Cost",
-                          description: "tabel column header",
+                        className={sprinkles({
+                          marginY: 2,
                         })}
+                        error={!!costPriceError}
                         name={`${listing.id}-channel-costPrice`}
                         value={listing.costPrice || ""}
                         currencySymbol={listing.currency}

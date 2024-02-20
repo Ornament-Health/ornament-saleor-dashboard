@@ -3,7 +3,7 @@ import { DevModeQuery } from "@dashboard/orders/queries";
 import { getFilterVariables } from "@dashboard/orders/views/OrderList/filters";
 import { LinearProgress } from "@material-ui/core";
 import { useActionBar } from "@saleor/macaw-ui";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { useLocation } from "react-router";
 
@@ -35,7 +35,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   const params = extractQueryParams(useLocation().search);
 
-  useDevModeKeyTrigger(({ shift }) => {
+  useDevModeKeyTrigger((_err, { shift }) => {
     if (shift) {
       setDevModeContent(DevModeQuery);
       const variables = JSON.stringify(
@@ -69,9 +69,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         )}
         <Box
           height="100vh"
-          borderColor="neutralPlain"
+          borderColor="default1"
           borderRightWidth={1}
-          backgroundColor="subdued"
+          backgroundColor="default2"
           borderStyle="solid"
           position="sticky"
           top={0}
@@ -91,10 +91,10 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             bottom={0}
             left={0}
             right={0}
-            backgroundColor="plain"
+            backgroundColor="default1"
             borderTopWidth={1}
             borderTopStyle="solid"
-            borderColor="neutralPlain"
+            borderColor="default1"
             zIndex="2"
           />
         </Box>

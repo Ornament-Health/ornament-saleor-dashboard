@@ -1,5 +1,5 @@
 import { AppPermissionFragment } from "@dashboard/graphql";
-import { Box, InfoIcon, Tooltip } from "@saleor/macaw-ui/next";
+import { Box, InfoIcon, Tooltip } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -19,7 +19,7 @@ export const AppPermissions: React.FC<AppPermissionsProps> = ({
     <Tooltip>
       <Tooltip.Trigger>
         <Box display="flex" placeItems="center">
-          <InfoIcon color="iconNeutralSubdued" size="large" />
+          <InfoIcon color="default2" size="large" />
         </Box>
       </Tooltip.Trigger>
       <Tooltip.Content side="bottom">

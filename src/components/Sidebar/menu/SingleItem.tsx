@@ -1,9 +1,8 @@
-// @ts-strict-ignore
 import {
   extensionMountPoints,
   useExtensions,
 } from "@dashboard/apps/hooks/useExtensions";
-import { Box, List, sprinkles, Text } from "@saleor/macaw-ui/next";
+import { Box, List, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -33,7 +32,7 @@ export const SingleItem: React.FC<Props> = ({ menuItem }) => {
       data-test-id={`menu-item-label-${menuItem.id}`}
     >
       <Link
-        to={menuItem.url}
+        to={menuItem.url || ""}
         replace={active}
         className={sprinkles({
           display: "block",

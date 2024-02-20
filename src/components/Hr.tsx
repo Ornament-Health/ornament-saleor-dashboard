@@ -1,8 +1,8 @@
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 
 /**
- * @deprecated use `Divider` component from `@saleor/macaw-ui/next`
+ * @deprecated use `Divider` component from `@saleor/macaw-ui-next`
  */
 export const Hr: React.FC<{
   className?: string;
@@ -10,7 +10,7 @@ export const Hr: React.FC<{
   <Box
     as="hr"
     className={className}
-    backgroundColor="surfaceNeutralDepressed"
+    backgroundColor="default3"
     borderWidth={0}
     width="100%"
     height="px"

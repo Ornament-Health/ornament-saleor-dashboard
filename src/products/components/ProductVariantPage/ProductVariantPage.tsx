@@ -6,6 +6,7 @@ import {
 import { ChannelPriceData } from "@dashboard/channels/utils";
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import AssignAttributeValueDialog from "@dashboard/components/AssignAttributeValueDialog";
+import { Container } from "@dashboard/components/AssignContainerDialog";
 import {
   AttributeInput,
   Attributes,
@@ -180,7 +181,7 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
   };
 
   const handleAssignReferenceAttribute = (
-    attributeValues: string[],
+    attributeValues: Container[],
     data: ProductVariantUpdateData,
     handlers: ProductVariantUpdateHandlers,
   ) => {
@@ -188,9 +189,13 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
       assignReferencesAttributeId,
       mergeAttributeValues(
         assignReferencesAttributeId,
-        attributeValues,
+        attributeValues.map(({ id }) => id),
         data.attributes,
       ),
+    );
+    handlers.selectAttributeReferenceMetadata(
+      assignReferencesAttributeId,
+      attributeValues.map(({ name, id }) => ({ value: id, label: name })),
     );
     onCloseDialog();
   };
@@ -220,7 +225,6 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
           {({
             change,
             data,
-            formErrors,
             validationErrors,
             isSaveDisabled,
             handlers,
@@ -260,6 +264,7 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                     <CardSpacer />
                     <VariantDetailsChannelsAvailabilityCard
                       variant={variant}
+                      disabled={loading}
                       onManageClick={toggleManageChannels}
                     />
                     {nonSelectionAttributes.length > 0 && (
@@ -313,7 +318,7 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                       </>
                     )}
                     <ProductVariantMedia
-                      disabled={loading}
+                      disabled={loading || productMedia.length === 0}
                       media={media}
                       placeholderImage={placeholderImage}
                       onImageAdd={toggleModal}
@@ -321,7 +326,7 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                     <CardSpacer />
                     <ProductVariantPrice
                       disabled={!variant}
-                      ProductVariantChannelListings={data.channelListings.map(
+                      productVariantChannelListings={data.channelListings.map(
                         channel => ({
                           ...channel.data,
                           ...channel.value,
@@ -355,22 +360,14 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                           ...channel.value,
                         }),
                       )}
-                      onVariantChannelListingChange={handlers.changeChannels}
                       data={data}
                       disabled={loading}
                       hasVariants={true}
                       errors={errors}
-                      formErrors={formErrors}
                       stocks={data.stocks}
                       warehouses={warehouses}
                       onChange={handlers.changeStock}
                       onFormDataChange={change}
-                      onChangePreorderEndDate={handlers.changePreorderEndDate}
-                      onEndPreorderTrigger={
-                        !!variant?.preorder
-                          ? () => setIsEndPreorderModalOpened(true)
-                          : null
-                      }
                       onWarehouseStockAdd={handlers.addStock}
                       onWarehouseStockDelete={handlers.deleteStock}
                       onWarehouseConfigure={onWarehouseConfigure}
@@ -395,6 +392,9 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                     confirmButtonState={"default"}
                     products={referenceProducts}
                     pages={referencePages}
+                    attribute={data.attributes.find(
+                      ({ id }) => id === assignReferencesAttributeId,
+                    )}
                     hasMore={handlers.fetchMoreReferences?.hasMore}
                     open={canOpenAssignReferencesAttributeDialog}
                     onFetch={handlers.fetchReferences}

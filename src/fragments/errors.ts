@@ -59,6 +59,56 @@ export const discountErrorFragment = gql`
   }
 `;
 
+export const promotionCreateErrorFragment = gql`
+  fragment PromotionCreateError on PromotionCreateError {
+    field
+    message
+    code
+    index
+  }
+`;
+
+export const promotionUpdateErrorFragment = gql`
+  fragment PromotionUpdateError on PromotionUpdateError {
+    field
+    message
+    code
+  }
+`;
+
+export const promotionDeleteErrorFragment = gql`
+  fragment PromotionDeleteError on PromotionDeleteError {
+    field
+    message
+    code
+  }
+`;
+
+export const promotionRuleUpdateErrorFragment = gql`
+  fragment PromotionRuleUpdateError on PromotionRuleUpdateError {
+    field
+    message
+    code
+    channels
+  }
+`;
+
+export const promotionRuleCreateErrorFragment = gql`
+  fragment PromotionRuleCreateError on PromotionRuleCreateError {
+    field
+    message
+    code
+  }
+`;
+
+export const promotionRuleDeleteErrorFragment = gql`
+  fragment PromotionRuleDeleteError on PromotionRuleDeleteError {
+    field
+    message
+    code
+  }
+`;
+
 export const menuErrorFragment = gql`
   fragment MenuError on MenuError {
     code
@@ -565,6 +615,12 @@ export const orderGrantRefundCreateErrorFragment = gql`
     field
     message
     code
+    lines {
+      field
+      message
+      code
+      lineId
+    }
   }
 `;
 
@@ -573,5 +629,17 @@ export const orderGrantRefundUpdateErrorFragment = gql`
     field
     message
     code
+    addLines {
+      field
+      message
+      code
+      lineId
+    }
+    removeLines {
+      field
+      message
+      code
+      lineId
+    }
   }
 `;

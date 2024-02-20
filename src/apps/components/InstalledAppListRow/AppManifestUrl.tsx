@@ -1,4 +1,4 @@
-import { Box, CopyIcon, Text, Tooltip } from "@saleor/macaw-ui/next";
+import { Box, CopyIcon, Text, Tooltip } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
@@ -32,7 +32,7 @@ export const AppManifestUrl: React.FC<AppManifestUrlProps> = ({
       <Tooltip>
         <Tooltip.Trigger>
           <Box __maxWidth="300px" className="ellipsis">
-            <Text variant="caption" color="textNeutralSubdued">
+            <Text variant="caption" color="default2">
               {new URL(manifestUrl).host}
             </Text>
           </Box>
@@ -45,10 +45,7 @@ export const AppManifestUrl: React.FC<AppManifestUrlProps> = ({
           {manifestUrl}
         </Tooltip.Content>
       </Tooltip>
-      <CopyIcon
-        color="iconNeutralSubdued"
-        className={clsx(copied && "animate-copy")}
-      />
+      <CopyIcon color="default2" className={clsx(copied && "animate-copy")} />
     </Box>
   );
 };

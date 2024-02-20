@@ -28,7 +28,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { DeleteIcon, IconButton, makeStyles } from "@saleor/macaw-ui";
-import { Box, Text, vars } from "@saleor/macaw-ui/next";
+import { Box, Text, vars } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -215,7 +215,7 @@ const PermissionGroupMemberList: React.FC<PermissionGroupProps> = props => {
                       />
                       <Box display="flex" flexDirection="column">
                         <Text>{getUserName(user) || <Skeleton />}</Text>
-                        <Text variant="caption" color="textNeutralSubdued">
+                        <Text variant="caption" color="default2">
                           {!user ? (
                             <Skeleton />
                           ) : user.isActive ? (

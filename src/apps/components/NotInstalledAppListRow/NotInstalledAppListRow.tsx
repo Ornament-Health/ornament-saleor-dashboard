@@ -17,7 +17,7 @@ import {
   Tooltip,
   TrashBinIcon,
   WarningIcon,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -35,7 +35,7 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
       padding={4}
       borderTopStyle="solid"
       borderWidth={1}
-      borderColor="neutralPlain"
+      borderColor="default1"
       justifyContent="space-between"
       flexDirection="row"
       flexWrap={{ mobile: "wrap", desktop: "nowrap" }}
@@ -76,11 +76,11 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
             <Tooltip>
               <Tooltip.Trigger>
                 <Box display="flex" placeItems="center" gap={1} marginX={1}>
-                  <WarningIcon size="small" color="iconCriticalSubdued" />
+                  <WarningIcon size="small" color="critical1" />
                   <Text
                     variant="caption"
                     size="small"
-                    color="textCriticalSubdued"
+                    color="critical2"
                     data-test-id="app-failed-label"
                   >
                     <FormattedMessage

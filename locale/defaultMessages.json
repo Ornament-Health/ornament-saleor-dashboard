@@ -214,6 +214,9 @@
     "context": "section description",
     "string": "Strategy defines the preference of warehouses for stock allocations and reservations."
   },
+  "/Fa+RP": {
+    "string": "Couldn't load top products"
+  },
   "/ILyIf": {
     "context": "tax classes menu header",
     "string": "Tax class label"
@@ -240,6 +243,9 @@
   "/TK7QD": {
     "context": "page label",
     "string": "Hidden"
+  },
+  "/U8FUp": {
+    "string": "Couldn't load activities"
   },
   "/V7UOC": {
     "context": "unassign category from sale and save, button",
@@ -476,10 +482,6 @@
     "context": "dialog header",
     "string": "Change customer shipping address"
   },
-  "142MJn": {
-    "context": "select visible columns button",
-    "string": "Columns"
-  },
   "15PiOX": {
     "context": "button title",
     "string": "Unassign"
@@ -545,6 +547,9 @@
   "1UKx20": {
     "context": "header",
     "string": "Translation ShippingMethod \"{shippingMethodName}\" - {languageCode}"
+  },
+  "1UQ9Qy": {
+    "string": "Code Prefix (Optional)"
   },
   "1Uj0Wd": {
     "context": "order draft total price",
@@ -639,6 +644,10 @@
     "context": "button",
     "string": "Choose media"
   },
+  "2JBvj0": {
+    "context": "export products to csv file, button",
+    "string": "Export products"
+  },
   "2MKBk2": {
     "context": "window title",
     "string": "Fulfill Order #{orderNumber}"
@@ -687,6 +696,13 @@
   "2cjt25": {
     "context": "window title",
     "string": "Install App"
+  },
+  "2dgbGR": {
+    "string": "Those codes already exist"
+  },
+  "2fgaAQ": {
+    "context": "search input placeholder",
+    "string": "Search shipping zones..."
   },
   "2gsiR1": {
     "string": "No warehouses found"
@@ -932,6 +948,9 @@
   "4Kq3O6": {
     "string": "This unit will be used as default shipping weight"
   },
+  "4LRapg": {
+    "string": "Discount removed"
+  },
   "4PlW0w": {
     "context": "tracking number",
     "string": "Tracking Number: {trackingNumber}"
@@ -966,6 +985,9 @@
   "4fJ17F": {
     "context": "Charge in progress transaction amount, data display header",
     "string": "Pending charge"
+  },
+  "4gJAm6": {
+    "string": "Can't delete saved codes"
   },
   "4gT3eD": {
     "context": "navigator section header",
@@ -1115,8 +1137,8 @@
     "context": "references attribute type",
     "string": "References"
   },
-  "5dyOs0": {
-    "string": "No payments waiting for capture"
+  "5dOOAB": {
+    "string": "Successfully created discount"
   },
   "5elC9k": {
     "context": "taxes section name",
@@ -1192,6 +1214,9 @@
   "6D+yYX": {
     "string": "Payment status"
   },
+  "6FLezz": {
+    "string": "Are you sure you want to delete this discount?"
+  },
   "6G41zU": {
     "context": "WarehouseSettings local warehouse description",
     "string": "If selected customer will be able to choose this warehouse as pickup point. Ordered products will be only fulfilled from this warehouse stock"
@@ -1217,6 +1242,9 @@
   },
   "6SL46U": {
     "string": "by {author}"
+  },
+  "6Tps09": {
+    "string": "Inactive"
   },
   "6WRFp2": {
     "context": "order history message",
@@ -1271,6 +1299,9 @@
     "context": "informations about product seo, header",
     "string": "SEO Information"
   },
+  "6xNl6V": {
+    "string": "Add code"
+  },
   "6y+k8V": {
     "context": "product field",
     "string": "Product Images"
@@ -1305,6 +1336,13 @@
     "context": "attribute value deleted",
     "string": "Value deleted"
   },
+  "7Hdiw2": {
+    "string": "Rule name is required"
+  },
+  "7J1ZKs": {
+    "context": "button",
+    "string": "Back to apps list"
+  },
   "7JAAul": {
     "context": "product field",
     "string": "Export Product Weight"
@@ -1316,6 +1354,9 @@
   "7KRGqz": {
     "context": "Payment card title",
     "string": "Payment balance"
+  },
+  "7MUx0T": {
+    "string": "Discount of {value} through the {channel}"
   },
   "7NFfmz": {
     "string": "Products"
@@ -1389,6 +1430,9 @@
   "7yKZvp": {
     "context": "section header",
     "string": "User Status"
+  },
+  "83egc7": {
+    "string": "Manually enter the voucher code."
   },
   "86pLaG": {
     "context": "WarehouseSettings public stock label",
@@ -1481,10 +1525,6 @@
     "context": "service accounts section name",
     "string": "Service Accounts"
   },
-  "906uUr": {
-    "context": "button",
-    "string": "Back to homepage"
-  },
   "945a4a": {
     "context": "column header",
     "string": "Customer e-mail"
@@ -1509,6 +1549,9 @@
     "context": "tile view pagination label",
     "string": "No. of products"
   },
+  "9BvYb9": {
+    "string": "Voucher"
+  },
   "9C7PZE": {
     "context": "navigation section name",
     "string": "Navigation"
@@ -1519,10 +1562,6 @@
   },
   "9FGTOt": {
     "string": "Allow access to orders of all channels"
-  },
-  "9IWg/f": {
-    "context": "button",
-    "string": "SETUP END DATE"
   },
   "9MGrEp": {
     "string": "Is available"
@@ -1571,6 +1610,10 @@
     "context": "Pending authorization transaction amount, data display header",
     "string": "Pending auth"
   },
+  "9WmA6z": {
+    "context": "weight config modal title",
+    "string": "Default weight unit configuration"
+  },
   "9Y5i/8": {
     "context": "number of webhook headers in model",
     "string": "{number,plural,one{{number} header} other{{number} custom request headers}}"
@@ -1585,6 +1628,9 @@
   "9ZtJhn": {
     "context": "cancel button",
     "string": "Cancel order"
+  },
+  "9d24PR": {
+    "string": "Create rule"
   },
   "9eC0MZ": {
     "context": "collection",
@@ -1648,6 +1694,9 @@
   "A0Wlg7": {
     "context": "product discount removed title",
     "string": "{productName} discount was removed by"
+  },
+  "A7W4KO": {
+    "string": "Catalog rule"
   },
   "A9QSur": {
     "context": "area units type",
@@ -1787,6 +1836,9 @@
     "context": "pint unit",
     "string": "pint"
   },
+  "B0fwAj": {
+    "string": "and {itemsLength} more"
+  },
   "B2LE7A": {
     "context": "menu item loading",
     "string": "working..."
@@ -1836,15 +1888,15 @@
     "context": "page type name",
     "string": "Content Type Name"
   },
+  "BR8au7": {
+    "context": "delete channel",
+    "string": "Select channel that you wish to move existing orders to."
+  },
   "BUKMzM": {
     "string": "Variant removed"
   },
   "BWpuKl": {
     "string": "Update"
-  },
-  "BXMSl4": {
-    "context": "currency channel",
-    "string": "There is no available channel to move order information to. Please create a channel with same currency so that information can be moved to it."
   },
   "BXkF8Z": {
     "context": "header",
@@ -1953,9 +2005,16 @@
     "context": "dialog content",
     "string": "{counter,plural,one{Are you sure you want to delete this shipping zone?} other{Are you sure you want to delete {displayQuantity} shipping zones?}}"
   },
+  "CFG1Ix": {
+    "context": "shipping zone",
+    "string": "Price range"
+  },
   "CFT171": {
     "context": "card header title",
     "string": "Country list"
+  },
+  "CFlmRP": {
+    "string": "Rule reword value is required"
   },
   "CG+awx": {
     "context": "dialog content",
@@ -2115,6 +2174,9 @@
     "context": "button",
     "string": "Confirm"
   },
+  "DJatYh": {
+    "string": "Generate multiple codes at once"
+  },
   "DK+8PB": {
     "string": "This channel has already been created"
   },
@@ -2191,6 +2253,9 @@
     "context": "date time attribute type",
     "string": "Date Time"
   },
+  "E/yzIO": {
+    "string": "View metadata"
+  },
   "E1C9pp": {
     "context": "transaction event type, authorization amount was changed",
     "string": "Authorization amount adjusted"
@@ -2208,9 +2273,6 @@
   "E9Dz18": {
     "context": "Order summary refunds header",
     "string": "Refunds"
-  },
-  "E9Jssl": {
-    "string": "No orders ready to fulfill"
   },
   "EA7rjI": {
     "context": "disabled status label",
@@ -2248,16 +2310,15 @@
   "ESDTC/": {
     "string": "Manage Sales Channel Availability"
   },
-  "ETHnjq": {
-    "context": "header",
-    "string": "Private Metadata"
-  },
   "EWCUdP": {
     "string": "Channels A to Z"
   },
   "EWD/wU": {
     "context": "delete app",
     "string": "Deleting {name}, you will remove installation of the app. If you are paying for app subscription, remember to unsubscribe from the app in Saleor Marketplace. Are you sure you want to delete the app?"
+  },
+  "EXqb2l": {
+    "string": "Go to Saleor Cloud"
   },
   "EY/jqC": {
     "string": "Last delivery attempt:"
@@ -2317,6 +2378,10 @@
   },
   "Ev6SEF": {
     "string": "New Password"
+  },
+  "EwoyVr": {
+    "context": "bulk remove button label",
+    "string": "Delete shipping zones"
   },
   "F0AXNs": {
     "context": "invoice create date prefix",
@@ -2523,6 +2588,9 @@
     "context": "tooltip",
     "string": "Checkout reservation time threshold is enabled in settings."
   },
+  "GA+Djy": {
+    "string": "Are you sure you want to delete these voucher codes?"
+  },
   "GAmGog": {
     "context": "value input label",
     "string": "Discount value"
@@ -2530,6 +2598,10 @@
   "GCPzKf": {
     "context": "ProductTypeDeleteWarningDialog single assigned items button label",
     "string": "View products"
+  },
+  "GCho9N": {
+    "context": "delete channel",
+    "string": "All channel settings information such as shipping, product listings, warehouse assignments, etc, will be lost."
   },
   "GD/bom": {
     "context": "label",
@@ -2562,6 +2634,16 @@
     "context": "webhooks inactive label",
     "string": "Inactive"
   },
+  "GOdq5V": {
+    "string": "Catalog"
+  },
+  "GP0zGO": {
+    "context": "dialog header",
+    "string": "Select destination channel:"
+  },
+  "GTCg9O": {
+    "string": "You must add at least one voucher code"
+  },
   "GVM/fi": {
     "context": "order history message",
     "string": "Payment was authorized"
@@ -2589,6 +2671,10 @@
   "GcbFa9": {
     "context": "aria-label, negative money amount",
     "string": "minus"
+  },
+  "Ge+dUe": {
+    "context": "currency channel",
+    "string": "To delete {channelSlug} you have to create a chanel with currency: {currency} to be able to move all existing orders."
   },
   "Gfbp36": {
     "context": "dialog header",
@@ -2782,6 +2868,10 @@
     "context": "search",
     "string": "No results"
   },
+  "HnZCl7": {
+    "context": "search input placeholder",
+    "string": "Search tax countries"
+  },
   "HqRNN8": {
     "string": "Support"
   },
@@ -2841,10 +2931,6 @@
   "IH47ID": {
     "string": "Use button above to add new product variants"
   },
-  "IHtOda": {
-    "context": "input label",
-    "string": "Selected columns"
-  },
   "IKvOK+": {
     "context": "Amount error message",
     "string": "Amount must be bigger than 0"
@@ -2876,6 +2962,9 @@
   "IVOjqW": {
     "context": "gift card bulk create success dialog export button",
     "string": "Export To Email"
+  },
+  "IYuKD6": {
+    "string": "No discounts found"
   },
   "Iafyt5": {
     "context": "page attribute entity type",
@@ -3107,10 +3196,6 @@
   "JqiqNj": {
     "string": "Something went wrong"
   },
-  "JsPIOX": {
-    "context": "voucher code",
-    "string": "Code"
-  },
   "Jsh6+U": {
     "context": "product type is digital or physical",
     "string": "Type"
@@ -3122,6 +3207,9 @@
   "JyQoES": {
     "context": "delete attribute value",
     "string": "Are you sure you want to delete \"{name}\" value?"
+  },
+  "JyaQcP": {
+    "string": "Rule reword value must be less than 100"
   },
   "K+vjtE": {
     "string": "Search Variants"
@@ -3170,12 +3258,12 @@
   "KN7zKn": {
     "string": "Error"
   },
-  "KQSONM": {
-    "context": "tabel column header",
-    "string": "Cost"
-  },
   "KRqgfo": {
     "string": "User is out of your permissions scope"
+  },
+  "KWXwFo": {
+    "context": "grant refund table, column header",
+    "string": "Unit price"
   },
   "KXkdMH": {
     "context": "order discount removed title",
@@ -3195,6 +3283,9 @@
   "Kgxlsf": {
     "context": "order",
     "string": "Paid with Gift Card"
+  },
+  "KkufwD": {
+    "string": "No voucher codes found"
   },
   "KmPicj": {
     "string": "Note successfully added"
@@ -3255,6 +3346,10 @@
   "LA13a5": {
     "context": "channel select label",
     "string": "Channel"
+  },
+  "LATHyi": {
+    "context": "dialog header",
+    "string": "Delete Channel: {channelSlug}"
   },
   "LEZZkK": {
     "context": "WarehouseSettings all warehouses description",
@@ -3350,6 +3445,9 @@
     "context": "collection",
     "string": "Not Published"
   },
+  "M59JhX": {
+    "string": "Manual"
+  },
   "M6s/9e": {
     "context": "unassign country, dialog header",
     "string": "Remove from Shipping Zone"
@@ -3429,6 +3527,9 @@
     "context": "customers section name",
     "string": "Customers"
   },
+  "MdFdbd": {
+    "string": "Delete rule"
+  },
   "MewrtN": {
     "context": "section header",
     "string": "Fulfillment"
@@ -3453,6 +3554,10 @@
     "context": "customer details, header",
     "string": "{fullName} Details"
   },
+  "MwfSVA": {
+    "context": "input helper text",
+    "string": "Customers can not add quantities to a single cart above the limit when value is provided."
+  },
   "MxhVZv": {
     "string": "Are you sure you want to delete collection's image?"
   },
@@ -3463,10 +3568,6 @@
   "Myx1Qp": {
     "context": "add discount button",
     "string": "Add Discount"
-  },
-  "Mz0cx+": {
-    "context": "delete channel",
-    "string": "Deleting channel will delete all product data regarding this channel. Are you sure you want to delete this channel?"
   },
   "N2SbNc": {
     "string": "{counter,plural,one{Are you sure you want to delete this customer?} other{Are you sure you want to delete {displayQuantity} customers?}}"
@@ -3562,6 +3663,9 @@
     "context": "order line discount updated title",
     "string": "{productName} discount was updated by"
   },
+  "NgRa6m": {
+    "string": "Discount of {value} on the purchase of {items} through the {channel}"
+  },
   "NhQboB": {
     "context": "dialog header",
     "string": "Saleor couldn’t cancel order"
@@ -3604,9 +3708,6 @@
   "NtFVFS": {
     "context": "weight",
     "string": "{value} {unit}"
-  },
-  "Nuq83+": {
-    "string": "Create new channel"
   },
   "Nv/toB": {
     "context": "button",
@@ -3884,6 +3985,9 @@
     "context": "page header",
     "string": "Create Voucher"
   },
+  "PuQb0P": {
+    "string": "Reward"
+  },
   "Pyjarj": {
     "string": "This shipping rate has no postal codes assigned"
   },
@@ -4009,10 +4113,6 @@
   "QZVD+5": {
     "context": "button, unassign attribute from object",
     "string": "Unassign and save"
-  },
-  "QZoU0r": {
-    "context": "dialog header",
-    "string": "Delete Channel"
   },
   "Qb2XN5": {
     "string": "\"Mark as paid\" feature creates a {link} - used by Payment Apps"
@@ -4233,6 +4333,9 @@
     "context": "unassign attribute from product type, button",
     "string": "Unassign"
   },
+  "S8kqP9": {
+    "string": "Conditions"
+  },
   "SBb6Ej": {
     "context": "select a warehouse to fulfill product from",
     "string": "Select warehouse..."
@@ -4240,6 +4343,9 @@
   "SC/eNC": {
     "context": "Payment card title",
     "string": "Payment status"
+  },
+  "SGdcJD": {
+    "string": "Enter code"
   },
   "SHm7ee": {
     "string": "Search by product name, attribute, product type etc..."
@@ -4292,10 +4398,6 @@
   "SZH0fw": {
     "context": "set variant as default, button",
     "string": "Set as default"
-  },
-  "SZJhvK": {
-    "context": "dialog header",
-    "string": "Select Channel"
   },
   "SZt9kC": {
     "context": "export filtered items to csv file",
@@ -4523,6 +4625,9 @@
     "context": "searchbar placeholder",
     "string": "Country"
   },
+  "UJ97Lb": {
+    "string": "Delete codes"
+  },
   "UJnqdm": {
     "context": "dialog header",
     "string": "Unassign Attribute From Product Type"
@@ -4727,19 +4832,11 @@
     "context": "section header",
     "string": "Staff Member Information"
   },
-  "VTq2gn": {
-    "context": "section header",
-    "string": "Coming Soon"
-  },
   "VYK2nN": {
     "string": "Product details"
   },
   "VZsE96": {
     "string": "Collection Name"
-  },
-  "VcI+Zh": {
-    "context": "header",
-    "string": "Metadata"
   },
   "VceXrc": {
     "context": "initial balance filter label",
@@ -4785,6 +4882,10 @@
   "VyzsWZ": {
     "string": "Default Billing Address"
   },
+  "Vze3qI": {
+    "context": "column category descriptor",
+    "string": "Channels"
+  },
   "W/Es0H": {
     "string": "Order successfully cancelled"
   },
@@ -4802,6 +4903,9 @@
   "W5hb5H": {
     "context": "warehouse input",
     "string": "Warehouse"
+  },
+  "W6nwjo": {
+    "string": "Draft"
   },
   "W8i2Ez": {
     "context": "product field",
@@ -4830,6 +4934,9 @@
     "context": "order refund amount",
     "string": "Shipment Cost"
   },
+  "WHgdsk": {
+    "string": "Out of stock"
+  },
   "WIxSDm": {
     "context": "card header",
     "string": "{country} class rates"
@@ -4840,6 +4947,9 @@
   "WMGoqz": {
     "context": "used by filter label",
     "string": "Used by"
+  },
+  "WMN0q+": {
+    "string": "Delete voucher codes"
   },
   "WQMTKI": {
     "context": "list of warehouses",
@@ -4871,6 +4981,9 @@
   "WWV8aZ": {
     "context": "dialog title",
     "string": "Delete attribute value"
+  },
+  "WY3IXU": {
+    "string": "This code already exists"
   },
   "WasHjQ": {
     "context": "voucher discount",
@@ -4956,9 +5069,6 @@
   "X7fqfM": {
     "context": "title",
     "string": "Reserved stock"
-  },
-  "X7jl6w": {
-    "string": "Orders"
   },
   "X8qjg3": {
     "context": "inactive",
@@ -5046,6 +5156,9 @@
     "context": "section header",
     "string": "All Media"
   },
+  "XVuPMw": {
+    "string": "Are you sure you want to delete this rule?"
+  },
   "XWGZLL": {
     "context": "transaction reference subtitle",
     "string": "Transaction reference"
@@ -5087,6 +5200,12 @@
   },
   "Xtd0AT": {
     "string": "Original String"
+  },
+  "XtlUj6": {
+    "string": "Add your first rule to set up a promotion"
+  },
+  "Xu4ST7": {
+    "string": "No conditions added, click button bellow to create one"
   },
   "Xu4ech": {
     "context": "deactivate app",
@@ -5282,6 +5401,9 @@
     "context": "Taxes section title",
     "string": "Countries"
   },
+  "ZCSOaS": {
+    "string": "Limit to voucher code use once"
+  },
   "ZDJEat": {
     "context": "button",
     "string": "Load More"
@@ -5361,6 +5483,9 @@
   "Zptsep": {
     "context": "order was discounted event title",
     "string": "Order was discounted by"
+  },
+  "ZrIt1W": {
+    "string": "Delete discount"
   },
   "ZuqkSp": {
     "context": "note input subtitle",
@@ -5442,6 +5567,10 @@
   "aKSUWR": {
     "string": "Cannot create transaction to non-existing order"
   },
+  "aMWJ7/": {
+    "context": "local error",
+    "string": "This field cannot be blank for a new webhook"
+  },
   "aMwxYb": {
     "string": "Countries"
   },
@@ -5517,6 +5646,9 @@
     "context": "ChannelsSection subtitle",
     "string": "Assign channels to this shipping zone so we know which orders will be supported"
   },
+  "awNXI/": {
+    "string": "Auto-generate codes"
+  },
   "axFFaD": {
     "context": "range input label",
     "string": "Postal codes (end)"
@@ -5561,8 +5693,9 @@
     "context": "success gift card enable message",
     "string": "Successfully enabled gift card"
   },
-  "bFhzRX": {
-    "string": "No products are out of stock"
+  "bGqAdR": {
+    "context": "seo complete text",
+    "string": "Complete"
   },
   "bHdFph": {
     "context": "subsection header",
@@ -5651,6 +5784,10 @@
   "bj6pTd": {
     "string": "Something's missing"
   },
+  "bk2M4q": {
+    "context": "button",
+    "string": "Cancel end date"
+  },
   "bk9KUX": {
     "context": "ProductTypeDeleteWarningDialog single consent label",
     "string": "Yes, I want to delete this product type and assigned products"
@@ -5684,9 +5821,6 @@
   },
   "byP6IC": {
     "string": "Selected"
-  },
-  "c0H45L": {
-    "string": "{amount, plural,one {One order is ready to fulfill} other {{amount} orders are ready to fulfill}}"
   },
   "c24hjq": {
     "context": "status",
@@ -5772,10 +5906,6 @@
   "cY42ht": {
     "string": "Password cannot be entirely numeric"
   },
-  "cY6H2C": {
-    "context": "empty metadata text",
-    "string": "No metadata created for this element. Use the button below to add new metadata field."
-  },
   "cZN5Jd": {
     "context": "Webhook details events",
     "string": "Events"
@@ -5797,9 +5927,6 @@
   "cdiRSf": {
     "context": "WarehouseSettings no shipping zones assigned",
     "string": "This warehouse has no shipping zones assigned."
-  },
-  "cdxwA8": {
-    "string": "{amount, plural,one {One product out of stock}other {{amount} products out of stock}}"
   },
   "cfQf0w": {
     "context": "button",
@@ -5872,6 +5999,9 @@
     "context": "search box placeholder",
     "string": "Search by country name"
   },
+  "dHAwu8": {
+    "string": "Code already exists"
+  },
   "dJQxHt": {
     "context": "delete category",
     "string": "Are you sure you want to delete {categoryName}?"
@@ -5889,10 +6019,6 @@
   },
   "dPYqy0": {
     "string": "We are currently exporting your requested CSV. As soon as it is available it will be sent to your email address"
-  },
-  "dS+SOT": {
-    "context": "header",
-    "string": "Column settings"
   },
   "dS8Adx": {
     "context": "product",
@@ -6077,6 +6203,9 @@
     "context": "gift card history message",
     "string": "Gift card was activated by {activatedBy}"
   },
+  "fLCV/w": {
+    "string": "Add new value"
+  },
   "fLhj3a": {
     "context": "gift card history message",
     "string": "Gift card expiry date was updated"
@@ -6096,6 +6225,9 @@
     "context": "table head",
     "string": "Category Name"
   },
+  "fXdkiI": {
+    "string": "is"
+  },
   "fbH51z": {
     "context": "Amount error message",
     "string": "Amount cannot be bigger than max refund"
@@ -6103,6 +6235,9 @@
   "fehqPs": {
     "context": "order history message",
     "string": "Products were deleted from an order"
+  },
+  "fg8dzN": {
+    "string": "Add condition"
   },
   "fgHLXc": {
     "context": "attribute value",
@@ -6249,6 +6384,10 @@
     "context": "empty list message",
     "string": "You haven’t assigned any member to this permission group yet."
   },
+  "gXvoFf": {
+    "context": "information",
+    "string": "{releaseDate}"
+  },
   "gZHmaV": {
     "context": "plugin filters error messages channels",
     "string": "No channels selected"
@@ -6269,9 +6408,15 @@
     "context": "sale end date",
     "string": "Ends"
   },
+  "giVGCH": {
+    "string": "Enter Voucher Code"
+  },
   "gj3MUg": {
     "context": "gift card history message",
     "string": "Gift card was resent"
+  },
+  "gjBiyj": {
+    "string": "Loading..."
   },
   "gksZwp": {
     "context": "button",
@@ -6312,6 +6457,9 @@
     "context": "PluginChannelConfigurationCell channel title",
     "string": "Per channel"
   },
+  "gzM1em": {
+    "string": "Add rule"
+  },
   "h1rPPg": {
     "context": "dialog content",
     "string": "Are you sure you want to delete {attributeName}?"
@@ -6324,9 +6472,12 @@
     "context": "search gift card placeholder",
     "string": "Search gift cards, e.g {exampleGiftCardCode}"
   },
-  "h5r9+x": {
-    "context": "sort shipping methods by zone, section header",
-    "string": "Shipping By Zone"
+  "h2vipu": {
+    "string": "Code"
+  },
+  "h65vZI": {
+    "context": "times voucher used",
+    "string": "Used"
   },
   "h75GAF": {
     "context": "voucher",
@@ -6338,6 +6489,10 @@
   "hHOI7D": {
     "context": "product type name",
     "string": "Type Name"
+  },
+  "hJDnLg": {
+    "context": "section header",
+    "string": "Upcoming Apps"
   },
   "hJZwTS": {
     "string": "Email address"
@@ -6674,9 +6829,6 @@
     "context": "dialog header",
     "string": "Assign product"
   },
-  "jvKNMP": {
-    "string": "Discount Code"
-  },
   "jvo0vs": {
     "string": "Save"
   },
@@ -6729,6 +6881,13 @@
     "context": "total order price",
     "string": "Total"
   },
+  "kAAlGL": {
+    "string": "Rules"
+  },
+  "kAPaN6": {
+    "context": "empty metadata text",
+    "string": "Empty"
+  },
   "kEAjZV": {
     "context": "rich text attribute type",
     "string": "Rich Text"
@@ -6773,6 +6932,9 @@
   "kN6SLs": {
     "string": "Min Value"
   },
+  "kNK4es": {
+    "string": "Discount value"
+  },
   "kPIZ65": {
     "context": "page header",
     "string": "Order #{orderNumber}"
@@ -6791,6 +6953,9 @@
   "kVKTwC": {
     "context": "order expiration card title",
     "string": "Order expiration"
+  },
+  "kVL3LM": {
+    "string": "Voucher codes"
   },
   "kVOslW": {
     "context": "reason for discount label",
@@ -6927,6 +7092,10 @@
     "context": "order",
     "string": "Channel"
   },
+  "lJXkFS": {
+    "context": "discount name",
+    "string": "Discount name"
+  },
   "lL1HTg": {
     "string": "Order marked as paid"
   },
@@ -7056,10 +7225,6 @@
     "context": "Webhook details asynchronous events",
     "string": "Asynchronous"
   },
-  "mSLr9d": {
-    "context": "voucher code, button",
-    "string": "Generate Code"
-  },
   "mTEqYL": {
     "context": "NoChannels content",
     "string": "No channels to assign. Please first assign them for the product."
@@ -7085,9 +7250,6 @@
   "mbj1J5": {
     "context": "bulk issue gift cards success alert description",
     "string": "Requested {cardsAmount} were successfully issued"
-  },
-  "md326v": {
-    "string": "{amount, plural,one {One payment to capture}other {{amount} payments to capture}}"
   },
   "me585h": {
     "context": "navigator section header",
@@ -7129,10 +7291,6 @@
   "n25d+d": {
     "context": "WarehousesSection select field add text",
     "string": "Add New Warehouse"
-  },
-  "n3+6w5": {
-    "context": "input helper text",
-    "string": "Your customer won't be allowed to buy bigger quantity per checkout than shown here."
   },
   "n5vskv": {
     "context": "customer's address book, header",
@@ -7305,6 +7463,9 @@
     "context": "Add filter button text",
     "string": "+ Add filter"
   },
+  "o/4OCR": {
+    "string": "Shipping has already been refunded"
+  },
   "o5KXAN": {
     "context": "delete webhook",
     "string": "Are you sure you want to delete {name}?"
@@ -7328,10 +7489,6 @@
     "context": "order status",
     "string": "Unfulfilled"
   },
-  "oGIPb7": {
-    "context": "information",
-    "string": "Coming soon ({releaseDate})"
-  },
   "oHbgcK": {
     "context": "PageTypeDeleteWarningDialog title",
     "string": "Delete page {selectedTypesCount,plural,one{type} other{types}}"
@@ -7346,10 +7503,6 @@
   "oLMXDv": {
     "context": "order status",
     "string": "Ready to fulfill"
-  },
-  "oOFrUd": {
-    "context": "export products to csv file, button",
-    "string": "export products"
   },
   "oQ27V4": {
     "context": "order history message",
@@ -7397,10 +7550,6 @@
   "osPBn1": {
     "context": "currency filter label",
     "string": "Currency"
-  },
-  "p+HM56": {
-    "context": "header",
-    "string": "Customize list"
   },
   "p+UDec": {
     "context": "payment status",
@@ -7605,6 +7754,9 @@
     "context": "User registration",
     "string": "User registration"
   },
+  "qPSWmL": {
+    "string": "Enter usage"
+  },
   "qT6YYk": {
     "context": "order line total price",
     "string": "Total"
@@ -7633,8 +7785,8 @@
     "context": "order history message",
     "string": "Invoice was sent to customer by {sentBy}"
   },
-  "qf/m5l": {
-    "string": "Are you sure you want to delete {shippingZoneName} shipping zone?"
+  "qgQeVW": {
+    "string": "Generate Voucher Codes"
   },
   "qkRuT0": {
     "context": "attribute type",
@@ -7821,10 +7973,6 @@
     "context": "limit voucher",
     "string": "Limit of Uses"
   },
-  "s5Imt5": {
-    "context": "button",
-    "string": "Edit website SEO"
-  },
   "s5v6m0": {
     "context": "order",
     "string": "Gift Card ordered"
@@ -7913,10 +8061,6 @@
   "shmSDX": {
     "context": "no products placeholder",
     "string": "No products are available in the channel assigned to this order."
-  },
-  "sidKce": {
-    "context": "delete channel",
-    "string": "All order information from this channel need to be moved to a different channel. Please select channel orders need to be moved to:."
   },
   "sjRXXz": {
     "string": "Order #{orderId} was placed from draft by {userEmail}"
@@ -8045,6 +8189,10 @@
     "context": "order status",
     "string": "Draft"
   },
+  "tqJwfo": {
+    "context": "button",
+    "string": "Set end date"
+  },
   "tsL3IW": {
     "context": "gift card history message",
     "string": "Gift card was sent to customer"
@@ -8096,6 +8244,10 @@
   "u3sYPH": {
     "context": "independent of any particular day, eg. 11:35",
     "string": "Time"
+  },
+  "u6V5I/": {
+    "context": "shipping zones configuration",
+    "string": "Change default weight unit"
   },
   "u9/vj9": {
     "context": "webhook input label",
@@ -8159,6 +8311,9 @@
   "ubasgL": {
     "context": "order history message",
     "string": "Order was confirmed"
+  },
+  "ucLtY8": {
+    "string": "Discount rules for products, collections or categories."
   },
   "uccjUM": {
     "context": "Dry run objects",
@@ -8237,10 +8392,6 @@
     "context": "OrderPayment does not require shipping",
     "string": "does not apply"
   },
-  "v+Pkm+": {
-    "context": "field is optional",
-    "string": "*Optional. Adding product to collection helps users find it."
-  },
   "v/1VA6": {
     "context": "add order note, button",
     "string": "Send"
@@ -8256,16 +8407,15 @@
   "v1pNHW": {
     "string": "Attribute Class"
   },
+  "v1vJ77": {
+    "string": "Edit rule"
+  },
   "v2+u4c": {
     "context": "card subtitle",
     "string": "Assign and sort warehouses that will be used in this channel (warehouses can be assigned in multiple channels)."
   },
   "v3WWK+": {
     "string": "Status is invalid"
-  },
-  "v9ILn/": {
-    "context": "button",
-    "string": "CANCEL END DATE"
   },
   "vC8vyb": {
     "context": "enabled status option label",
@@ -8307,6 +8457,9 @@
   "vTN5DZ": {
     "context": "button",
     "string": "Discard"
+  },
+  "vTPu1s": {
+    "string": "Code Quantity (max {maxCodes})"
   },
   "vTgRTZ": {
     "context": "limit voucher",
@@ -8384,6 +8537,9 @@
   "vprU7C": {
     "string": "Select visible order channels"
   },
+  "vuKrlW": {
+    "string": "Stock"
+  },
   "vwMO04": {
     "context": "draft order",
     "string": "Created"
@@ -8426,6 +8582,9 @@
   },
   "w6kcxY": {
     "string": "What happens if I approve?"
+  },
+  "w7jT4W": {
+    "string": "No channels selected"
   },
   "w9xgN9": {
     "context": "see error log label in notification",
@@ -8472,6 +8631,13 @@
   },
   "wWTUrM": {
     "string": "No activities found"
+  },
+  "wXFttp": {
+    "context": "note on currency",
+    "string": "Note: Only channels with matching currency are available."
+  },
+  "wbsq7O": {
+    "string": "Usage"
   },
   "wgA48T": {
     "context": "country selection",
@@ -8577,6 +8743,9 @@
     "context": "PluginChannelConfigurationCell global title",
     "string": "Global"
   },
+  "xTyg+p": {
+    "string": "No options to select"
+  },
   "xUvWaP": {
     "context": "subtotal price",
     "string": "Subtotal"
@@ -8644,8 +8813,15 @@
   "y/UWBR": {
     "string": "There is no address to show for this customer"
   },
+  "y08GTW": {
+    "string": "Channel is required"
+  },
   "y7mfbl": {
     "string": "Currently, there are no countries assigned to this shipping zone"
+  },
+  "y8E0iG": {
+    "context": "seo incomplete text",
+    "string": "Incomplete"
   },
   "y9cvqE": {
     "context": "button",
@@ -8855,6 +9031,9 @@
   "zbJHl7": {
     "context": "attribute type",
     "string": "Content Attribute"
+  },
+  "zehNKT": {
+    "string": "Rule has error, open rule to see details"
   },
   "zf48rQ": {
     "context": "sum of captured amount of all transactions",

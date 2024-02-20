@@ -7,7 +7,6 @@ import nodePolyfills from "rollup-plugin-polyfill-node";
 import { defineConfig, loadEnv, searchForWorkspaceRoot } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
 import { VitePWA } from "vite-plugin-pwa";
-import viteSentry from "vite-plugin-sentry";
 
 const copyOgImage = () => ({
   name: "copy-og-image",
@@ -33,10 +32,8 @@ export default defineConfig(({ command, mode }) => {
     SW_INTERVAL,
     IS_CLOUD_INSTANCE,
     APP_MOUNT_URI,
-    SENTRY_ORG,
-    SENTRY_PROJECT,
-    SENTRY_AUTH_TOKEN,
     SENTRY_DSN,
+    SENTRY_RELEASE,
     ENVIRONMENT,
     STATIC_URL,
     APPS_MARKETPLACE_API_URI,
@@ -52,10 +49,7 @@ export default defineConfig(({ command, mode }) => {
     Object.entries(env).filter(([flagKey]) => flagKey.startsWith("FF_")),
   );
 
-  const sourcemap = SKIP_SOURCEMAPS ? false : true;
-
-  const enableSentry =
-    SENTRY_ORG && SENTRY_PROJECT && SENTRY_DSN && SENTRY_AUTH_TOKEN;
+  const sourcemap = !SKIP_SOURCEMAPS;
 
   const plugins = [
     react(),
@@ -89,19 +83,6 @@ export default defineConfig(({ command, mode }) => {
     }),
     copyOgImage(),
   ];
-
-  if (enableSentry) {
-    console.log("Enabling sentry...");
-
-    plugins.push(
-      viteSentry({
-        sourceMaps: {
-          include: ["./build/dashboard"],
-          urlPrefix: process.env.SENTRY_URL_PREFIX,
-        },
-      }),
-    );
-  }
 
   if (!isDev) {
     console.log("Enabling service worker...");
@@ -161,6 +142,8 @@ export default defineConfig(({ command, mode }) => {
         ENVIRONMENT,
         DEMO_MODE,
         CUSTOM_VERSION,
+        SENTRY_RELEASE,
+        STATIC_URL
       },
     },
     build: {
