@@ -9,7 +9,7 @@ import {
 import useFilter from "@dashboard/components/Filter/useFilter";
 import { extractInvalidFilters } from "@dashboard/components/Filter/utils";
 import { ClickAwayListener, Grow, Popper } from "@material-ui/core";
-import { DropdownButton, sprinkles } from "@saleor/macaw-ui/next";
+import { DropdownButton, sprinkles } from "@saleor/macaw-ui-next";
 import React, { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -84,14 +84,14 @@ export const FiltersSelect = <TFilterKeys extends string = string>({
         </DropdownButton>
         <Popper
           className={sprinkles({
-            backgroundColor: "surfaceNeutralPlain",
+            backgroundColor: "default1",
             overflowY: "scroll",
-            boxShadow: "modal",
+            boxShadow: "defaultModal",
             zIndex: "3",
           })}
           style={{
             width: "376px",
-            height: "450px",
+            maxHeight: "450px",
           }}
           open={isFilterMenuOpened}
           anchorEl={anchor.current}

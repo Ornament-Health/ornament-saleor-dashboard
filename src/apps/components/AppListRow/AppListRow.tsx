@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { AppstoreApi } from "@dashboard/apps/appstore.types";
 import { useAppListContext } from "@dashboard/apps/context";
 import {
@@ -6,7 +5,7 @@ import {
   resolveInstallationOfAppstoreApp,
 } from "@dashboard/apps/utils";
 import { AppInstallationFragment } from "@dashboard/graphql";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 

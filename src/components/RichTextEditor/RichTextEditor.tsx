@@ -1,14 +1,14 @@
-// @ts-strict-ignore
-import { LogLevels } from "@editorjs/editorjs";
-import { FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { LogLevels, OutputData } from "@editorjs/editorjs";
+import { FormControl, FormHelperText } from "@material-ui/core";
 import { useId } from "@reach/auto-id";
 import { EditorCore, Props as ReactEditorJSProps } from "@react-editor-js/core";
+import { Box } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
-import { createReactEditorJS } from "react-editor-js";
 
 import { tools } from "./consts";
 import { useHasRendered } from "./hooks";
+import { ReactEditorJS } from "./ReactEditorJS";
 import useStyles from "./styles";
 
 export type EditorJsProps = Omit<ReactEditorJSProps, "factory">;
@@ -17,18 +17,17 @@ export interface RichTextEditorProps extends Omit<EditorJsProps, "onChange"> {
   id?: string;
   disabled: boolean;
   error: boolean;
-  helperText: string;
+  helperText?: string;
   label: string;
   name: string;
   editorRef:
     | React.RefCallback<EditorCore>
-    | React.MutableRefObject<EditorCore>
+    | React.MutableRefObject<EditorCore | null>
     | null;
   // onChange with value shouldn't be used due to issues with React and EditorJS integration
-  onChange?: () => void;
+  onChange?: (data?: OutputData) => void;
+  onBlur?: () => void;
 }
-
-const ReactEditorJS = createReactEditorJS();
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
   id: defaultId,
@@ -40,6 +39,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   editorRef,
   onInitialize,
   onChange,
+  onBlur,
   ...props
 }) => {
   const classes = useStyles({});
@@ -72,19 +72,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       fullWidth
       variant="outlined"
     >
-      <InputLabel
-        focused={true}
-        shrink={true}
-        classes={{
-          disabled: classes.labelDisabled,
-          error: classes.labelError,
-          root: classes.labelRoot,
-        }}
-        error={error}
-        disabled={disabled}
+      <Box
+        as="label"
+        color={error ? "critical2" : "default2"}
+        fontWeight="bodySmall"
+        fontSize="captionSmall"
+        position="absolute"
+        htmlFor={id}
+        zIndex="2"
+        __top={9}
+        __left={9}
       >
         {label}
-      </InputLabel>
+      </Box>
       {hasRendered && (
         <ReactEditorJS
           // match with the id of holder div
@@ -96,7 +96,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           onChange={async event => {
             const editorJsValue = await event.saver.save();
             setHasValue(editorJsValue.blocks.length > 0);
-            return onChange?.();
+            return onChange?.(editorJsValue);
           }}
           {...props}
         >
@@ -107,15 +107,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               [classes.rootActive]: isFocused,
               [classes.rootDisabled]: disabled,
               [classes.rootError]: error,
+              [classes.rootHasLabel]: label !== "",
               [classes.rootTyped]:
-                isTyped || props.defaultValue?.blocks?.length > 0,
+                isTyped || props.defaultValue?.blocks?.length! > 0,
             })}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onBlur={() => {
+              setIsFocused(false);
+              onBlur?.();
+            }}
           />
         </ReactEditorJS>
       )}
-      <FormHelperText>{helperText}</FormHelperText>
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
 };

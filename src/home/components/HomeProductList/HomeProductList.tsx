@@ -1,17 +1,17 @@
 import Money from "@dashboard/components/Money";
-import Skeleton from "@dashboard/components/Skeleton";
-import { ProductTopToday } from "@dashboard/home/types";
+import { HomeData, ProductTopToday } from "@dashboard/home/types";
 import { productVariantEditUrl } from "@dashboard/products/urls";
-import { Box, Text } from "@saleor/macaw-ui/next";
+import { Box, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { renderCollection } from "../../../misc";
 import { HomeProductListItem } from "./HomeProductListItem";
+import { generateAttributesInfo } from "./variant";
 
 interface HomeProductListProps {
   testId?: string;
-  topProducts: ProductTopToday;
+  topProducts: HomeData<ProductTopToday>;
 }
 
 export const HomeProductList = ({
@@ -19,19 +19,51 @@ export const HomeProductList = ({
   testId,
 }: HomeProductListProps) => {
   const intl = useIntl();
+  const title = intl.formatMessage({
+    id: "e08xWz",
+    defaultMessage: "Top products",
+    description: "header",
+  });
+
+  if (topProducts.hasError) {
+    return (
+      <Box data-test-id={testId}>
+        <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
+          {title}
+        </Text>
+        <Text color="default2">
+          <FormattedMessage
+            id="/Fa+RP"
+            defaultMessage="Couldn't load top products"
+          />
+        </Text>
+      </Box>
+    );
+  }
+
+  if (topProducts.loading) {
+    return (
+      <Box data-test-id={testId}>
+        <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
+          {title}
+        </Text>
+        <Box display="flex" flexDirection="column">
+          <ProductListSkeleton />
+          <ProductListSkeleton />
+          <ProductListSkeleton />
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box data-test-id={testId}>
       <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
-        {intl.formatMessage({
-          id: "e08xWz",
-          defaultMessage: "Top products",
-          description: "header",
-        })}
+        {title}
       </Text>
       <Box>
         {renderCollection(
-          topProducts,
+          topProducts.data,
           variant => (
             <HomeProductListItem
               key={variant ? variant.id : "skeleton"}
@@ -45,7 +77,7 @@ export const HomeProductList = ({
                 <>
                   <Box display="flex" gap={3} alignItems="center">
                     <Box
-                      borderColor="neutralHighlight"
+                      borderColor="default1"
                       borderStyle="solid"
                       borderWidth={1}
                       borderRadius={3}
@@ -61,13 +93,11 @@ export const HomeProductList = ({
                     <Box display="flex" flexDirection="column">
                       <Text size="small">{variant.product.name}</Text>
 
-                      <Text size="small" color="textNeutralSubdued">
-                        {variant.attributes
-                          .map(attribute => attribute.values[0].name)
-                          .join(" / ")}
+                      <Text size="small" color="default2">
+                        {generateAttributesInfo(variant)}
                       </Text>
 
-                      <Text size="small" color="textNeutralSubdued">
+                      <Text size="small" color="default2">
                         <FormattedMessage
                           id="nII/qB"
                           defaultMessage="{amount, plural,one {One ordered}other {{amount} ordered}}"
@@ -95,7 +125,7 @@ export const HomeProductList = ({
           ),
           () => (
             <Box
-              borderColor="neutralPlain"
+              borderColor="default1"
               borderWidth={1}
               paddingY={5}
               borderBottomStyle="solid"
@@ -116,3 +146,17 @@ export const HomeProductList = ({
 
 HomeProductList.displayName = "HomeProductList";
 export default HomeProductList;
+
+function ProductListSkeleton() {
+  return (
+    <Box
+      borderColor="default1"
+      borderWidth={1}
+      borderBottomStyle="solid"
+      paddingX={3}
+      paddingY={6}
+    >
+      <Skeleton />
+    </Box>
+  );
+}

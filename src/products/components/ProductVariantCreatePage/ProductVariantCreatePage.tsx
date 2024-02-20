@@ -5,6 +5,7 @@ import {
 } from "@dashboard/attributes/utils/data";
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import AssignAttributeValueDialog from "@dashboard/components/AssignAttributeValueDialog";
+import { Container } from "@dashboard/components/AssignContainerDialog";
 import {
   AttributeInput,
   Attributes,
@@ -139,7 +140,7 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
   const canOpenAssignReferencesAttributeDialog = !!assignReferencesAttributeId;
 
   const handleAssignReferenceAttribute = (
-    attributeValues: string[],
+    attributeValues: Container[],
     data: ProductVariantCreateData,
     handlers: ProductVariantCreateHandlers,
   ) => {
@@ -147,9 +148,13 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
       assignReferencesAttributeId,
       mergeAttributeValues(
         assignReferencesAttributeId,
-        attributeValues,
+        attributeValues.map(({ id }) => id),
         data.attributes,
       ),
+    );
+    handlers.selectAttributeReferenceMetadata(
+      assignReferencesAttributeId,
+      attributeValues.map(({ id, name }) => ({ value: id, label: name })),
     );
     onCloseDialog();
   };
@@ -171,7 +176,6 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
       {({
         change,
         data,
-        formErrors,
         validationErrors,
         handlers,
         submit,
@@ -181,7 +185,7 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
         const errors = [...apiErrors, ...validationErrors];
 
         return (
-          <DetailPageLayout>
+          <DetailPageLayout gridTemplateColumns={1}>
             <TopNav href={productUrl(productId)} title={header} />
             <DetailPageLayout.Content>
               <Grid variant="inverted">
@@ -203,6 +207,7 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
                   />
                   <CardSpacer />
                   <ProductDetailsChannelsAvailabilityCard
+                    disabled={disabled}
                     product={product}
                     onManageClick={toggleManageChannels}
                   />
@@ -271,7 +276,7 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
                   <CardSpacer />
                   <ProductVariantPrice
                     disabled={!product}
-                    ProductVariantChannelListings={data.channelListings.map(
+                    productVariantChannelListings={data.channelListings.map(
                       channel => ({
                         ...channel.data,
                         ...channel.value,
@@ -287,12 +292,10 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
                     disabled={disabled}
                     hasVariants={true}
                     onFormDataChange={change}
-                    formErrors={formErrors}
                     errors={errors}
                     stocks={data.stocks}
                     warehouses={warehouses}
                     onChange={handlers.changeStock}
-                    onChangePreorderEndDate={handlers.changePreorderEndDate}
                     onWarehouseStockAdd={handlers.addStock}
                     onWarehouseStockDelete={handlers.deleteStock}
                     onWarehouseConfigure={onWarehouseConfigure}
@@ -320,6 +323,9 @@ const ProductVariantCreatePage: React.FC<ProductVariantCreatePageProps> = ({
                   confirmButtonState={"default"}
                   products={referenceProducts}
                   pages={referencePages}
+                  attribute={data.attributes.find(
+                    ({ id }) => id === assignReferencesAttributeId,
+                  )}
                   hasMore={handlers.fetchMoreReferences?.hasMore}
                   open={canOpenAssignReferencesAttributeDialog}
                   onFetch={handlers.fetchReferences}

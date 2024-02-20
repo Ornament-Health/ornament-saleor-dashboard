@@ -3,7 +3,7 @@ import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { sectionNames } from "@dashboard/intl";
 import { ListProps } from "@dashboard/types";
-import { Box, sprinkles, Text } from "@saleor/macaw-ui/next";
+import { Box, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React, { useCallback } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -85,7 +85,7 @@ export const AppListPage: React.FC<AppListPageProps> = props => {
         <Box className={classes.appContent} marginY={5}>
           {nothingInstalled && (
             <Box paddingY={3}>
-              <Text as="h3" variant="heading" color="textNeutralSubdued">
+              <Text as="h3" variant="heading" color="default2">
                 {intl.formatMessage(messages.installedApps)}
               </Text>
               <Box marginTop={3}>
@@ -98,7 +98,7 @@ export const AppListPage: React.FC<AppListPageProps> = props => {
           {sectionsAvailability.installed && (
             <>
               <Box paddingX={5} paddingY={3}>
-                <Text as="h3" variant="heading" color="textNeutralSubdued">
+                <Text as="h3" variant="heading" color="default2">
                   {intl.formatMessage(messages.installedApps)}
                 </Text>
               </Box>
@@ -117,7 +117,7 @@ export const AppListPage: React.FC<AppListPageProps> = props => {
               <Text
                 as="h3"
                 variant="heading"
-                color="textNeutralSubdued"
+                color="default2"
                 className={sprinkles({ paddingX: 8 })}
               >
                 <FormattedMessage {...messages.allApps} />
@@ -135,7 +135,7 @@ export const AppListPage: React.FC<AppListPageProps> = props => {
               <Text
                 as="h3"
                 variant="heading"
-                color="textNeutralSubdued"
+                color="default2"
                 className={sprinkles({ paddingX: 8 })}
               >
                 {intl.formatMessage(messages.comingSoonApps)}

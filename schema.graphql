@@ -170,6 +170,9 @@ type AccountConfirmed implements Event {
 Remove user account. 
 
 Requires one of the following permissions: AUTHENTICATED_USER.
+
+Triggers the following webhook events:
+- ACCOUNT_DELETED (async): Account was deleted.
 """
 type AccountDelete {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -191,6 +194,77 @@ type AccountDeleteRequested implements Event {
 
   """The user or application that triggered the event."""
   issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The URL to redirect the user after he accepts the request."""
+  redirectUrl: String
+
+  """Shop data."""
+  shop: Shop
+
+  """The token required to confirm request."""
+  token: String
+
+  """The user the event relates to."""
+  user: User
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+Event sent when account is deleted.
+
+Added in Saleor 3.15.
+"""
+type AccountDeleted implements Event {
+  """The channel data."""
+  channel: Channel
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The URL to redirect the user after he accepts the request."""
+  redirectUrl: String
+
+  """Shop data."""
+  shop: Shop
+
+  """The token required to confirm request."""
+  token: String
+
+  """The user the event relates to."""
+  user: User
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+Event sent when account email is changed.
+
+Added in Saleor 3.15.
+"""
+type AccountEmailChanged implements Event {
+  """The channel data."""
+  channel: Channel
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The new email address."""
+  newEmail: String
 
   """The application receiving the webhook."""
   recipient: App
@@ -344,6 +418,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 
 Triggers the following webhook events:
 - NOTIFY_USER (async): A notification for account delete request.
+- ACCOUNT_DELETE_REQUESTED (async): An account delete requested.
 """
 type AccountRequestDeletion {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -364,6 +439,40 @@ type AccountSetDefaultAddress {
 
   """An updated user instance."""
   user: User
+}
+
+"""
+Event sent when setting a new password is requested.
+
+Added in Saleor 3.15.
+"""
+type AccountSetPasswordRequested implements Event {
+  """The channel data."""
+  channel: Channel
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The URL to redirect the user after he accepts the request."""
+  redirectUrl: String
+
+  """Shop data."""
+  shop: Shop
+
+  """The token required to confirm request."""
+  token: String
+
+  """The user the event relates to."""
+  user: User
+
+  """Saleor version that triggered the event."""
+  version: String
 }
 
 """
@@ -1813,69 +1922,12 @@ enum AttributeBulkCreateErrorCode {
   UNIQUE
 }
 
-input AttributeBulkCreateInput {
-  """The entity type which can be used as a reference."""
-  entityType: AttributeEntityTypeEnum
-
-  """External ID of this attribute."""
-  externalReference: String
-
-  """Whether the attribute can be filtered in dashboard."""
-  filterableInDashboard: Boolean
-
-  """The input type to use for entering attribute values in the dashboard."""
-  inputType: AttributeInputTypeEnum
-
-  """Whether the attribute is for variants only."""
-  isVariantOnly: Boolean
-
-  """Name of an attribute displayed in the interface."""
-  name: String!
-
-  """Internal representation of an attribute name."""
-  slug: String
-
-  """The attribute type."""
-  type: AttributeTypeEnum!
-
-  """The unit of attribute values."""
-  unit: MeasurementUnitsEnum
-
-  """Whether the attribute requires values to be passed or not."""
-  valueRequired: Boolean
-
-  """List of attribute's values."""
-  values: [AttributeBulkCreateValueInput!]
-
-  """Whether the attribute should be visible or not in storefront."""
-  visibleInStorefront: Boolean
-}
-
 type AttributeBulkCreateResult {
   """Attribute data."""
   attribute: Attribute
 
   """List of errors occurred on create attempt."""
   errors: [AttributeBulkCreateError!]
-}
-
-input AttributeBulkCreateValueInput {
-  """File content type."""
-  contentType: String
-
-  """External ID of this attribute value."""
-  externalReference: String
-
-  """URL of the file attribute. Every time, a new value is created."""
-  fileUrl: String
-
-  """Name of a value displayed in the interface."""
-  name: String!
-
-  """
-  Represent value of the attribute value (e.g. color values for swatch attributes).
-  """
-  value: String
 }
 
 """
@@ -1947,6 +1999,72 @@ type AttributeBulkTranslateResult {
   translation: AttributeTranslation
 }
 
+"""
+Updates attributes.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+
+Triggers the following webhook events:
+- ATTRIBUTE_UPDATED (async): An attribute was updated. Optionally called when new attribute value was created or deleted.
+- ATTRIBUTE_VALUE_CREATED (async): Called optionally when an attribute value was created.
+- ATTRIBUTE_VALUE_DELETED (async): Called optionally when an attribute value was deleted.
+"""
+type AttributeBulkUpdate {
+  """Returns how many objects were updated."""
+  count: Int!
+  errors: [AttributeBulkUpdateError!]!
+
+  """List of the updated attributes."""
+  results: [AttributeBulkUpdateResult!]!
+}
+
+type AttributeBulkUpdateError {
+  """The error code."""
+  code: AttributeBulkUpdateErrorCode!
+
+  """The error message."""
+  message: String
+
+  """
+  Path to field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  path: String
+}
+
+"""An enumeration."""
+enum AttributeBulkUpdateErrorCode {
+  ALREADY_EXISTS
+  BLANK
+  DUPLICATED_INPUT_ITEM
+  GRAPHQL_ERROR
+  INVALID
+  MAX_LENGTH
+  NOT_FOUND
+  REQUIRED
+  UNIQUE
+}
+
+input AttributeBulkUpdateInput {
+  """External ID of this attribute."""
+  externalReference: String
+
+  """Fields to update."""
+  fields: AttributeUpdateInput!
+
+  """ID of an attribute to update."""
+  id: ID
+}
+
+type AttributeBulkUpdateResult {
+  """Attribute data."""
+  attribute: Attribute
+
+  """List of errors occurred on update attempt."""
+  errors: [AttributeBulkUpdateError!]
+}
+
 enum AttributeChoicesSortField {
   """Sort attribute choice by name."""
   NAME
@@ -1993,6 +2111,11 @@ type AttributeCreate {
   errors: [AttributeError!]!
 }
 
+"""
+Represents an input for create of attribute.
+
+NOTE: Deprecated fields `filterableInStorefront`, `storefrontSearchPosition` and `availableInGrid` are not supported in bulk mutations: `attributeBulkCreate`, `attributeBulkUpdate`.
+"""
 input AttributeCreateInput {
   """
   Whether the attribute can be displayed in the admin product list.
@@ -2275,6 +2398,9 @@ input AttributeSortingInput {
   field: AttributeSortField!
 }
 
+"""
+Represents attribute's original translatable fields and related translations.
+"""
 type AttributeTranslatableContent implements Node {
   """Custom attribute of a product."""
   attribute: Attribute @deprecated(reason: "This field will be removed in Saleor 4.0. Get model fields from the root level queries.")
@@ -2311,6 +2437,7 @@ enum AttributeTranslateErrorCode {
   REQUIRED
 }
 
+"""Represents attribute translations."""
 type AttributeTranslation implements Node {
   """The ID of the attribute translation."""
   id: ID!
@@ -2350,6 +2477,11 @@ type AttributeUpdate {
   errors: [AttributeError!]!
 }
 
+"""
+Represents an input for update of attribute.
+
+NOTE: Deprecated fields `filterableInStorefront`, `storefrontSearchPosition` and `availableInGrid` are not supported in bulk mutations: `attributeBulkCreate`, `attributeBulkUpdate`.
+"""
 input AttributeUpdateInput {
   """New values to be created for this attribute."""
   addValues: [AttributeValueUpdateInput!]
@@ -2697,6 +2829,7 @@ type AttributeValueDeleted implements Event {
 input AttributeValueFilterInput {
   ids: [ID!]
   search: String
+  slugs: [String!]
 }
 
 input AttributeValueInput {
@@ -2794,6 +2927,9 @@ input AttributeValueSelectableTypeInput {
   value: String
 }
 
+"""
+Represents attribute value's original translatable fields and related translations.
+"""
 type AttributeValueTranslatableContent implements Node {
   """
   Associated attribute that can be translated.
@@ -2847,6 +2983,7 @@ enum AttributeValueTranslateErrorCode {
   REQUIRED
 }
 
+"""Represents attribute value translations."""
 type AttributeValueTranslation implements Node {
   """The ID of the attribute value translation."""
   id: ID!
@@ -3189,6 +3326,26 @@ input CatalogueInput {
   variants: [ID!]
 }
 
+input CataloguePredicateInput {
+  """List of conditions that must be met."""
+  AND: [CataloguePredicateInput!]
+
+  """A list of conditions of which at least one must be met."""
+  OR: [CataloguePredicateInput!]
+
+  """Defines the category conditions to be met."""
+  categoryPredicate: CategoryWhereInput
+
+  """Defines the collection conditions to be met."""
+  collectionPredicate: CollectionWhereInput
+
+  """Defines the product conditions to be met."""
+  productPredicate: ProductWhereInput
+
+  """Defines the product variant conditions to be met."""
+  variantPredicate: ProductVariantWhereInput
+}
+
 """
 Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront.
 """
@@ -3371,6 +3528,13 @@ type Category implements Node & ObjectWithMetadata {
     """A language code to return the translation for category."""
     languageCode: LanguageCodeEnum!
   ): CategoryTranslation
+
+  """
+  The date and time when the category was last updated.
+  
+  Added in Saleor 3.17.
+  """
+  updatedAt: DateTime!
 }
 
 """
@@ -3474,6 +3638,13 @@ input CategoryFilterInput {
   metadata: [MetadataFilter!]
   search: String
   slugs: [String!]
+
+  """
+  Filter by when was the most recent update. 
+  
+  Added in Saleor 3.17.
+  """
+  updatedAt: DateTimeRangeInput
 }
 
 input CategoryInput {
@@ -3540,6 +3711,9 @@ input CategorySortingInput {
   field: CategorySortField!
 }
 
+"""
+Represents category original translatable fields and related translations.
+"""
 type CategoryTranslatableContent implements Node {
   """Represents a single category of products."""
   category: Category @deprecated(reason: "This field will be removed in Saleor 4.0. Get model fields from the root level queries.")
@@ -3588,6 +3762,7 @@ type CategoryTranslate {
   translationErrors: [TranslationError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""Represents category translations."""
 type CategoryTranslation implements Node {
   """
   Translated description of the category.
@@ -3672,6 +3847,17 @@ type Channel implements Node & ObjectWithMetadata {
   availableShippingMethodsPerCountry(countries: [CountryCode!]): [ShippingMethodsPerCountry!]
 
   """
+  Channel-specific checkout settings.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  
+  Requires one of the following permissions: MANAGE_CHANNELS, MANAGE_CHECKOUTS.
+  """
+  checkoutSettings: CheckoutSettings!
+
+  """
   List of shippable countries for the channel.
   
   Added in Saleor 3.6.
@@ -3749,6 +3935,17 @@ type Channel implements Node & ObjectWithMetadata {
   Requires one of the following permissions: MANAGE_CHANNELS, MANAGE_ORDERS.
   """
   orderSettings: OrderSettings!
+
+  """
+  Channel-specific payment settings.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  
+  Requires one of the following permissions: MANAGE_CHANNELS, HANDLE_PAYMENTS.
+  """
+  paymentSettings: PaymentSettings!
 
   """
   List of private metadata items. Requires staff permissions to access.
@@ -3835,6 +4032,15 @@ input ChannelCreateInput {
   """
   addWarehouses: [ID!]
 
+  """
+  The channel checkout settings
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  checkoutSettings: CheckoutSettingsInput
+
   """Currency of the channel."""
   currencyCode: String!
 
@@ -3864,6 +4070,15 @@ input ChannelCreateInput {
   Added in Saleor 3.12.
   """
   orderSettings: OrderSettingsInput
+
+  """
+  The channel payment settings
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  paymentSettings: PaymentSettingsInput
 
   """
   Channel private metadata.
@@ -4068,7 +4283,9 @@ type ChannelStatusChanged implements Event {
 Update a channel.
 
 Requires one of the following permissions: MANAGE_CHANNELS.
-Requires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.
+Requires one of the following permissions when updating only `orderSettings` field: `MANAGE_CHANNELS`, `MANAGE_ORDERS`.
+Requires one of the following permissions when updating only `checkoutSettings` field: `MANAGE_CHANNELS`, `MANAGE_CHECKOUTS`.
+Requires one of the following permissions when updating only `paymentSettings` field: `MANAGE_CHANNELS`, `HANDLE_PAYMENTS`.
 
 Triggers the following webhook events:
 - CHANNEL_UPDATED (async): A channel was updated.
@@ -4090,6 +4307,15 @@ input ChannelUpdateInput {
   Added in Saleor 3.5.
   """
   addWarehouses: [ID!]
+
+  """
+  The channel checkout settings
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  checkoutSettings: CheckoutSettingsInput
 
   """
   Default country for the channel. Default country can be used in checkout to determine the stock quantities or calculate taxes when the country was not explicitly provided.
@@ -4117,6 +4343,15 @@ input ChannelUpdateInput {
   Added in Saleor 3.12.
   """
   orderSettings: OrderSettingsInput
+
+  """
+  The channel payment settings
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  paymentSettings: PaymentSettingsInput
 
   """
   Channel private metadata.
@@ -4247,7 +4482,7 @@ type Checkout implements Node & ObjectWithMetadata {
   discountName: String
 
   """
-  Determines whether checkout prices should include taxes when displayed in a storefront.
+  Determines whether displayed prices should include taxes.
   
   Added in Saleor 3.9.
   """
@@ -4315,6 +4550,15 @@ type Checkout implements Node & ObjectWithMetadata {
   """
   privateMetafields(keys: [String!]): Metadata
 
+  """
+  List of problems with the checkout.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  problems: [CheckoutProblem!]
+
   """The number of items purchased."""
   quantity: Int!
 
@@ -4353,6 +4597,18 @@ type Checkout implements Node & ObjectWithMetadata {
   Added in Saleor 3.1.
   """
   stockReservationExpires: DateTime
+
+  """
+  List of user's stored payment methods that can be used in this checkout session. It uses the channel that the checkout was created in. When `amount` is not provided, `checkout.total` will be used as a default value.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  storedPaymentMethods(
+    """Amount that will be used to fetch stored payment methods."""
+    amount: PositiveDecimal
+  ): [StoredPaymentMethod!]
 
   """
   The price of the checkout before shipping, with taxes included.
@@ -4413,8 +4669,19 @@ type Checkout implements Node & ObjectWithMetadata {
   """
   updatedAt: DateTime!
 
-  """The user assigned to the checkout."""
+  """
+  The user assigned to the checkout. Requires one of the following permissions: MANAGE_USERS, HANDLE_PAYMENTS, OWNER.
+  """
   user: User
+
+  """
+  The voucher assigned to the checkout.
+  
+  Added in Saleor 3.18.
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  """
+  voucher: Voucher
 
   """The code of voucher assigned to the checkout."""
   voucherCode: String
@@ -4509,7 +4776,7 @@ enum CheckoutChargeStatusEnum {
 }
 
 """
-Completes the checkout. As a result a new order is created and a payment charge is made. This action requires a successful payment before it can be performed. In case additional confirmation step as 3D secure is required confirmationNeeded flag will be set to True and no order created until payment is confirmed with second call of this mutation.
+Completes the checkout. As a result a new order is created. The mutation allows to create the unpaid order when setting `orderSettings.allowUnpaidOrders` for given `Channel` is set to `true`. When `orderSettings.allowUnpaidOrders` is set to `false`, checkout can be completed only when attached `Payment`/`TransactionItem`s fully cover the checkout's total. When processing the checkout with `Payment`, in case of required additional confirmation step like 3D secure, the `confirmationNeeded` flag will be set to True and no order will be created until payment is confirmed with second call of this mutation.
 
 Triggers the following webhook events:
 - SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Optionally triggered when cached external shipping methods are invalid.
@@ -4929,6 +5196,15 @@ type CheckoutLine implements Node & ObjectWithMetadata {
   """
   privateMetafields(keys: [String!]): Metadata
 
+  """
+  List of problems with the checkout line.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  problems: [CheckoutLineProblem!]
+
   """The quantity of product variant assigned to the checkout line."""
   quantity: Int!
 
@@ -5019,6 +5295,45 @@ input CheckoutLineInput {
 
   """ID of the product variant."""
   variantId: ID!
+}
+
+"""
+Represents an problem in the checkout line.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+union CheckoutLineProblem = CheckoutLineProblemInsufficientStock | CheckoutLineProblemVariantNotAvailable
+
+"""
+Indicates insufficient stock for a given checkout line.Placing the order will not be possible until solving this problem.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type CheckoutLineProblemInsufficientStock {
+  """Available quantity of a variant."""
+  availableQuantity: Int
+
+  """The line that has variant with insufficient stock."""
+  line: CheckoutLine!
+
+  """The variant with insufficient stock."""
+  variant: ProductVariant!
+}
+
+"""
+The variant assigned to the checkout line is not available.Placing the order will not be possible until solving this problem.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type CheckoutLineProblemVariantNotAvailable {
+  """The line that has variant that is not available."""
+  line: CheckoutLine!
 }
 
 input CheckoutLineUpdateInput {
@@ -5121,6 +5436,15 @@ type CheckoutPaymentCreate {
 }
 
 """
+Represents an problem in the checkout.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+union CheckoutProblem = CheckoutLineProblemInsufficientStock | CheckoutLineProblemVariantNotAvailable
+
+"""
 Remove a gift card or a voucher from a checkout.
 
 Triggers the following webhook events:
@@ -5131,6 +5455,33 @@ type CheckoutRemovePromoCode {
   checkout: Checkout
   checkoutErrors: [CheckoutError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [CheckoutError!]!
+}
+
+"""
+Represents the channel-specific checkout settings.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type CheckoutSettings {
+  """
+  Default `true`. Determines if the checkout mutations should use legacy error flow. In legacy flow, all mutations can raise an exception unrelated to the requested action - (e.g. out-of-stock exception when updating checkoutShippingAddress.) If `false`, the errors will be aggregated in `checkout.problems` field. Some of the `problems` can block the finalizing checkout process. The legacy flow will be removed in Saleor 4.0. The flow with `checkout.problems` will be the default one.
+  
+  Added in Saleor 3.15.This field will be removed in Saleor 4.0.
+  """
+  useLegacyErrorFlow: Boolean!
+}
+
+input CheckoutSettingsInput {
+  """
+  Default `true`. Determines if the checkout mutations should use legacy error flow. In legacy flow, all mutations can raise an exception unrelated to the requested action - (e.g. out-of-stock exception when updating checkoutShippingAddress.) If `false`, the errors will be aggregated in `checkout.problems` field. Some of the `problems` can block the finalizing checkout process. The legacy flow will be removed in Saleor 4.0. The flow with `checkout.problems` will be the default one. 
+  
+  Added in Saleor 3.15.
+  
+  DEPRECATED: this field will be removed in Saleor 4.0.
+  """
+  useLegacyErrorFlow: Boolean
 }
 
 """
@@ -5774,6 +6125,9 @@ input CollectionSortingInput {
   field: CollectionSortField!
 }
 
+"""
+Represents collection's original translatable fields and related translations.
+"""
 type CollectionTranslatableContent implements Node {
   """Represents a collection of products."""
   collection: Collection @deprecated(reason: "This field will be removed in Saleor 4.0. Get model fields from the root level queries.")
@@ -5822,6 +6176,7 @@ type CollectionTranslate {
   translationErrors: [TranslationError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""Represents collection translations."""
 type CollectionTranslation implements Node {
   """
   Translated description of the collection.
@@ -5958,6 +6313,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 Triggers the following webhook events:
 - CUSTOMER_UPDATED (async): A customer account was updated.
 - NOTIFY_USER (async): A notification that account email change was confirmed.
+- ACCOUNT_EMAIL_CHANGED (async): An account email was changed.
 """
 type ConfirmEmailChange {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -6385,6 +6741,7 @@ Triggers the following webhook events:
 - CUSTOMER_CREATED (async): A new customer account was created.
 - CUSTOMER_METADATA_UPDATED (async): Optionally called when customer's metadata was updated.
 - NOTIFY_USER (async): A notification for setting the password.
+- ACCOUNT_SET_PASSWORD_REQUESTED (async): Setting a new password for the account is requested.
 """
 type CustomerCreate {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -6627,6 +6984,24 @@ value as specified by
 [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
 """
 scalar DateTime
+
+"""
+Define the filtering options for date time fields.
+
+Added in Saleor 3.11.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+input DateTimeFilterInput {
+  """The value equal to."""
+  eq: DateTime
+
+  """The value included in."""
+  oneOf: [DateTime!]
+
+  """The value in range."""
+  range: DateTimeRangeInput
+}
 
 input DateTimeRangeInput {
   """Start date."""
@@ -6948,6 +7323,13 @@ type DiscountError {
 
   """List of products IDs which causes the error."""
   products: [ID!]
+
+  """
+  List of voucher codes which causes the error.
+  
+  Added in Saleor 3.18.
+  """
+  voucherCodes: [String!]
 }
 
 """An enumeration."""
@@ -6960,6 +7342,7 @@ enum DiscountErrorCode {
   NOT_FOUND
   REQUIRED
   UNIQUE
+  VOUCHER_ALREADY_USED
 }
 
 enum DiscountStatusEnum {
@@ -6985,7 +7368,7 @@ enum DistanceUnitsEnum {
   YD
 }
 
-"""Represents shop's domain."""
+"""Represents API domain."""
 type Domain {
   """The host name of the domain."""
   host: String!
@@ -6993,7 +7376,7 @@ type Domain {
   """Inform if SSL is enabled."""
   sslEnabled: Boolean!
 
-  """Shop's absolute URL."""
+  """The absolute URL of the API."""
   url: String!
 }
 
@@ -7075,6 +7458,13 @@ input DraftOrderCreateInput {
 
   """ID of the voucher associated with the order."""
   voucher: ID
+
+  """
+  A code of the voucher associated with the order.
+  
+  Added in Saleor 3.18.
+  """
+  voucherCode: String
 }
 
 """
@@ -7171,6 +7561,13 @@ input DraftOrderInput {
 
   """ID of the voucher associated with the order."""
   voucher: ID
+
+  """
+  A code of the voucher associated with the order.
+  
+  Added in Saleor 3.18.
+  """
+  voucherCode: String
 }
 
 """
@@ -7535,6 +7932,7 @@ Requires one of the following permissions: MANAGE_GIFT_CARD.
 
 Triggers the following webhook events:
 - NOTIFY_USER (async): A notification for the exported file.
+- GIFT_CARD_EXPORT_COMPLETED (async): A notification for the exported file.
 """
 type ExportGiftCards {
   errors: [ExportError!]!
@@ -7580,6 +7978,7 @@ Requires one of the following permissions: MANAGE_PRODUCTS.
 
 Triggers the following webhook events:
 - NOTIFY_USER (async): A notification for the exported file.
+- PRODUCT_EXPORT_COMPLETED (async): A notification for the exported file.
 """
 type ExportProducts {
   errors: [ExportError!]!
@@ -7617,6 +8016,40 @@ enum ExportScope {
 
   """Export products with given ids."""
   IDS
+}
+
+"""
+Export voucher codes to csv/xlsx file.
+
+Added in Saleor 3.18.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- VOUCHER_CODE_EXPORT_COMPLETED (async): A notification for the exported file.
+"""
+type ExportVoucherCodes {
+  errors: [ExportError!]!
+
+  """
+  The newly created export file job which is responsible for export data.
+  """
+  exportFile: ExportFile
+}
+
+input ExportVoucherCodesInput {
+  """Type of exported file."""
+  fileType: FileTypesEnum!
+
+  """List of voucher code IDs to export."""
+  ids: [ID!]
+
+  """
+  The ID of the voucher. If provided, exports all codes belonging to the voucher.
+  """
+  voucherId: ID
 }
 
 """External authentication plugin."""
@@ -7815,10 +8248,24 @@ type Fulfillment implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   privateMetafields(keys: [String!]): Metadata
+
+  """
+  Amount of refunded shipping price.
+  
+  Added in Saleor 3.14.
+  """
+  shippingRefundedAmount: Money
   status: FulfillmentStatus!
 
   """User-friendly fulfillment status."""
   statusDisplay: String
+
+  """
+  Total refunded amount assigned to this fulfillment.
+  
+  Added in Saleor 3.14.
+  """
+  totalRefundedAmount: Money
   trackingNumber: String!
 
   """Warehouse from fulfillment was fulfilled."""
@@ -7831,6 +8278,9 @@ Approve existing fulfillment.
 Added in Saleor 3.1. 
 
 Requires one of the following permissions: MANAGE_ORDERS.
+
+Triggers the following webhook events:
+- FULFILLMENT_APPROVED (async): Fulfillment is approved.
 """
 type FulfillmentApprove {
   errors: [OrderError!]!
@@ -7857,6 +8307,13 @@ type FulfillmentApproved implements Event {
 
   """The user or application that triggered the event."""
   issuingPrincipal: IssuingPrincipal
+
+  """
+  If true, send a notification to the customer.
+  
+  Added in Saleor 3.16.
+  """
+  notifyCustomer: Boolean!
 
   """The order the fulfillment belongs to."""
   order: Order
@@ -7930,6 +8387,13 @@ type FulfillmentCreated implements Event {
 
   """The user or application that triggered the event."""
   issuingPrincipal: IssuingPrincipal
+
+  """
+  If true, the app should send a notification to the customer.
+  
+  Added in Saleor 3.16.
+  """
+  notifyCustomer: Boolean!
 
   """The order the fulfillment belongs to."""
   order: Order
@@ -8023,9 +8487,37 @@ enum FulfillmentStatus {
 }
 
 """
+Event sent when the tracking number is updated.
+
+Added in Saleor 3.16.
+"""
+type FulfillmentTrackingNumberUpdated implements Event {
+  """The fulfillment the event relates to."""
+  fulfillment: Fulfillment
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The order the fulfillment belongs to."""
+  order: Order
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
 Updates a fulfillment for an order. 
 
 Requires one of the following permissions: MANAGE_ORDERS.
+
+Triggers the following webhook events:
+- FULFILLMENT_TRACKING_NUMBER_UPDATED (async): Fulfillment tracking number is updated.
 """
 type FulfillmentUpdateTracking {
   errors: [OrderError!]!
@@ -8083,7 +8575,9 @@ type GiftCard implements Node & ObjectWithMetadata {
   boughtInChannel: String
 
   """
-  Gift card code. Can be fetched by a staff member with MANAGE_GIFT_CARD when gift card wasn't yet used and by the gift card owner.
+  Gift card code. It can be fetched both by a staff member with 'MANAGE_GIFT_CARD' when gift card hasn't been used yet or a user who bought or issued the gift card.
+  
+  Requires one of the following permissions: MANAGE_GIFT_CARD, OWNER.
   """
   code: String!
   created: DateTime!
@@ -8619,6 +9113,28 @@ enum GiftCardEventsEnum {
   USED_IN_ORDER
 }
 
+"""
+Event sent when gift card export is completed.
+
+Added in Saleor 3.16.
+"""
+type GiftCardExportCompleted implements Event {
+  """The export file for gift cards."""
+  export: ExportFile
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
 input GiftCardFilterInput {
   code: String
   createdByEmail: String
@@ -9032,7 +9548,7 @@ type Invoice implements Job & Node & ObjectWithMetadata {
   createdAt: DateTime!
 
   """URL to view an invoice."""
-  externalUrl: String
+  externalUrl: String @deprecated(reason: "This field will be removed in Saleor 4.0. Use `url` field.This field will be removed in 4.0")
 
   """The ID of the object."""
   id: ID!
@@ -9094,7 +9610,9 @@ type Invoice implements Job & Node & ObjectWithMetadata {
   """Date and time at which invoice was updated."""
   updatedAt: DateTime!
 
-  """URL to download an invoice."""
+  """
+  URL to view/download an invoice. This can be an internal URL if the Invoicing Plugin was used or an external URL if it has been provided.
+  """
   url: String
 }
 
@@ -10156,6 +10674,35 @@ type Limits {
   warehouses: Int
 }
 
+"""
+List payment methods stored for the user by payment gateway.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type ListStoredPaymentMethods implements Event {
+  """
+  Channel in context which was used to fetch the list of payment methods.
+  """
+  channel: Channel!
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The user for which the app should return a list of payment methods."""
+  user: User!
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
 """The manifest definition."""
 type Manifest {
   """Description of the app displayed in the dashboard."""
@@ -10832,6 +11379,9 @@ input MenuItemSortingInput {
   field: MenuItemsSortField!
 }
 
+"""
+Represents menu item's original translatable fields and related translations.
+"""
 type MenuItemTranslatableContent implements Node {
   """The ID of the menu item translatable content."""
   id: ID!
@@ -10862,6 +11412,7 @@ type MenuItemTranslate {
   translationErrors: [TranslationError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""Represents menu item translations."""
 type MenuItemTranslation implements Node {
   """The ID of the menu item translation."""
   id: ID!
@@ -11121,6 +11672,9 @@ type Mutation {
   Remove user account. 
   
   Requires one of the following permissions: AUTHENTICATED_USER.
+  
+  Triggers the following webhook events:
+  - ACCOUNT_DELETED (async): Account was deleted.
   """
   accountDelete(
     """
@@ -11149,6 +11703,7 @@ type Mutation {
   
   Triggers the following webhook events:
   - NOTIFY_USER (async): A notification for account delete request.
+  - ACCOUNT_DELETE_REQUESTED (async): An account delete requested.
   """
   accountRequestDeletion(
     """
@@ -11429,8 +11984,8 @@ type Mutation {
   - ATTRIBUTE_CREATED (async): An attribute was created.
   """
   attributeBulkCreate(
-    """Input list of products to create."""
-    attributes: [AttributeBulkCreateInput!]!
+    """Input list of attributes to create."""
+    attributes: [AttributeCreateInput!]!
 
     """Policies of error handling. DEFAULT: REJECT_EVERYTHING"""
     errorPolicy: ErrorPolicyEnum
@@ -11465,6 +12020,26 @@ type Mutation {
     """List of attributes translations."""
     translations: [AttributeBulkTranslateInput!]!
   ): AttributeBulkTranslate
+
+  """
+  Updates attributes.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  
+  Triggers the following webhook events:
+  - ATTRIBUTE_UPDATED (async): An attribute was updated. Optionally called when new attribute value was created or deleted.
+  - ATTRIBUTE_VALUE_CREATED (async): Called optionally when an attribute value was created.
+  - ATTRIBUTE_VALUE_DELETED (async): Called optionally when an attribute value was deleted.
+  """
+  attributeBulkUpdate(
+    """Input list of attributes to update."""
+    attributes: [AttributeBulkUpdateInput!]!
+
+    """Policies of error handling. DEFAULT: REJECT_EVERYTHING"""
+    errorPolicy: ErrorPolicyEnum
+  ): AttributeBulkUpdate
 
   """
   Creates an attribute.
@@ -11522,6 +12097,8 @@ type Mutation {
   attributeTranslate(
     """Attribute ID or AttributeTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update attribute translations."""
     input: NameTranslationInput!
 
     """Translation language code."""
@@ -11628,6 +12205,8 @@ type Mutation {
   attributeValueTranslate(
     """AttributeValue ID or AttributeValueTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update attribute value translations."""
     input: AttributeValueTranslationInput!
 
     """Translation language code."""
@@ -11701,6 +12280,8 @@ type Mutation {
   categoryTranslate(
     """Category ID or CategoryTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update category translations."""
     input: TranslationInput!
 
     """Translation language code."""
@@ -11794,7 +12375,9 @@ type Mutation {
   Update a channel.
   
   Requires one of the following permissions: MANAGE_CHANNELS.
-  Requires one of the following permissions when updating only orderSettings field: MANAGE_CHANNELS, MANAGE_ORDERS.
+  Requires one of the following permissions when updating only `orderSettings` field: `MANAGE_CHANNELS`, `MANAGE_ORDERS`.
+  Requires one of the following permissions when updating only `checkoutSettings` field: `MANAGE_CHANNELS`, `MANAGE_CHECKOUTS`.
+  Requires one of the following permissions when updating only `paymentSettings` field: `MANAGE_CHANNELS`, `HANDLE_PAYMENTS`.
   
   Triggers the following webhook events:
   - CHANNEL_UPDATED (async): A channel was updated.
@@ -11880,7 +12463,7 @@ type Mutation {
   ): CheckoutBillingAddressUpdate
 
   """
-  Completes the checkout. As a result a new order is created and a payment charge is made. This action requires a successful payment before it can be performed. In case additional confirmation step as 3D secure is required confirmationNeeded flag will be set to True and no order created until payment is confirmed with second call of this mutation.
+  Completes the checkout. As a result a new order is created. The mutation allows to create the unpaid order when setting `orderSettings.allowUnpaidOrders` for given `Channel` is set to `true`. When `orderSettings.allowUnpaidOrders` is set to `false`, checkout can be completed only when attached `Payment`/`TransactionItem`s fully cover the checkout's total. When processing the checkout with `Payment`, in case of required additional confirmation step like 3D secure, the `confirmationNeeded` flag will be set to True and no order will be created until payment is confirmed with second call of this mutation.
   
   Triggers the following webhook events:
   - SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Optionally triggered when cached external shipping methods are invalid.
@@ -12470,6 +13053,8 @@ type Mutation {
   collectionTranslate(
     """Collection ID or CollectionTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update collection translations."""
     input: TranslationInput!
 
     """Translation language code."""
@@ -12511,6 +13096,7 @@ type Mutation {
   Triggers the following webhook events:
   - CUSTOMER_UPDATED (async): A customer account was updated.
   - NOTIFY_USER (async): A notification that account email change was confirmed.
+  - ACCOUNT_EMAIL_CHANGED (async): An account email was changed.
   """
   confirmEmailChange(
     """
@@ -12575,6 +13161,7 @@ type Mutation {
   - CUSTOMER_CREATED (async): A new customer account was created.
   - CUSTOMER_METADATA_UPDATED (async): Optionally called when customer's metadata was updated.
   - NOTIFY_USER (async): A notification for setting the password.
+  - ACCOUNT_SET_PASSWORD_REQUESTED (async): Setting a new password for the account is requested.
   """
   customerCreate(
     """Fields required to create a customer."""
@@ -12799,6 +13386,7 @@ type Mutation {
   
   Triggers the following webhook events:
   - NOTIFY_USER (async): A notification for the exported file.
+  - GIFT_CARD_EXPORT_COMPLETED (async): A notification for the exported file.
   """
   exportGiftCards(
     """Fields required to export gift cards data."""
@@ -12812,11 +13400,29 @@ type Mutation {
   
   Triggers the following webhook events:
   - NOTIFY_USER (async): A notification for the exported file.
+  - PRODUCT_EXPORT_COMPLETED (async): A notification for the exported file.
   """
   exportProducts(
     """Fields required to export product data."""
     input: ExportProductsInput!
   ): ExportProducts
+
+  """
+  Export voucher codes to csv/xlsx file.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - VOUCHER_CODE_EXPORT_COMPLETED (async): A notification for the exported file.
+  """
+  exportVoucherCodes(
+    """Fields required to export voucher codes."""
+    input: ExportVoucherCodesInput!
+  ): ExportVoucherCodes
 
   """Prepare external authentication URL for user by custom plugin."""
   externalAuthenticationUrl(
@@ -12852,7 +13458,7 @@ type Mutation {
 
     """The ID of notification plugin."""
     pluginId: String
-  ): ExternalNotificationTrigger
+  ): ExternalNotificationTrigger @deprecated(reason: "\n\nDEPRECATED: this mutation will be removed in Saleor 4.0.")
 
   """Obtain external access tokens for user by custom plugin."""
   externalObtainAccessTokens(
@@ -13249,6 +13855,8 @@ type Mutation {
   menuItemTranslate(
     """MenuItem ID or MenuItemTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update menu item translations."""
     input: NameTranslationInput!
 
     """Translation language code."""
@@ -13450,6 +14058,12 @@ type Mutation {
   Creates new fulfillments for an order. 
   
   Requires one of the following permissions: MANAGE_ORDERS.
+  
+  Triggers the following webhook events:
+  - FULFILLMENT_CREATED (async): A new fulfillment is created.
+  - ORDER_FULFILLED (async): Order is fulfilled.
+  - FULFILLMENT_TRACKING_NUMBER_UPDATED (async): Sent when fulfillment tracking number is updated.
+  - FULFILLMENT_APPROVED (async): A fulfillment is approved.
   """
   orderFulfill(
     """Fields required to create a fulfillment."""
@@ -13465,6 +14079,9 @@ type Mutation {
   Added in Saleor 3.1. 
   
   Requires one of the following permissions: MANAGE_ORDERS.
+  
+  Triggers the following webhook events:
+  - FULFILLMENT_APPROVED (async): Fulfillment is approved.
   """
   orderFulfillmentApprove(
     """True if stock could be exceeded."""
@@ -13520,6 +14137,9 @@ type Mutation {
   Updates a fulfillment for an order. 
   
   Requires one of the following permissions: MANAGE_ORDERS.
+  
+  Triggers the following webhook events:
+  - FULFILLMENT_TRACKING_NUMBER_UPDATED (async): Fulfillment tracking number is updated.
   """
   orderFulfillmentUpdateTracking(
     """ID of a fulfillment to update."""
@@ -13828,6 +14448,8 @@ type Mutation {
   pageTranslate(
     """Page ID or PageTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update page translations."""
     input: PageTranslationInput!
 
     """Translation language code."""
@@ -13955,6 +14577,29 @@ type Mutation {
     paymentGateways: [PaymentGatewayToInitialize!]
   ): PaymentGatewayInitialize
 
+  """
+  Initializes payment gateway for tokenizing payment method session.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: AUTHENTICATED_USER.
+  
+  Triggers the following webhook events:
+  - PAYMENT_GATEWAY_INITIALIZE_TOKENIZATION_SESSION (sync): The customer requested to initialize payment gateway for tokenization.
+  """
+  paymentGatewayInitializeTokenization(
+    """Slug of a channel related to tokenization request."""
+    channel: String!
+
+    """The data that will be passed to the payment gateway."""
+    data: JSON
+
+    """The identifier of the payment gateway app to initialize tokenization."""
+    id: String!
+  ): PaymentGatewayInitializeTokenization
+
   """Initializes payment process when it is required by gateway."""
   paymentInitialize(
     """Slug of a channel for which the data should be returned."""
@@ -13966,6 +14611,59 @@ type Mutation {
     """Client-side generated data required to initialize the payment."""
     paymentData: JSONString
   ): PaymentInitialize
+
+  """
+  Tokenize payment method.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: AUTHENTICATED_USER.
+  
+  Triggers the following webhook events:
+  - PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION (sync): The customer requested to tokenize payment method.
+  """
+  paymentMethodInitializeTokenization(
+    """Slug of a channel related to tokenization request."""
+    channel: String!
+
+    """The data that will be passed to the payment gateway."""
+    data: JSON
+
+    """
+    The identifier of the payment gateway app to initialize payment method tokenization.
+    """
+    id: String!
+
+    """The payment flow that the tokenized payment method should support."""
+    paymentFlowToSupport: TokenizedPaymentFlowEnum!
+  ): PaymentMethodInitializeTokenization
+
+  """
+  Tokenize payment method.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: AUTHENTICATED_USER.
+  
+  Triggers the following webhook events:
+  - PAYMENT_METHOD_PROCESS_TOKENIZATION_SESSION (sync): The customer continues payment method tokenization.
+  """
+  paymentMethodProcessTokenization(
+    """Slug of a channel related to tokenization request."""
+    channel: String!
+
+    """The data that will be passed to the payment gateway."""
+    data: JSON
+
+    """
+    The identifier of the payment gateway app to process payment method tokenization.
+    """
+    id: String!
+  ): PaymentMethodProcessTokenization
 
   """
   Refunds the captured payment amount. 
@@ -14257,6 +14955,8 @@ type Mutation {
   productTranslate(
     """Product ID or ProductTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update product translations."""
     input: TranslationInput!
 
     """Translation language code."""
@@ -14585,6 +15285,8 @@ type Mutation {
   productVariantTranslate(
     """ProductVariant ID or ProductVariantTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update product variant translations."""
     input: NameTranslationInput!
 
     """Translation language code."""
@@ -14619,12 +15321,177 @@ type Mutation {
   ): ProductVariantUpdate
 
   """
+  Deletes promotions.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_DELETED (async): A promotion was deleted.
+  """
+  promotionBulkDelete(
+    """List of promotion IDs to delete."""
+    ids: [ID!]!
+  ): PromotionBulkDelete
+
+  """
+  Creates a new promotion.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_CREATED (async): A promotion was created.
+  - PROMOTION_STARTED (async): Optionally called if promotion was started.
+  """
+  promotionCreate(
+    """Fields requires to create a promotion."""
+    input: PromotionCreateInput!
+  ): PromotionCreate
+
+  """
+  Deletes a promotion.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_DELETED (async): A promotion was deleted.
+  """
+  promotionDelete(
+    """The ID of the promotion to remove."""
+    id: ID!
+  ): PromotionDelete
+
+  """
+  Creates a new promotion rule.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_RULE_CREATED (async): A promotion rule was created.
+  """
+  promotionRuleCreate(
+    """Fields required to create a promotion rule."""
+    input: PromotionRuleCreateInput!
+  ): PromotionRuleCreate
+
+  """
+  Deletes a promotion rule.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_RULE_DELETED (async): A promotion rule was deleted.
+  """
+  promotionRuleDelete(
+    """The ID of the promotion to remove."""
+    id: ID!
+  ): PromotionRuleDelete
+
+  """
+  Creates/updates translations for a promotion rule.
+  
+  Added in Saleor 3.17. 
+  
+  Requires one of the following permissions: MANAGE_TRANSLATIONS.
+  """
+  promotionRuleTranslate(
+    """PromotionRule ID or PromotionRuleTranslatableContent ID."""
+    id: ID!
+
+    """Fields required to update promotion rule translations."""
+    input: PromotionRuleTranslationInput!
+
+    """Translation language code."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionRuleTranslate
+
+  """
+  Updates an existing promotion rule.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_RULE_UPDATED (async): A promotion rule was updated.
+  """
+  promotionRuleUpdate(
+    """ID of the promotion rule to update."""
+    id: ID!
+
+    """Fields required to create a promotion rule."""
+    input: PromotionRuleUpdateInput!
+  ): PromotionRuleUpdate
+
+  """
+  Creates/updates translations for a promotion.
+  
+  Added in Saleor 3.17. 
+  
+  Requires one of the following permissions: MANAGE_TRANSLATIONS.
+  """
+  promotionTranslate(
+    """Promotion ID or PromotionTranslatableContent ID."""
+    id: ID!
+
+    """Fields required to update promotion translations."""
+    input: PromotionTranslationInput!
+
+    """Translation language code."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionTranslate
+
+  """
+  Updates an existing promotion.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - PROMOTION_UPDATED (async): A promotion was updated.
+  - PROMOTION_STARTED (async): Optionally called if promotion was started.
+  - PROMOTION_ENDED (async): Optionally called if promotion was ended.
+  """
+  promotionUpdate(
+    """ID of the promotion to update."""
+    id: ID!
+
+    """Fields required to update a promotion."""
+    input: PromotionUpdateInput!
+  ): PromotionUpdate
+
+  """
   Request email change of the logged in user. 
   
   Requires one of the following permissions: AUTHENTICATED_USER.
   
   Triggers the following webhook events:
   - NOTIFY_USER (async): A notification for account email change.
+  - ACCOUNT_CHANGE_EMAIL_REQUESTED (async): An account email change was requested.
   """
   requestEmailChange(
     """
@@ -14649,6 +15516,8 @@ type Mutation {
   
   Triggers the following webhook events:
   - NOTIFY_USER (async): A notification for password reset.
+  - ACCOUNT_SET_PASSWORD_REQUESTED (async): Setting a new password for the account is requested.
+  - STAFF_SET_PASSWORD_REQUESTED (async): Setting a new password for the staff account is requested.
   """
   requestPasswordReset(
     """
@@ -14679,7 +15548,9 @@ type Mutation {
   ): SaleBulkDelete
 
   """
-  Adds products, categories, collections to a voucher. 
+  Adds products, categories, collections to a sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleCreate` mutation instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   
@@ -14695,7 +15566,9 @@ type Mutation {
   ): SaleAddCatalogues
 
   """
-  Removes products, categories, collections from a sale. 
+  Removes products, categories, collections from a sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleUpdate` or `promotionRuleDelete` mutations instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   
@@ -14711,7 +15584,9 @@ type Mutation {
   ): SaleRemoveCatalogues
 
   """
-  Manage sale's availability in channels. 
+  Manage sale's availability in channels.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleCreate` or `promotionRuleUpdate` mutations instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   """
@@ -14724,7 +15599,9 @@ type Mutation {
   ): SaleChannelListingUpdate
 
   """
-  Creates a new sale. 
+  Creates a new sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionCreate` mutation instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   
@@ -14737,7 +15614,9 @@ type Mutation {
   ): SaleCreate
 
   """
-  Deletes a sale. 
+  Deletes a sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionDelete` mutation instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   
@@ -14750,13 +15629,17 @@ type Mutation {
   ): SaleDelete
 
   """
-  Creates/updates translations for a sale. 
+  Creates/updates translations for a sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `PromotionTranslate` mutation instead. 
   
   Requires one of the following permissions: MANAGE_TRANSLATIONS.
   """
   saleTranslate(
     """Sale ID or SaleTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update sale translations."""
     input: NameTranslationInput!
 
     """Translation language code."""
@@ -14764,7 +15647,9 @@ type Mutation {
   ): SaleTranslate
 
   """
-  Updates a sale. 
+  Updates a sale.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionUpdate` mutation instead. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
   
@@ -14892,6 +15777,8 @@ type Mutation {
   shippingPriceTranslate(
     """ShippingMethodType ID or ShippingMethodTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update shipping price translations."""
     input: ShippingPriceTranslationInput!
 
     """Translation language code."""
@@ -14965,14 +15852,16 @@ type Mutation {
   ): ShopAddressUpdate
 
   """
-  Updates site domain of the shop. 
+  Updates site domain of the shop.
+  
+  DEPRECATED: this mutation will be removed in Saleor 4.0. Use `PUBLIC_URL` environment variable instead. 
   
   Requires one of the following permissions: MANAGE_SETTINGS.
   """
   shopDomainUpdate(
     """Fields required to update site."""
     input: SiteDomainInput
-  ): ShopDomainUpdate
+  ): ShopDomainUpdate @deprecated(reason: "\n\nDEPRECATED: this mutation will be removed in Saleor 4.0. Use `PUBLIC_URL` environment variable instead.")
 
   """
   Fetch tax rates. 
@@ -15028,6 +15917,7 @@ type Mutation {
   Triggers the following webhook events:
   - STAFF_CREATED (async): A new staff account was created.
   - NOTIFY_USER (async): A notification for setting the password.
+  - STAFF_SET_PASSWORD_REQUESTED (async): Setting a new password for the staff account is requested.
   """
   staffCreate(
     """Fields required to create a staff user."""
@@ -15104,6 +15994,9 @@ type Mutation {
   Note: this API is currently in Feature Preview and can be subject to changes at later point. 
   
   Requires one of the following permissions: MANAGE_PRODUCTS.
+  
+  Triggers the following webhook events:
+  - PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.
   """
   stockBulkUpdate(
     """Policies of error handling. DEFAULT: REJECT_EVERYTHING"""
@@ -15112,6 +16005,26 @@ type Mutation {
     """Input list of stocks to update."""
     stocks: [StockBulkUpdateInput!]!
   ): StockBulkUpdate
+
+  """
+  Request to delete a stored payment method on payment provider side.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+  
+  Requires one of the following permissions: AUTHENTICATED_USER.
+  
+  Triggers the following webhook events:
+  - STORED_PAYMENT_METHOD_DELETE_REQUESTED (sync): The customer requested to delete a payment method.
+  """
+  storedPaymentMethodRequestDelete(
+    """Slug of a channel related to delete request."""
+    channel: String!
+
+    """The ID of the payment method."""
+    id: ID!
+  ): StoredPaymentMethodRequestDelete
 
   """
   Create a tax class.
@@ -15321,7 +16234,7 @@ type Mutation {
   """
   transactionInitialize(
     """
-    The expected action called for the transaction. By default, the `channel.defaultTransactionFlowStrategy` will be used. The field can be used only by app that has `HANDLE_PAYMENTS` permission.
+    The expected action called for the transaction. By default, the `channel.paymentSettings.defaultTransactionFlowStrategy` will be used.The field can be used only by app that has `HANDLE_PAYMENTS` permission.
     """
     action: TransactionFlowStrategyEnum
 
@@ -15329,6 +16242,13 @@ type Mutation {
     The amount requested for initializing the payment gateway. If not provided, the difference between checkout.total - transactions that are already processed will be send.
     """
     amount: PositiveDecimal
+
+    """
+    The customer's IP address. If not provided Saleor will try to determine the customer's IP address on its own. The customer's IP address will be passed to the payment app. The IP should be in ipv4 or ipv6 format. The field can be used only by an app that has `HANDLE_PAYMENTS` permission.
+    
+    Added in Saleor 3.16.
+    """
+    customerIpAddress: String
 
     """The ID of the checkout or order."""
     id: ID!
@@ -15345,6 +16265,13 @@ type Mutation {
   Note: this API is currently in Feature Preview and can be subject to changes at later point.
   """
   transactionProcess(
+    """
+    The customer's IP address. If not provided Saleor will try to determine the customer's IP address on its own. The customer's IP address will be passed to the payment app. The IP should be in ipv4 or ipv6 format. The field can be used only by an app that has `HANDLE_PAYMENTS` permission.
+    
+    Added in Saleor 3.16.
+    """
+    customerIpAddress: String
+
     """The data that will be passed to the payment gateway."""
     data: JSON
 
@@ -15452,8 +16379,15 @@ type Mutation {
   Requires one of the following permissions: MANAGE_PRODUCTS.
   """
   updateWarehouse(
+    """
+    External reference of a warehouse.
+    
+    Added in Saleor 3.16.
+    """
+    externalReference: String
+
     """ID of a warehouse to update."""
-    id: ID!
+    id: ID
 
     """Fields required to update warehouse."""
     input: WarehouseUpdateInput!
@@ -15577,6 +16511,21 @@ type Mutation {
   ): VoucherChannelListingUpdate
 
   """
+  Deletes voucher codes.
+  
+  Added in Saleor 3.18. 
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  
+  Triggers the following webhook events:
+  - VOUCHER_UPDATED (async): A voucher was updated.
+  """
+  voucherCodeBulkDelete(
+    """List of voucher codes IDs to delete."""
+    ids: [ID!]!
+  ): VoucherCodeBulkDelete
+
+  """
   Creates a new voucher. 
   
   Requires one of the following permissions: MANAGE_DISCOUNTS.
@@ -15610,6 +16559,8 @@ type Mutation {
   voucherTranslate(
     """Voucher ID or VoucherTranslatableContent ID."""
     id: ID!
+
+    """Fields required to update voucher translations."""
     input: NameTranslationInput!
 
     """Translation language code."""
@@ -15819,7 +16770,7 @@ type Order implements Node & ObjectWithMetadata {
   discounts: [OrderDiscount!]!
 
   """
-  Determines whether checkout prices should include taxes when displayed in a storefront.
+  Determines whether displayed prices should include taxes.
   
   Added in Saleor 3.9.
   """
@@ -16119,7 +17070,7 @@ type Order implements Node & ObjectWithMetadata {
   updatedAt: DateTime!
 
   """
-  User who placed the order. This field is set only for orders placed by authenticated users. Can be fetched for orders created in Saleor 3.2 and later, for other orders requires one of the following permissions: MANAGE_USERS, MANAGE_ORDERS, OWNER.
+  User who placed the order. This field is set only for orders placed by authenticated users. Can be fetched for orders created in Saleor 3.2 and later, for other orders requires one of the following permissions: MANAGE_USERS, MANAGE_ORDERS, HANDLE_PAYMENTS, OWNER.
   """
   user: User
 
@@ -16128,6 +17079,13 @@ type Order implements Node & ObjectWithMetadata {
   """
   userEmail: String
   voucher: Voucher
+
+  """
+  Voucher code that was used for Order.
+  
+  Added in Saleor 3.18.
+  """
+  voucherCode: String
   weight: Weight!
 }
 
@@ -16342,9 +17300,7 @@ input OrderBulkCreateInput {
   """List of discounts."""
   discounts: [OrderDiscountCommonInput!]
 
-  """
-  Determines whether checkout prices should include taxes, when displayed in a storefront.
-  """
+  """Determines whether displayed prices should include taxes."""
   displayGrossPrices: Boolean
 
   """External ID of the order."""
@@ -16391,8 +17347,19 @@ input OrderBulkCreateInput {
   """Customer associated with the order."""
   user: OrderBulkCreateUserInput!
 
-  """Code of a voucher associated with the order."""
+  """
+  Code of a voucher associated with the order.
+  
+  DEPRECATED: this field will be removed in Saleor 3.19. Use `voucherCode` instead.
+  """
   voucher: String
+
+  """
+  Code of a voucher associated with the order.
+  
+  Added in Saleor 3.18.
+  """
+  voucherCode: String
 
   """Weight of the order in kg."""
   weight: WeightScalar
@@ -16832,6 +17799,7 @@ type OrderDiscountDelete {
 """An enumeration."""
 enum OrderDiscountType {
   MANUAL
+  PROMOTION
   SALE
   VOUCHER
 }
@@ -16900,6 +17868,8 @@ enum OrderErrorCode {
   INSUFFICIENT_STOCK
   INVALID
   INVALID_QUANTITY
+  INVALID_VOUCHER
+  INVALID_VOUCHER_CODE
   NOT_AVAILABLE_IN_CHANNEL
   NOT_EDITABLE
   NOT_FOUND
@@ -17200,6 +18170,12 @@ type OrderFilterShippingMethods implements Event {
 Creates new fulfillments for an order. 
 
 Requires one of the following permissions: MANAGE_ORDERS.
+
+Triggers the following webhook events:
+- FULFILLMENT_CREATED (async): A new fulfillment is created.
+- ORDER_FULFILLED (async): Order is fulfilled.
+- FULFILLMENT_TRACKING_NUMBER_UPDATED (async): Sent when fulfillment tracking number is updated.
+- FULFILLMENT_APPROVED (async): A fulfillment is approved.
 """
 type OrderFulfill {
   errors: [OrderError!]!
@@ -17695,6 +18671,13 @@ type OrderLine implements Node & ObjectWithMetadata {
   quantityToFulfill: Int!
 
   """
+  Denormalized sale ID, set when order line is created for a product variant that is on sale.
+  
+  Added in Saleor 3.14.
+  """
+  saleId: ID
+
+  """
   Denormalized tax class of the product in this order line.
   
   Added in Saleor 3.9.
@@ -17747,6 +18730,9 @@ type OrderLine implements Node & ObjectWithMetadata {
   """Variant name in the customer's language"""
   translatedVariantName: String!
 
+  """Price of the order line without discounts."""
+  undiscountedTotalPrice: TaxedMoney!
+
   """
   Price of the single item in the order line without applied an order line discount.
   """
@@ -17770,6 +18756,13 @@ type OrderLine implements Node & ObjectWithMetadata {
   """
   variant: ProductVariant
   variantName: String!
+
+  """
+  Voucher code that was used for this order line.
+  
+  Added in Saleor 3.14.
+  """
+  voucherCode: String
 }
 
 input OrderLineCreateInput {
@@ -18162,15 +19155,6 @@ type OrderSettings {
   automaticallyFulfillNonShippableGiftCard: Boolean!
 
   """
-  Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
-  
-  Added in Saleor 3.13.
-  
-  Note: this API is currently in Feature Preview and can be subject to changes at later point.
-  """
-  defaultTransactionFlowStrategy: TransactionFlowStrategyEnum!
-
-  """
   The time in days after expired orders will be deleted.
   
   Added in Saleor 3.14.
@@ -18187,6 +19171,15 @@ type OrderSettings {
   Note: this API is currently in Feature Preview and can be subject to changes at later point.
   """
   expireOrdersAfter: Minute
+
+  """
+  Determine if voucher applied on draft order should be count toward voucher usage.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  includeDraftOrderInVoucherUsage: Boolean!
 
   """
   Determine what strategy will be used to mark the order as paid. Based on the chosen option, the proper object will be created and attached to the order when it's manually marked as paid.
@@ -18220,7 +19213,7 @@ enum OrderSettingsErrorCode {
 
 input OrderSettingsInput {
   """
-  Determine if it is possible to place unpdaid order by calling `checkoutComplete` mutation.
+  Determine if it is possible to place unpaid order by calling `checkoutComplete` mutation.
   
   Added in Saleor 3.15.
   
@@ -18239,15 +19232,6 @@ input OrderSettingsInput {
   automaticallyFulfillNonShippableGiftCard: Boolean
 
   """
-  Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
-  
-  Added in Saleor 3.13.
-  
-  Note: this API is currently in Feature Preview and can be subject to changes at later point.
-  """
-  defaultTransactionFlowStrategy: TransactionFlowStrategyEnum
-
-  """
   The time in days after expired orders will be deleted.Allowed range is from 1 to 120.
   
   Added in Saleor 3.14.
@@ -18264,6 +19248,17 @@ input OrderSettingsInput {
   Note: this API is currently in Feature Preview and can be subject to changes at later point.
   """
   expireOrdersAfter: Minute
+
+  """
+  Specify whether a coupon applied to draft orders will count toward voucher usage.
+  
+  Warning:  when switching this setting from `false` to `true`, the vouchers will be disconnected from all draft orders.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  includeDraftOrderInVoucherUsage: Boolean
 
   """
   Determine what strategy will be used to mark the order as paid. Based on the chosen option, the proper object will be created and attached to the order when it's manually marked as paid.
@@ -18297,7 +19292,7 @@ input OrderSettingsUpdateInput {
   automaticallyConfirmAllNewOrders: Boolean
 
   """
-  When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True.
+  When enabled, all non-shippable gift card orders will be fulfilled automatically. By default set to True.
   """
   automaticallyFulfillNonShippableGiftCard: Boolean
 }
@@ -18473,8 +19468,14 @@ type Page implements Node & ObjectWithMetadata {
   Rich text format. For reference see https://editorjs.io/
   """
   contentJson: JSONString! @deprecated(reason: "This field will be removed in Saleor 4.0. Use the `content` field instead.")
+
+  """Date and time at which page was created."""
   created: DateTime!
+
+  """ID of the page."""
   id: ID!
+
+  """Determines if the page is published."""
   isPublished: Boolean!
 
   """List of public metadata items. Can be accessed without permissions."""
@@ -18495,6 +19496,8 @@ type Page implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   metafields(keys: [String!]): Metadata
+
+  """Determines the type of page"""
   pageType: PageType!
 
   """List of private metadata items. Requires staff permissions to access."""
@@ -18523,9 +19526,17 @@ type Page implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   publishedAt: DateTime
+
+  """Description of the page for SEO."""
   seoDescription: String
+
+  """Title of the page for SEO."""
   seoTitle: String
+
+  """Slug of the page."""
   slug: String!
+
+  """Title of the page."""
   title: String!
 
   """Returns translated page fields for the given language code."""
@@ -18863,6 +19874,9 @@ input PageSortingInput {
   field: PageSortField!
 }
 
+"""
+Represents page's original translatable fields and related translations.
+"""
 type PageTranslatableContent implements Node {
   """List of page content attribute values that can be translated."""
   attributeValues: [AttributeValueTranslatableContent!]!
@@ -18916,6 +19930,7 @@ type PageTranslate {
   translationErrors: [TranslationError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""Represents page translations."""
 type PageTranslation implements Node {
   """
   Translated content of the page.
@@ -18997,6 +20012,8 @@ type PageType implements Node & ObjectWithMetadata {
   Requires one of the following permissions: MANAGE_PAGES, MANAGE_PAGE_TYPES_AND_ATTRIBUTES.
   """
   hasPages: Boolean
+
+  """ID of the page type."""
   id: ID!
 
   """List of public metadata items. Can be accessed without permissions."""
@@ -19017,6 +20034,8 @@ type PageType implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   metafields(keys: [String!]): Metadata
+
+  """Name of the page type."""
   name: String!
 
   """List of private metadata items. Requires staff permissions to access."""
@@ -19037,6 +20056,8 @@ type PageType implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   privateMetafields(keys: [String!]): Metadata
+
+  """Slug of the page type."""
   slug: String!
 }
 
@@ -19302,7 +20323,11 @@ type Payment implements Node & ObjectWithMetadata {
 
   """Internal payment status."""
   chargeStatus: PaymentChargeStatusEnum!
+
+  """Checkout associated with a payment."""
   checkout: Checkout
+
+  """Date and time at which payment was created."""
   created: DateTime!
 
   """The details of the card used for this payment."""
@@ -19314,8 +20339,14 @@ type Payment implements Node & ObjectWithMetadata {
   Requires one of the following permissions: MANAGE_ORDERS.
   """
   customerIpAddress: String
+
+  """Payment gateway used for payment."""
   gateway: String!
+
+  """ID of the payment."""
   id: ID!
+
+  """Determines if the payment is active or not."""
   isActive: Boolean!
 
   """List of public metadata items. Can be accessed without permissions."""
@@ -19336,8 +20367,21 @@ type Payment implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   metafields(keys: [String!]): Metadata
+
+  """Date and time at which payment was modified."""
   modified: DateTime!
+
+  """Order associated with a payment."""
   order: Order
+
+  """
+  Informs whether this is a partial payment.
+  
+  Added in Saleor 3.14.
+  """
+  partial: Boolean!
+
+  """Type of method used for payment."""
   paymentMethodType: String!
 
   """List of private metadata items. Requires staff permissions to access."""
@@ -19358,6 +20402,15 @@ type Payment implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   privateMetafields(keys: [String!]): Metadata
+
+  """
+  PSP reference of the payment.
+  
+  Added in Saleor 3.14.
+  """
+  pspReference: String
+
+  """Unique token associated with a payment."""
   token: String!
 
   """Total amount of the payment."""
@@ -19605,6 +20658,8 @@ Note: this API is currently in Feature Preview and can be subject to changes at 
 """
 type PaymentGatewayInitialize {
   errors: [PaymentGatewayInitializeError!]!
+
+  """List of payment gateway configurations."""
   gatewayConfigs: [PaymentGatewayConfig!]
 }
 
@@ -19639,7 +20694,7 @@ type PaymentGatewayInitializeSession implements Event {
   """Amount requested for initializing the payment gateway."""
   amount: PositiveDecimal
 
-  """Payment gateway data in JSON format, recieved from storefront."""
+  """Payment gateway data in JSON format, received from storefront."""
   data: JSON
 
   """Time of the event."""
@@ -19658,6 +20713,94 @@ type PaymentGatewayInitializeSession implements Event {
   version: String
 }
 
+"""
+Initializes payment gateway for tokenizing payment method session.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: AUTHENTICATED_USER.
+
+Triggers the following webhook events:
+- PAYMENT_GATEWAY_INITIALIZE_TOKENIZATION_SESSION (sync): The customer requested to initialize payment gateway for tokenization.
+"""
+type PaymentGatewayInitializeTokenization {
+  """A data returned by payment app."""
+  data: JSON
+  errors: [PaymentGatewayInitializeTokenizationError!]!
+
+  """A status of the payment gateway initialization."""
+  result: PaymentGatewayInitializeTokenizationResult!
+}
+
+type PaymentGatewayInitializeTokenizationError {
+  """The error code."""
+  code: PaymentGatewayInitializeTokenizationErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PaymentGatewayInitializeTokenizationErrorCode {
+  CHANNEL_INACTIVE
+  GATEWAY_ERROR
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+}
+
+"""
+Result of initialize payment gateway for tokenization of payment method.
+
+    The result of initialize payment gateway for tokenization of payment method.
+    SUCCESSFULLY_INITIALIZED - The payment gateway was successfully initialized.
+    FAILED_TO_INITIALIZE - The payment gateway was not initialized.
+    FAILED_TO_DELIVER - The request to initialize payment gateway was not delivered.
+    
+"""
+enum PaymentGatewayInitializeTokenizationResult {
+  FAILED_TO_DELIVER
+  FAILED_TO_INITIALIZE
+  SUCCESSFULLY_INITIALIZED
+}
+
+"""
+Event sent to initialize a new session in payment gateway to store the payment method. 
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PaymentGatewayInitializeTokenizationSession implements Event {
+  """Channel related to the requested action."""
+  channel: Channel!
+
+  """Payment gateway data in JSON format, received from storefront."""
+  data: JSON
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The user related to the requested action."""
+  user: User!
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
 input PaymentGatewayToInitialize {
   """The data that will be passed to the payment gateway."""
   data: JSON
@@ -19669,6 +20812,8 @@ input PaymentGatewayToInitialize {
 """Initializes payment process when it is required by gateway."""
 type PaymentInitialize {
   errors: [PaymentError!]!
+
+  """Payment that was initialized."""
   initializedPayment: PaymentInitialized
   paymentErrors: [PaymentError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
@@ -19744,6 +20889,198 @@ type PaymentListGateways implements Event {
 }
 
 """
+Tokenize payment method.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: AUTHENTICATED_USER.
+
+Triggers the following webhook events:
+- PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION (sync): The customer requested to tokenize payment method.
+"""
+type PaymentMethodInitializeTokenization {
+  """A data returned by the payment app."""
+  data: JSON
+  errors: [PaymentMethodInitializeTokenizationError!]!
+
+  """The identifier of the payment method."""
+  id: String
+
+  """A status of the payment method tokenization."""
+  result: PaymentMethodTokenizationResult!
+}
+
+type PaymentMethodInitializeTokenizationError {
+  """The error code."""
+  code: PaymentMethodInitializeTokenizationErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PaymentMethodInitializeTokenizationErrorCode {
+  CHANNEL_INACTIVE
+  GATEWAY_ERROR
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+}
+
+"""
+Event sent when user requests a tokenization of payment method.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PaymentMethodInitializeTokenizationSession implements Event {
+  """Channel related to the requested action."""
+  channel: Channel!
+
+  """Payment gateway data in JSON format, received from storefront."""
+  data: JSON
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The payment flow that the tokenized payment method should support."""
+  paymentFlowToSupport: TokenizedPaymentFlowEnum!
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The user related to the requested action."""
+  user: User!
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+Tokenize payment method.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: AUTHENTICATED_USER.
+
+Triggers the following webhook events:
+- PAYMENT_METHOD_PROCESS_TOKENIZATION_SESSION (sync): The customer continues payment method tokenization.
+"""
+type PaymentMethodProcessTokenization {
+  """A data returned by the payment app."""
+  data: JSON
+  errors: [PaymentMethodProcessTokenizationError!]!
+
+  """The identifier of the payment method."""
+  id: String
+
+  """A status of the payment method tokenization."""
+  result: PaymentMethodTokenizationResult!
+}
+
+type PaymentMethodProcessTokenizationError {
+  """The error code."""
+  code: PaymentMethodProcessTokenizationErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PaymentMethodProcessTokenizationErrorCode {
+  CHANNEL_INACTIVE
+  GATEWAY_ERROR
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+}
+
+"""
+Event sent when user continues a tokenization of payment method.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PaymentMethodProcessTokenizationSession implements Event {
+  """Channel related to the requested action."""
+  channel: Channel!
+
+  """Payment gateway data in JSON format, received from storefront."""
+  data: JSON
+
+  """
+  The ID returned by app from `PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION` webhook.
+  """
+  id: String!
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The user related to the requested action."""
+  user: User!
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+type PaymentMethodRequestDeleteError {
+  """The error code."""
+  code: StoredPaymentMethodRequestDeleteErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""
+Result of tokenization of payment method.
+
+    SUCCESSFULLY_TOKENIZED - The payment method was successfully tokenized.
+    ADDITIONAL_ACTION_REQUIRED - The additional action is required to tokenize payment
+    method.
+    PENDING - The payment method is pending tokenization.
+    FAILED_TO_TOKENIZE - The payment method was not tokenized.
+    FAILED_TO_DELIVER - The request to tokenize payment method was not delivered.
+    
+"""
+enum PaymentMethodTokenizationResult {
+  ADDITIONAL_ACTION_REQUIRED
+  FAILED_TO_DELIVER
+  FAILED_TO_TOKENIZE
+  PENDING
+  SUCCESSFULLY_TOKENIZED
+}
+
+"""
 Process payment.
 
 Added in Saleor 3.6.
@@ -19798,6 +21135,29 @@ type PaymentRefundEvent implements Event {
 
   """Saleor version that triggered the event."""
   version: String
+}
+
+"""Represents the channel-specific payment settings."""
+type PaymentSettings {
+  """
+  Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  defaultTransactionFlowStrategy: TransactionFlowStrategyEnum!
+}
+
+input PaymentSettingsInput {
+  """
+  Determine the transaction flow strategy to be used. Include the selected option in the payload sent to the payment app, as a requested action for the transaction.
+  
+  Added in Saleor 3.16.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  defaultTransactionFlowStrategy: TransactionFlowStrategyEnum
 }
 
 """
@@ -21235,6 +22595,28 @@ enum ProductErrorCode {
   VARIANT_NO_DIGITAL_CONTENT
 }
 
+"""
+Event sent when product export is completed.
+
+Added in Saleor 3.16.
+"""
+type ProductExportCompleted implements Event {
+  """The export file for products."""
+  export: ExportFile
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
 enum ProductFieldEnum {
   CATEGORY
   CHARGE_TAXES
@@ -21784,7 +23166,7 @@ type ProductPricingInfo {
   discountLocalCurrency: TaxedMoney @deprecated(reason: "This field will be removed in Saleor 4.0. Always returns `null`.")
 
   """
-  Determines whether this product's price displayed in a storefront should include taxes.
+  Determines whether displayed prices should include taxes.
   
   Added in Saleor 3.9.
   """
@@ -21823,6 +23205,9 @@ input ProductStockFilterInput {
   warehouseIds: [ID!]
 }
 
+"""
+Represents product's original translatable fields and related translations.
+"""
 type ProductTranslatableContent implements Node {
   """List of product attribute values that can be translated."""
   attributeValues: [AttributeValueTranslatableContent!]!
@@ -21882,6 +23267,7 @@ enum ProductTranslateErrorCode {
   REQUIRED
 }
 
+"""Represents product translations."""
 type ProductTranslation implements Node {
   """
   Translated description of the product.
@@ -22427,7 +23813,9 @@ type ProductVariant implements Node & ObjectWithMetadata {
     countryCode: CountryCode
   ): [Stock!]
 
-  """Whether the inventory of the variant is tracked."""
+  """
+  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. If the field is not provided, `Shop.trackInventoryByDefault` will be used.
+  """
   trackInventory: Boolean!
 
   """Returns translated product variant fields for the given language code."""
@@ -22546,7 +23934,7 @@ input ProductVariantBulkCreateInput {
   stocks: [StockInput!]
 
   """
-  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item.
+  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. If the field is not provided, `Shop.trackInventoryByDefault` will be used.
   """
   trackInventory: Boolean
 
@@ -22625,6 +24013,7 @@ enum ProductVariantBulkErrorCode {
   NOT_PRODUCTS_VARIANT
   PRODUCT_NOT_ASSIGNED_TO_CHANNEL
   REQUIRED
+  STOCK_ALREADY_EXISTS
   UNIQUE
 }
 
@@ -22783,7 +24172,7 @@ input ProductVariantBulkUpdateInput {
   stocks: ProductVariantStocksUpdateInput
 
   """
-  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item.
+  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. If the field is not provided, `Shop.trackInventoryByDefault` will be used.
   """
   trackInventory: Boolean
 
@@ -22943,7 +24332,7 @@ input ProductVariantCreateInput {
   stocks: [StockInput!]
 
   """
-  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item.
+  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. If the field is not provided, `Shop.trackInventoryByDefault` will be used.
   """
   trackInventory: Boolean
 
@@ -23066,7 +24455,7 @@ input ProductVariantInput {
   sku: String
 
   """
-  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item.
+  Determines if the inventory of this variant should be tracked. If false, the quantity won't change when customers buy this item. If the field is not provided, `Shop.trackInventoryByDefault` will be used.
   """
   trackInventory: Boolean
 
@@ -23269,6 +24658,9 @@ input ProductVariantStocksUpdateInput {
   update: [StockUpdateInput!]
 }
 
+"""
+Represents product variant's original translatable fields and related translations.
+"""
 type ProductVariantTranslatableContent implements Node {
   """List of product variant attribute values that can be translated."""
   attributeValues: [AttributeValueTranslatableContent!]!
@@ -23308,6 +24700,7 @@ enum ProductVariantTranslateErrorCode {
   REQUIRED
 }
 
+"""Represents product variant translations."""
 type ProductVariantTranslation implements Node {
   """The ID of the product variant translation."""
   id: ID!
@@ -23429,7 +24822,1106 @@ input ProductWhereInput {
   stocks: ProductStockFilterInput
 
   """Filter by when was the most recent update."""
-  updatedAt: DateTimeRangeInput
+  updatedAt: DateTimeFilterInput
+}
+
+"""
+Represents the promotion that allow creating discounts based on given conditions, and is visible to all the customers.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type Promotion implements Node & ObjectWithMetadata {
+  """Date time of promotion creation."""
+  createdAt: DateTime!
+
+  """Description of the promotion."""
+  description: JSON
+
+  """End date of the promotion."""
+  endDate: DateTime
+
+  """The list of events associated with the promotion."""
+  events: [PromotionEvent!]
+  id: ID!
+
+  """List of public metadata items. Can be accessed without permissions."""
+  metadata: [MetadataItem!]!
+
+  """
+  A single key from public metadata.
+  
+  Tip: Use GraphQL aliases to fetch multiple keys.
+  
+  Added in Saleor 3.3.
+  """
+  metafield(key: String!): String
+
+  """
+  Public metadata. Use `keys` to control which fields you want to include. The default is to include everything.
+  
+  Added in Saleor 3.3.
+  """
+  metafields(keys: [String!]): Metadata
+
+  """Name of the promotion."""
+  name: String!
+
+  """List of private metadata items. Requires staff permissions to access."""
+  privateMetadata: [MetadataItem!]!
+
+  """
+  A single key from private metadata. Requires staff permissions to access.
+  
+  Tip: Use GraphQL aliases to fetch multiple keys.
+  
+  Added in Saleor 3.3.
+  """
+  privateMetafield(key: String!): String
+
+  """
+  Private metadata. Requires staff permissions to access. Use `keys` to control which fields you want to include. The default is to include everything.
+  
+  Added in Saleor 3.3.
+  """
+  privateMetafields(keys: [String!]): Metadata
+
+  """The list of promotion rules."""
+  rules: [PromotionRule!]
+
+  """Start date of the promotion."""
+  startDate: DateTime!
+
+  """Returns translated promotion fields for the given language code."""
+  translation(
+    """A language code to return the translation for promotion."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionTranslation
+
+  """Date time of last update of promotion."""
+  updatedAt: DateTime!
+}
+
+"""
+Deletes promotions.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_DELETED (async): A promotion was deleted.
+"""
+type PromotionBulkDelete {
+  """Returns how many objects were affected."""
+  count: Int!
+  errors: [DiscountError!]!
+}
+
+type PromotionCountableConnection {
+  edges: [PromotionCountableEdge!]!
+
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """A total count of items in the collection."""
+  totalCount: Int
+}
+
+type PromotionCountableEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Promotion!
+}
+
+"""
+Creates a new promotion.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_CREATED (async): A promotion was created.
+- PROMOTION_STARTED (async): Optionally called if promotion was started.
+"""
+type PromotionCreate {
+  errors: [PromotionCreateError!]!
+  promotion: Promotion
+}
+
+type PromotionCreateError {
+  """The error code."""
+  code: PromotionCreateErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """Index of an input list item that caused the error."""
+  index: Int
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionCreateErrorCode {
+  GRAPHQL_ERROR
+  INVALID
+  INVALID_PRECISION
+  MULTIPLE_CURRENCIES_NOT_ALLOWED
+  NOT_FOUND
+  REQUIRED
+}
+
+input PromotionCreateInput {
+  """Promotion description."""
+  description: JSON
+
+  """The end date of the promotion in ISO 8601 format."""
+  endDate: DateTime
+
+  """Promotion name."""
+  name: String!
+
+  """List of promotion rules."""
+  rules: [PromotionRuleInput!]
+
+  """The start date of the promotion in ISO 8601 format."""
+  startDate: DateTime
+}
+
+"""
+Event sent when new promotion is created.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionCreated implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion the event relates to."""
+  promotion: Promotion
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion created event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionCreatedEvent implements Node & PromotionEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+"""
+Deletes a promotion.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_DELETED (async): A promotion was deleted.
+"""
+type PromotionDelete {
+  errors: [PromotionDeleteError!]!
+  promotion: Promotion
+}
+
+type PromotionDeleteError {
+  """The error code."""
+  code: PromotionDeleteErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionDeleteErrorCode {
+  GRAPHQL_ERROR
+  NOT_FOUND
+}
+
+"""
+Event sent when promotion is deleted.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionDeleted implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion the event relates to."""
+  promotion: Promotion
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+The event informs about the end of the promotion.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionEnded implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion the event relates to."""
+  promotion: Promotion
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion ended event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionEndedEvent implements Node & PromotionEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+union PromotionEvent = PromotionCreatedEvent | PromotionEndedEvent | PromotionRuleCreatedEvent | PromotionRuleDeletedEvent | PromotionRuleUpdatedEvent | PromotionStartedEvent | PromotionUpdatedEvent
+
+interface PromotionEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+"""An enumeration."""
+enum PromotionEventsEnum {
+  PROMOTION_CREATED
+  PROMOTION_ENDED
+  PROMOTION_STARTED
+  PROMOTION_UPDATED
+  RULE_CREATED
+  RULE_DELETED
+  RULE_UPDATED
+}
+
+"""
+Represents the promotion rule that specifies the conditions that must be met to apply the promotion discount.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRule implements Node {
+  """The catalogue predicate that must be met to apply the rule reward."""
+  cataloguePredicate: JSON
+
+  """
+  List of channels where the rule applies.
+  
+  Requires one of the following permissions: AUTHENTICATED_APP, AUTHENTICATED_STAFF_USER.
+  """
+  channels: [Channel!]
+
+  """Description of the promotion rule."""
+  description: JSON
+  id: ID!
+
+  """Name of the promotion rule."""
+  name: String
+
+  """Promotion to which the rule belongs."""
+  promotion: Promotion
+
+  """
+  The reward value of the promotion rule. Defines the discount value applied when the rule conditions are met.
+  """
+  rewardValue: PositiveDecimal
+
+  """The type of reward value of the promotion rule."""
+  rewardValueType: RewardValueTypeEnum
+
+  """Returns translated promotion rule fields for the given language code."""
+  translation(
+    """A language code to return the translation for promotion rule."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionRuleTranslation
+}
+
+"""
+Creates a new promotion rule.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_RULE_CREATED (async): A promotion rule was created.
+"""
+type PromotionRuleCreate {
+  errors: [PromotionRuleCreateError!]!
+  promotionRule: PromotionRule
+}
+
+type PromotionRuleCreateError {
+  """The error code."""
+  code: PromotionRuleCreateErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionRuleCreateErrorCode {
+  GRAPHQL_ERROR
+  INVALID
+  INVALID_PRECISION
+  MULTIPLE_CURRENCIES_NOT_ALLOWED
+  NOT_FOUND
+  REQUIRED
+}
+
+input PromotionRuleCreateInput {
+  """
+  Defines the conditions on the catalogue level that must be met for the reward to be applied.
+  """
+  cataloguePredicate: CataloguePredicateInput
+
+  """List of channel ids to which the rule should apply to."""
+  channels: [ID!]
+
+  """Promotion rule description."""
+  description: JSON
+
+  """Promotion rule name."""
+  name: String
+
+  """The ID of the promotion that rule belongs to."""
+  promotion: ID!
+
+  """
+  Defines the discount value. Required when catalogue predicate is provided.
+  """
+  rewardValue: PositiveDecimal
+
+  """
+  Defines the promotion rule reward value type. Must be provided together with reward value.
+  """
+  rewardValueType: RewardValueTypeEnum
+}
+
+"""
+Event sent when new promotion rule is created.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleCreated implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion rule the event relates to."""
+  promotionRule: PromotionRule
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion rule created event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleCreatedEvent implements Node & PromotionEventInterface & PromotionRuleEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """The rule ID associated with the promotion event."""
+  ruleId: String
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+"""
+Deletes a promotion rule.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_RULE_DELETED (async): A promotion rule was deleted.
+"""
+type PromotionRuleDelete {
+  errors: [PromotionRuleDeleteError!]!
+  promotionRule: PromotionRule
+}
+
+type PromotionRuleDeleteError {
+  """The error code."""
+  code: PromotionRuleDeleteErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionRuleDeleteErrorCode {
+  GRAPHQL_ERROR
+  NOT_FOUND
+}
+
+"""
+Event sent when new promotion rule is deleted.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleDeleted implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion rule the event relates to."""
+  promotionRule: PromotionRule
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion rule created event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleDeletedEvent implements Node & PromotionEventInterface & PromotionRuleEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """The rule ID associated with the promotion event."""
+  ruleId: String
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+"""
+History log of the promotion event related to rule.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+interface PromotionRuleEventInterface {
+  """The rule ID associated with the promotion event."""
+  ruleId: String
+}
+
+input PromotionRuleInput {
+  """
+  Defines the conditions on the catalogue level that must be met for the reward to be applied.
+  """
+  cataloguePredicate: CataloguePredicateInput
+
+  """List of channel ids to which the rule should apply to."""
+  channels: [ID!]
+
+  """Promotion rule description."""
+  description: JSON
+
+  """Promotion rule name."""
+  name: String
+
+  """
+  Defines the discount value. Required when catalogue predicate is provided.
+  """
+  rewardValue: PositiveDecimal
+
+  """
+  Defines the promotion rule reward value type. Must be provided together with reward value.
+  """
+  rewardValueType: RewardValueTypeEnum
+}
+
+"""
+Represents promotion rule's original translatable fields and related translations.
+
+Added in Saleor 3.17.
+"""
+type PromotionRuleTranslatableContent implements Node {
+  """
+  Description of the promotion rule.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSONString
+
+  """ID of the promotion rule translatable content."""
+  id: ID!
+
+  """Name of the promotion rule."""
+  name: String
+
+  """Returns translated promotion rule fields for the given language code."""
+  translation(
+    """A language code to return the translation for promotion rule."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionRuleTranslation
+}
+
+"""
+Creates/updates translations for a promotion rule.
+
+Added in Saleor 3.17. 
+
+Requires one of the following permissions: MANAGE_TRANSLATIONS.
+"""
+type PromotionRuleTranslate {
+  errors: [TranslationError!]!
+  promotionRule: PromotionRule
+}
+
+"""
+Represents promotion rule translations.
+
+Added in Saleor 3.17.
+"""
+type PromotionRuleTranslation implements Node {
+  """
+  Translated description of the promotion rule.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSONString
+
+  """ID of the promotion rule translation."""
+  id: ID!
+
+  """Translation language."""
+  language: LanguageDisplay!
+
+  """Translated name of the promotion rule."""
+  name: String
+}
+
+input PromotionRuleTranslationInput {
+  """
+  Translated promotion description.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSON
+  name: String
+}
+
+"""
+Updates an existing promotion rule.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_RULE_UPDATED (async): A promotion rule was updated.
+"""
+type PromotionRuleUpdate {
+  errors: [PromotionRuleUpdateError!]!
+  promotionRule: PromotionRule
+}
+
+type PromotionRuleUpdateError {
+  """List of channel IDs which causes the error."""
+  channels: [ID!]
+
+  """The error code."""
+  code: PromotionRuleUpdateErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionRuleUpdateErrorCode {
+  DUPLICATED_INPUT_ITEM
+  GRAPHQL_ERROR
+  INVALID
+  INVALID_PRECISION
+  MISSING_CHANNELS
+  MULTIPLE_CURRENCIES_NOT_ALLOWED
+  NOT_FOUND
+}
+
+input PromotionRuleUpdateInput {
+  """List of channel ids to remove."""
+  addChannels: [ID!]
+
+  """
+  Defines the conditions on the catalogue level that must be met for the reward to be applied.
+  """
+  cataloguePredicate: CataloguePredicateInput
+
+  """Promotion rule description."""
+  description: JSON
+
+  """Promotion rule name."""
+  name: String
+
+  """List of channel ids to remove."""
+  removeChannels: [ID!]
+
+  """
+  Defines the discount value. Required when catalogue predicate is provided.
+  """
+  rewardValue: PositiveDecimal
+
+  """
+  Defines the promotion rule reward value type. Must be provided together with reward value.
+  """
+  rewardValueType: RewardValueTypeEnum
+}
+
+"""
+Event sent when new promotion rule is updated.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleUpdated implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion rule the event relates to."""
+  promotionRule: PromotionRule
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion rule created event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionRuleUpdatedEvent implements Node & PromotionEventInterface & PromotionRuleEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """The rule ID associated with the promotion event."""
+  ruleId: String
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+enum PromotionSortField {
+  """Sort promotions by created at."""
+  CREATED_AT
+
+  """Sort promotions by end date."""
+  END_DATE
+
+  """Sort promotions by name."""
+  NAME
+
+  """Sort promotions by start date."""
+  START_DATE
+}
+
+input PromotionSortingInput {
+  """Specifies the direction in which to sort promotions."""
+  direction: OrderDirection!
+
+  """Sort promotions by the selected field."""
+  field: PromotionSortField!
+}
+
+"""
+The event informs about the start of the promotion.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionStarted implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion the event relates to."""
+  promotion: Promotion
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion started event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionStartedEvent implements Node & PromotionEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+"""
+Represents promotion's original translatable fields and related translations.
+
+Added in Saleor 3.17.
+"""
+type PromotionTranslatableContent implements Node {
+  """
+  Description of the promotion.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSONString
+
+  """ID of the promotion translatable content."""
+  id: ID!
+
+  """Name of the promotion."""
+  name: String!
+
+  """Returns translated promotion fields for the given language code."""
+  translation(
+    """A language code to return the translation for promotion."""
+    languageCode: LanguageCodeEnum!
+  ): PromotionTranslation
+}
+
+"""
+Creates/updates translations for a promotion.
+
+Added in Saleor 3.17. 
+
+Requires one of the following permissions: MANAGE_TRANSLATIONS.
+"""
+type PromotionTranslate {
+  errors: [TranslationError!]!
+  promotion: Promotion
+}
+
+"""
+Represents promotion translations.
+
+Added in Saleor 3.17.
+"""
+type PromotionTranslation implements Node {
+  """
+  Translated description of the promotion.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSONString
+
+  """ID of the promotion translation."""
+  id: ID!
+
+  """Translation language."""
+  language: LanguageDisplay!
+
+  """Translated name of the promotion."""
+  name: String
+}
+
+input PromotionTranslationInput {
+  """
+  Translated promotion description.
+  
+  Rich text format. For reference see https://editorjs.io/
+  """
+  description: JSON
+  name: String
+}
+
+"""
+Updates an existing promotion.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- PROMOTION_UPDATED (async): A promotion was updated.
+- PROMOTION_STARTED (async): Optionally called if promotion was started.
+- PROMOTION_ENDED (async): Optionally called if promotion was ended.
+"""
+type PromotionUpdate {
+  errors: [PromotionUpdateError!]!
+  promotion: Promotion
+}
+
+type PromotionUpdateError {
+  """The error code."""
+  code: PromotionUpdateErrorCode!
+
+  """
+  Name of a field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  field: String
+
+  """The error message."""
+  message: String
+}
+
+"""An enumeration."""
+enum PromotionUpdateErrorCode {
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+  REQUIRED
+}
+
+input PromotionUpdateInput {
+  """Promotion description."""
+  description: JSON
+
+  """The end date of the promotion in ISO 8601 format."""
+  endDate: DateTime
+
+  """Promotion name."""
+  name: String
+
+  """The start date of the promotion in ISO 8601 format."""
+  startDate: DateTime
+}
+
+"""
+Event sent when promotion is updated.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionUpdated implements Event {
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The promotion the event relates to."""
+  promotion: Promotion
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+History log of the promotion updated event.
+
+Added in Saleor 3.17.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type PromotionUpdatedEvent implements Node & PromotionEventInterface {
+  """
+  User or App that created the promotion event. 
+  
+  Requires one of the following permissions: MANAGE_STAFF, MANAGE_APPS, OWNER.
+  """
+  createdBy: UserOrApp
+
+  """Date when event happened."""
+  date: DateTime!
+  id: ID!
+
+  """Promotion event type."""
+  type: PromotionEventsEnum!
+}
+
+input PromotionWhereInput {
+  """List of conditions that must be met."""
+  AND: [PromotionWhereInput!]
+
+  """A list of conditions of which at least one must be met."""
+  OR: [PromotionWhereInput!]
+
+  """Filter promotions by end date."""
+  endDate: DateTimeFilterInput
+  ids: [ID!]
+  isOldSale: Boolean
+  metadata: [MetadataFilter!]
+
+  """Filter by promotion name."""
+  name: StringFilterInput
+
+  """Filter promotions by start date."""
+  startDate: DateTimeFilterInput
 }
 
 input PublishableChannelListingInput {
@@ -24584,6 +27076,53 @@ type Query {
   ): ProductCountableConnection
 
   """
+  Look up a promotion by ID.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  """
+  promotion(
+    """ID of the promotion."""
+    id: ID!
+  ): Promotion
+
+  """
+  List of the promotions.
+  
+  Added in Saleor 3.17.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  
+  Requires one of the following permissions: MANAGE_DISCOUNTS.
+  """
+  promotions(
+    """Return the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Return the elements in the list that come before the specified cursor."""
+    before: String
+
+    """
+    Retrieve the first n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    first: Int
+
+    """
+    Retrieve the last n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    last: Int
+
+    """Sort promotions."""
+    sortBy: PromotionSortingInput
+
+    """Where filtering options."""
+    where: PromotionWhereInput
+  ): PromotionCountableConnection
+
+  """
   List of top selling products.
   
   Requires one of the following permissions: MANAGE_PRODUCTS.
@@ -24623,7 +27162,7 @@ type Query {
 
     """ID of the sale."""
     id: ID!
-  ): Sale
+  ): Sale @deprecated(reason: "This field will be removed in Saleor 4.0. Use the `promotion` query instead.")
 
   """
   List of the shop's sales.
@@ -24662,7 +27201,7 @@ type Query {
 
     """Sort sales."""
     sortBy: SaleSortingInput
-  ): SaleCountableConnection
+  ): SaleCountableConnection @deprecated(reason: "This field will be removed in Saleor 4.0. Use the `promotions` query instead.")
 
   """
   Look up a shipping zone by ID.
@@ -25111,6 +27650,7 @@ Requires one of the following permissions: AUTHENTICATED_USER.
 
 Triggers the following webhook events:
 - NOTIFY_USER (async): A notification for account email change.
+- ACCOUNT_CHANGE_EMAIL_REQUESTED (async): An account email change was requested.
 """
 type RequestEmailChange {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -25125,14 +27665,24 @@ Sends an email with the account password modification link.
 
 Triggers the following webhook events:
 - NOTIFY_USER (async): A notification for password reset.
+- ACCOUNT_SET_PASSWORD_REQUESTED (async): Setting a new password for the account is requested.
+- STAFF_SET_PASSWORD_REQUESTED (async): Setting a new password for the staff account is requested.
 """
 type RequestPasswordReset {
   accountErrors: [AccountError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
   errors: [AccountError!]!
 }
 
+"""An enumeration."""
+enum RewardValueTypeEnum {
+  FIXED
+  PERCENTAGE
+}
+
 """
 Sales allow creating discounts for categories, collections or products and are visible to all the customers.
+
+DEPRECATED: this type will be removed in Saleor 4.0. Use `Promotion` type instead.
 """
 type Sale implements Node & ObjectWithMetadata {
   """List of categories this sale applies to."""
@@ -25305,7 +27855,9 @@ type Sale implements Node & ObjectWithMetadata {
 }
 
 """
-Adds products, categories, collections to a voucher. 
+Adds products, categories, collections to a sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleCreate` mutation instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 
@@ -25335,7 +27887,11 @@ type SaleBulkDelete {
   errors: [DiscountError!]!
 }
 
-"""Represents sale channel listing."""
+"""
+Represents sale channel listing.
+
+DEPRECATED: this type will be removed in Saleor 4.0. Use `PromotionRule` type instead.
+"""
 type SaleChannelListing implements Node {
   """The channel in which the sale is available."""
   channel: Channel!
@@ -25367,7 +27923,9 @@ input SaleChannelListingInput {
 }
 
 """
-Manage sale's availability in channels. 
+Manage sale's availability in channels.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleCreate` or `promotionRuleUpdate` mutations instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 """
@@ -25398,7 +27956,9 @@ type SaleCountableEdge {
 }
 
 """
-Creates a new sale. 
+Creates a new sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionCreate` mutation instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 
@@ -25415,6 +27975,8 @@ type SaleCreate {
 Event sent when new sale is created.
 
 Added in Saleor 3.2.
+
+DEPRECATED: this event will be removed in Saleor 4.0. Use `PromotionCreated` event instead.
 """
 type SaleCreated implements Event {
   """Time of the event."""
@@ -25437,7 +27999,9 @@ type SaleCreated implements Event {
 }
 
 """
-Deletes a sale. 
+Deletes a sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionDelete` mutation instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 
@@ -25454,6 +28018,8 @@ type SaleDelete {
 Event sent when sale is deleted.
 
 Added in Saleor 3.2.
+
+DEPRECATED: this event will be removed in Saleor 4.0. Use `PromotionDeleted` event instead.
 """
 type SaleDeleted implements Event {
   """Time of the event."""
@@ -25512,7 +28078,9 @@ input SaleInput {
 }
 
 """
-Removes products, categories, collections from a sale. 
+Removes products, categories, collections from a sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionRuleUpdate` or `promotionRuleDelete` mutations instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 
@@ -25573,6 +28141,8 @@ input SaleSortingInput {
 The event informs about the start or end of the sale.
 
 Added in Saleor 3.5.
+
+DEPRECATED: this event will be removed in Saleor 4.0. Use `PromotionStarted` and `PromotionEnded` events instead.
 """
 type SaleToggle implements Event {
   """Time of the event."""
@@ -25598,6 +28168,11 @@ type SaleToggle implements Event {
   version: String
 }
 
+"""
+Represents sale's original translatable fields and related translations.
+
+DEPRECATED: this type will be removed in Saleor 4.0. Use `PromotionTranslatableContent` instead.
+"""
 type SaleTranslatableContent implements Node {
   """The ID of the sale translatable content."""
   id: ID!
@@ -25620,7 +28195,9 @@ type SaleTranslatableContent implements Node {
 }
 
 """
-Creates/updates translations for a sale. 
+Creates/updates translations for a sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `PromotionTranslate` mutation instead. 
 
 Requires one of the following permissions: MANAGE_TRANSLATIONS.
 """
@@ -25630,6 +28207,11 @@ type SaleTranslate {
   translationErrors: [TranslationError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""
+Represents sale translations.
+
+DEPRECATED: this type will be removed in Saleor 4.0. Use `PromotionTranslation` instead.
+"""
 type SaleTranslation implements Node {
   """The ID of the sale translation."""
   id: ID!
@@ -25647,7 +28229,9 @@ enum SaleType {
 }
 
 """
-Updates a sale. 
+Updates a sale.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `promotionUpdate` mutation instead. 
 
 Requires one of the following permissions: MANAGE_DISCOUNTS.
 
@@ -25665,6 +28249,8 @@ type SaleUpdate {
 Event sent when sale is updated.
 
 Added in Saleor 3.2.
+
+DEPRECATED: this event will be removed in Saleor 4.0. Use `PromotionUpdated` event instead.
 """
 type SaleUpdated implements Event {
   """Time of the event."""
@@ -25973,6 +28559,9 @@ type ShippingMethodPostalCodeRule implements Node {
   start: String
 }
 
+"""
+Represents shipping method's original translatable fields and related translations.
+"""
 type ShippingMethodTranslatableContent implements Node {
   """
   Shipping method description to translate.
@@ -26001,6 +28590,7 @@ type ShippingMethodTranslatableContent implements Node {
   ): ShippingMethodTranslation
 }
 
+"""Represents shipping method translations."""
 type ShippingMethodTranslation implements Node {
   """
   Translated description of the shipping method.
@@ -26943,7 +29533,9 @@ type Shop implements ObjectWithMetadata {
   """
   staffNotificationRecipients: [StaffNotificationRecipient!]
 
-  """Enable inventory tracking."""
+  """
+  This field is used as a default value for `ProductVariant.trackInventory`.
+  """
   trackInventoryByDefault: Boolean
 
   """Returns translated shop fields for the given language code."""
@@ -26974,7 +29566,9 @@ type ShopAddressUpdate {
 }
 
 """
-Updates site domain of the shop. 
+Updates site domain of the shop.
+
+DEPRECATED: this mutation will be removed in Saleor 4.0. Use `PUBLIC_URL` environment variable instead. 
 
 Requires one of the following permissions: MANAGE_SETTINGS.
 """
@@ -27157,7 +29751,9 @@ input ShopSettingsInput {
   """
   reserveStockDurationAuthenticatedUser: Int
 
-  """Enable inventory tracking."""
+  """
+  This field is used as a default value for `ProductVariant.trackInventory`.
+  """
   trackInventoryByDefault: Boolean
 }
 
@@ -27195,6 +29791,7 @@ type ShopSettingsUpdate {
   shopErrors: [ShopError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
 }
 
+"""Represents shop translations."""
 type ShopTranslation implements Node {
   """Translated description of sale."""
   description: String!
@@ -27240,6 +29837,7 @@ Requires one of the following permissions: MANAGE_STAFF.
 Triggers the following webhook events:
 - STAFF_CREATED (async): A new staff account was created.
 - NOTIFY_USER (async): A notification for setting the password.
+- STAFF_SET_PASSWORD_REQUESTED (async): Setting a new password for the staff account is requested.
 """
 type StaffCreate {
   errors: [StaffError!]!
@@ -27441,6 +30039,40 @@ type StaffNotificationRecipientUpdate {
 }
 
 """
+Event sent when setting a new password for staff is requested.
+
+Added in Saleor 3.15.
+"""
+type StaffSetPasswordRequested implements Event {
+  """The channel data."""
+  channel: Channel
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """The URL to redirect the user after he accepts the request."""
+  redirectUrl: String
+
+  """Shop data."""
+  shop: Shop
+
+  """The token required to confirm request."""
+  token: String
+
+  """The user the event relates to."""
+  user: User
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
 Updates an existing staff user. Apps are not allowed to perform this mutation. 
 
 Requires one of the following permissions: MANAGE_STAFF.
@@ -27574,6 +30206,9 @@ Added in Saleor 3.13.
 Note: this API is currently in Feature Preview and can be subject to changes at later point. 
 
 Requires one of the following permissions: MANAGE_PRODUCTS.
+
+Triggers the following webhook events:
+- PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.
 """
 type StockBulkUpdate {
   """Returns how many objects were updated."""
@@ -27731,6 +30366,119 @@ enum StorePaymentMethodEnum {
   On session storage type. The payment is stored only to be reused when the customer is present in the checkout flow.
   """
   ON_SESSION
+}
+
+"""
+Represents a payment method stored for user (tokenized) in payment gateway.
+
+Added in Saleor 3.15.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type StoredPaymentMethod {
+  """Stored credit card details if available."""
+  creditCardInfo: CreditCard
+
+  """JSON data returned by Payment Provider app for this payment method."""
+  data: JSON
+
+  """Payment gateway that stores this payment method."""
+  gateway: PaymentGateway!
+
+  """Stored payment method ID."""
+  id: ID!
+
+  """
+  Payment method name. Example: last 4 digits of credit card, obfuscated email, etc.
+  """
+  name: String
+
+  """
+  ID of stored payment method used to make payment actions. Note: method ID is unique only within the payment gateway.
+  """
+  paymentMethodId: String!
+  supportedPaymentFlows: [TokenizedPaymentFlowEnum!]
+
+  """Type of the payment method. Example: credit card, wallet, etc."""
+  type: String!
+}
+
+"""
+Event sent when user requests to delete a payment method.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type StoredPaymentMethodDeleteRequested implements Event {
+  """Channel related to the requested delete action."""
+  channel: Channel!
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """
+  The ID of the payment method that should be deleted by the payment gateway.
+  """
+  paymentMethodId: String!
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """
+  The user for which the app should proceed with payment method delete request.
+  """
+  user: User!
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
+"""
+Request to delete a stored payment method on payment provider side.
+
+Added in Saleor 3.16.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point. 
+
+Requires one of the following permissions: AUTHENTICATED_USER.
+
+Triggers the following webhook events:
+- STORED_PAYMENT_METHOD_DELETE_REQUESTED (sync): The customer requested to delete a payment method.
+"""
+type StoredPaymentMethodRequestDelete {
+  errors: [PaymentMethodRequestDeleteError!]!
+
+  """The result of deleting a stored payment method."""
+  result: StoredPaymentMethodRequestDeleteResult!
+}
+
+"""An enumeration."""
+enum StoredPaymentMethodRequestDeleteErrorCode {
+  CHANNEL_INACTIVE
+  GATEWAY_ERROR
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+}
+
+"""
+Result of deleting a stored payment method.
+
+    This enum is used to determine the result of deleting a stored payment method.
+    SUCCESSFULLY_DELETED - The stored payment method was successfully deleted.
+    FAILED_TO_DELETE - The stored payment method was not deleted.
+    FAILED_TO_DELIVER - The request to delete the stored payment method was not
+    delivered.
+    
+"""
+enum StoredPaymentMethodRequestDeleteResult {
+  FAILED_TO_DELETE
+  FAILED_TO_DELIVER
+  SUCCESSFULLY_DELETED
 }
 
 """
@@ -28018,9 +30766,7 @@ type TaxConfiguration implements Node & ObjectWithMetadata {
   """List of country-specific exceptions in tax configuration."""
   countries: [TaxConfigurationPerCountry!]!
 
-  """
-  Determines whether prices displayed in a storefront should include taxes.
-  """
+  """Determines whether displayed prices should include taxes."""
   displayGrossPrices: Boolean!
 
   """The ID of the object."""
@@ -28109,7 +30855,7 @@ type TaxConfigurationPerCountry {
   country: CountryDisplay!
 
   """
-  Determines whether prices displayed in a storefront should include taxes for this country.
+  Determines whether displayed prices should include taxes for this country.
   """
   displayGrossPrices: Boolean!
 
@@ -28127,7 +30873,7 @@ input TaxConfigurationPerCountryInput {
   countryCode: CountryCode!
 
   """
-  Determines whether prices displayed in a storefront should include taxes for this country.
+  Determines whether displayed prices should include taxes for this country.
   """
   displayGrossPrices: Boolean!
 
@@ -28177,9 +30923,7 @@ input TaxConfigurationUpdateInput {
   """Determines whether taxes are charged in the given channel."""
   chargeTaxes: Boolean
 
-  """
-  Determines whether prices displayed in a storefront should include taxes.
-  """
+  """Determines whether displayed prices should include taxes."""
   displayGrossPrices: Boolean
 
   """Determines whether prices are entered with the tax included."""
@@ -28503,17 +31247,45 @@ enum TimePeriodTypeEnum {
   YEAR
 }
 
+"""
+Represents possible tokenized payment flows that can be used to process payment.
+
+    The following flows are possible:
+    INTERACTIVE - Payment method can be used for 1 click checkout - it's prefilled in
+    checkout form (might require additional authentication from user)
+    
+"""
+enum TokenizedPaymentFlowEnum {
+  INTERACTIVE
+}
+
 """An object representing a single payment."""
 type Transaction implements Node {
   """Total amount of the transaction."""
   amount: Money
+
+  """Date and time at which transaction was created."""
   created: DateTime!
+
+  """Error associated with transaction, if any."""
   error: String
+
+  """Response returned by payment gateway."""
   gatewayResponse: JSONString!
+
+  """ID of the transaction."""
   id: ID!
+
+  """Determines if the transaction was successful."""
   isSuccess: Boolean!
+
+  """Determines the type of transaction."""
   kind: TransactionKind!
+
+  """Determines the payment associated with a transaction."""
   payment: Payment!
+
+  """Unique token associated with a transaction."""
   token: String!
 }
 
@@ -28523,6 +31295,13 @@ type TransactionAction {
 
   """Transaction request amount. Null when action type is VOID."""
   amount: PositiveDecimal
+
+  """
+  Currency code.
+  
+  Added in Saleor 3.16.
+  """
+  currency: String!
 }
 
 """
@@ -28694,6 +31473,8 @@ type TransactionEvent implements Node {
   Added in Saleor 3.13.
   """
   amount: Money!
+
+  """Date and time at which a transaction event was created."""
   createdAt: DateTime!
 
   """
@@ -28907,7 +31688,14 @@ type TransactionInitializeSession implements Event {
   """Action to proceed for the transaction"""
   action: TransactionProcessAction!
 
-  """Payment gateway data in JSON format, recieved from storefront."""
+  """
+  The customer's IP address. If not provided as a parameter in the mutation, Saleor will try to determine the customer's IP address on its own.
+  
+  Added in Saleor 3.16.
+  """
+  customerIpAddress: String
+
+  """Payment gateway data in JSON format, received from storefront."""
   data: JSON
 
   """Time of the event."""
@@ -28978,6 +31766,8 @@ type TransactionItem implements Node & ObjectWithMetadata {
 
   """Total amount charged for this payment."""
   chargedAmount: Money!
+
+  """Date and time at which payment transaction was created."""
   createdAt: DateTime!
 
   """
@@ -29025,6 +31815,8 @@ type TransactionItem implements Node & ObjectWithMetadata {
   Added in Saleor 3.3.
   """
   metafields(keys: [String!]): Metadata
+
+  """Date and time at which payment transaction was modified."""
   modifiedAt: DateTime!
 
   """
@@ -29177,7 +31969,14 @@ type TransactionProcessSession implements Event {
   """Action to proceed for the transaction"""
   action: TransactionProcessAction!
 
-  """Payment gateway data in JSON format, recieved from storefront."""
+  """
+  The customer's IP address. If not provided as a parameter in the mutation, Saleor will try to determine the customer's IP address on its own.
+  
+  Added in Saleor 3.16.
+  """
+  customerIpAddress: String
+
+  """Payment gateway data in JSON format, received from storefront."""
   data: JSON
 
   """Time of the event."""
@@ -29400,7 +32199,7 @@ input TransactionUpdateInput {
   pspReference: String
 }
 
-union TranslatableItem = AttributeTranslatableContent | AttributeValueTranslatableContent | CategoryTranslatableContent | CollectionTranslatableContent | MenuItemTranslatableContent | PageTranslatableContent | ProductTranslatableContent | ProductVariantTranslatableContent | SaleTranslatableContent | ShippingMethodTranslatableContent | VoucherTranslatableContent
+union TranslatableItem = AttributeTranslatableContent | AttributeValueTranslatableContent | CategoryTranslatableContent | CollectionTranslatableContent | MenuItemTranslatableContent | PageTranslatableContent | ProductTranslatableContent | ProductVariantTranslatableContent | PromotionRuleTranslatableContent | PromotionTranslatableContent | SaleTranslatableContent | ShippingMethodTranslatableContent | VoucherTranslatableContent
 
 type TranslatableItemConnection {
   edges: [TranslatableItemEdge!]!
@@ -29428,6 +32227,8 @@ enum TranslatableKinds {
   MENU_ITEM
   PAGE
   PRODUCT
+  PROMOTION
+  PROMOTION_RULE
   SALE
   SHIPPING_METHOD
   VARIANT
@@ -29489,7 +32290,7 @@ input TranslationInput {
   seoTitle: String
 }
 
-union TranslationTypes = AttributeTranslation | AttributeValueTranslation | CategoryTranslation | CollectionTranslation | MenuItemTranslation | PageTranslation | ProductTranslation | ProductVariantTranslation | SaleTranslation | ShippingMethodTranslation | VoucherTranslation
+union TranslationTypes = AttributeTranslation | AttributeValueTranslation | CategoryTranslation | CollectionTranslation | MenuItemTranslation | PageTranslation | ProductTranslation | ProductVariantTranslation | PromotionRuleTranslation | PromotionTranslation | SaleTranslation | ShippingMethodTranslation | VoucherTranslation
 
 """
 Event sent when translation is updated.
@@ -29802,7 +32603,21 @@ type User implements Node & ObjectWithMetadata {
   """
   restrictedAccessToChannels: Boolean!
 
-  """List of stored payment sources."""
+  """
+  Returns a list of user's stored payment methods that can be used in provided channel. The field returns a list of stored payment methods by payment apps. When `amount` is not provided, 0 will be used as default value.
+  
+  Added in Saleor 3.15.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  storedPaymentMethods(
+    """Slug of a channel for which the data should be returned."""
+    channel: String!
+  ): [StoredPaymentMethod!]
+
+  """
+  List of stored payment sources. The field returns a list of payment sources stored for payment plugins.
+  """
   storedPaymentSources(
     """Slug of a channel for which the data should be returned."""
     channel: String
@@ -30116,8 +32931,31 @@ type Voucher implements Node & ObjectWithMetadata {
   """
   channelListings: [VoucherChannelListing!]
 
-  """The code of the voucher."""
-  code: String!
+  """The code of the voucher.This field will be removed in Saleor 4.0."""
+  code: String
+
+  """
+  List of codes available for this voucher.
+  
+  Added in Saleor 3.18.
+  """
+  codes(
+    """Return the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Return the elements in the list that come before the specified cursor."""
+    before: String
+
+    """
+    Retrieve the first n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    first: Int
+
+    """
+    Retrieve the last n elements from the list. Note that the system only allows fetching a maximum of 100 objects in a single query.
+    """
+    last: Int
+  ): VoucherCodeCountableConnection
 
   """
   List of collections this voucher applies to.
@@ -30232,6 +33070,15 @@ type Voucher implements Node & ObjectWithMetadata {
     """
     last: Int
   ): ProductCountableConnection
+
+  """
+  Determine if the voucher codes can be used once or multiple times.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  singleUse: Boolean!
 
   """The start date and time of voucher."""
   startDate: DateTime!
@@ -30361,6 +33208,109 @@ type VoucherChannelListingUpdate {
   voucher: Voucher
 }
 
+"""
+Represents voucher code.
+
+Added in Saleor 3.18.
+
+Note: this API is currently in Feature Preview and can be subject to changes at later point.
+"""
+type VoucherCode {
+  """Code to use the voucher."""
+  code: String
+
+  """Date time of code creation."""
+  createdAt: DateTime!
+
+  """The ID of the voucher code."""
+  id: ID!
+
+  """Whether a code is active or not."""
+  isActive: Boolean
+
+  """Number of times a code has been used."""
+  used: Int
+}
+
+"""
+Deletes voucher codes.
+
+Added in Saleor 3.18. 
+
+Requires one of the following permissions: MANAGE_DISCOUNTS.
+
+Triggers the following webhook events:
+- VOUCHER_UPDATED (async): A voucher was updated.
+"""
+type VoucherCodeBulkDelete {
+  """Returns how many codes were deleted."""
+  count: Int!
+  errors: [VoucherCodeBulkDeleteError!]!
+}
+
+type VoucherCodeBulkDeleteError {
+  """The error code."""
+  code: VoucherCodeBulkDeleteErrorCode!
+
+  """The error message."""
+  message: String
+
+  """
+  Path to field that caused the error. A value of `null` indicates that the error isn't associated with a particular field.
+  """
+  path: String
+
+  """List of voucher codes which causes the error."""
+  voucherCodes: [ID!]
+}
+
+"""An enumeration."""
+enum VoucherCodeBulkDeleteErrorCode {
+  GRAPHQL_ERROR
+  INVALID
+  NOT_FOUND
+}
+
+type VoucherCodeCountableConnection {
+  edges: [VoucherCodeCountableEdge!]!
+
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """A total count of items in the collection."""
+  totalCount: Int
+}
+
+type VoucherCodeCountableEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: VoucherCode!
+}
+
+"""
+Event sent when voucher code export is completed.
+
+Added in Saleor 3.18.
+"""
+type VoucherCodeExportCompleted implements Event {
+  """The export file for voucher codes."""
+  export: ExportFile
+
+  """Time of the event."""
+  issuedAt: DateTime
+
+  """The user or application that triggered the event."""
+  issuingPrincipal: IssuingPrincipal
+
+  """The application receiving the webhook."""
+  recipient: App
+
+  """Saleor version that triggered the event."""
+  version: String
+}
+
 type VoucherCountableConnection {
   edges: [VoucherCountableEdge!]!
 
@@ -30474,6 +33424,15 @@ input VoucherFilterInput {
 }
 
 input VoucherInput {
+  """
+  List of codes to add.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  addCodes: [String!]
+
   """Voucher should be applied once per customer."""
   applyOncePerCustomer: Boolean
 
@@ -30483,7 +33442,9 @@ input VoucherInput {
   """Categories discounted by the voucher."""
   categories: [ID!]
 
-  """Code to use the voucher."""
+  """
+  Code to use the voucher. This field will be removed in Saleor 4.0. Use `addCodes` instead.
+  """
   code: String
 
   """Collections discounted by the voucher."""
@@ -30509,6 +33470,17 @@ input VoucherInput {
 
   """Products discounted by the voucher."""
   products: [ID!]
+
+  """
+  When set to 'True', each voucher code can be used only once; otherwise, codes can be used multiple times depending on `usageLimit`.
+  
+  The option can only be changed if none of the voucher codes have been used.
+  
+  Added in Saleor 3.18.
+  
+  Note: this API is currently in Feature Preview and can be subject to changes at later point.
+  """
+  singleUse: Boolean
 
   """Start date of the voucher in ISO 8601 format."""
   startDate: DateTime
@@ -30569,7 +33541,11 @@ type VoucherRemoveCatalogues {
 }
 
 enum VoucherSortField {
-  """Sort vouchers by code."""
+  """
+  Sort vouchers by code.
+  
+  DEPRECATED: this field will be removed in Saleor 4.0.
+  """
   CODE
 
   """Sort vouchers by end date."""
@@ -30581,6 +33557,13 @@ enum VoucherSortField {
   This option requires a channel filter to work as the values can vary between channels.
   """
   MINIMUM_SPENT_AMOUNT
+
+  """
+  Sort vouchers by name.
+  
+  Added in Saleor 3.18.
+  """
+  NAME
 
   """Sort vouchers by start date."""
   START_DATE
@@ -30614,6 +33597,9 @@ input VoucherSortingInput {
   field: VoucherSortField!
 }
 
+"""
+Represents voucher's original translatable fields and related translations.
+"""
 type VoucherTranslatableContent implements Node {
   """The ID of the voucher translatable content."""
   id: ID!
@@ -30646,6 +33632,7 @@ type VoucherTranslate {
   voucher: Voucher
 }
 
+"""Represents voucher translations."""
 type VoucherTranslation implements Node {
   """The ID of the voucher translation."""
   id: ID!
@@ -30947,6 +33934,7 @@ input WarehouseFilterInput {
   clickAndCollectOption: WarehouseClickAndCollectOptionEnum
   ids: [ID!]
   isPrivate: Boolean
+  metadata: [MetadataFilter!]
   search: String
   slugs: [String!]
 }
@@ -31276,6 +34264,7 @@ enum WebhookErrorCode {
   GRAPHQL_ERROR
   INVALID
   INVALID_CUSTOM_HEADERS
+  INVALID_NOTIFY_WITH_SUBSCRIPTION
   MISSING_EVENT
   MISSING_SUBSCRIPTION
   NOT_FOUND
@@ -31314,21 +34303,26 @@ type WebhookEventSync {
 
 """Enum determining type of webhook."""
 enum WebhookEventTypeAsyncEnum {
-  """Account email change is requested."""
+  """An account email change is requested."""
   ACCOUNT_CHANGE_EMAIL_REQUESTED
 
   """An account confirmation is requested."""
   ACCOUNT_CONFIRMATION_REQUESTED
 
-  """
-  An account is confirmed.
-  
-  Added in Saleor 3.15.
-  """
+  """An account is confirmed."""
   ACCOUNT_CONFIRMED
+
+  """An account is deleted."""
+  ACCOUNT_DELETED
 
   """An account delete is requested."""
   ACCOUNT_DELETE_REQUESTED
+
+  """An account email was changed"""
+  ACCOUNT_EMAIL_CHANGED
+
+  """Setting a new password for the account is requested."""
+  ACCOUNT_SET_PASSWORD_REQUESTED
 
   """A new address created."""
   ADDRESS_CREATED
@@ -31391,11 +34385,7 @@ enum WebhookEventTypeAsyncEnum {
   """A channel is deleted."""
   CHANNEL_DELETED
 
-  """
-  A channel metadata is updated.
-  
-  Added in Saleor 3.15.
-  """
+  """A channel metadata is updated."""
   CHANNEL_METADATA_UPDATED
 
   """A channel status is changed."""
@@ -31476,12 +34466,20 @@ enum WebhookEventTypeAsyncEnum {
   Added in Saleor 3.8.
   """
   FULFILLMENT_METADATA_UPDATED
+  FULFILLMENT_TRACKING_NUMBER_UPDATED
 
   """A new gift card created."""
   GIFT_CARD_CREATED
 
   """A gift card is deleted."""
   GIFT_CARD_DELETED
+
+  """
+  A gift card export is completed.
+  
+  Added in Saleor 3.16.
+  """
+  GIFT_CARD_EXPORT_COMPLETED
 
   """
   A gift card metadata is updated.
@@ -31532,7 +34530,11 @@ enum WebhookEventTypeAsyncEnum {
   """A menu is updated."""
   MENU_UPDATED
 
-  """User notification triggered."""
+  """
+  User notification triggered.
+  
+  DEPRECATED: this value will be removed in Saleor 4.0. See the docs for more details about migrating from NOTIFY_USER to other events: https://docs.saleor.io/docs/next/upgrade-guides/notify-user-deprecation
+  """
   NOTIFY_USER
 
   """An observability event is created."""
@@ -31640,6 +34642,13 @@ enum WebhookEventTypeAsyncEnum {
   PRODUCT_DELETED
 
   """
+  A product export is completed.
+  
+  Added in Saleor 3.16.
+  """
+  PRODUCT_EXPORT_COMPLETED
+
+  """
   A new product media is created.
   
   Added in Saleor 3.12.
@@ -31676,7 +34685,9 @@ enum WebhookEventTypeAsyncEnum {
   """A new product variant is created."""
   PRODUCT_VARIANT_CREATED
 
-  """A product variant is deleted."""
+  """
+  A product variant is deleted. Warning: this event will not be executed when parent product has been deleted. Check PRODUCT_DELETED.
+  """
   PRODUCT_VARIANT_DELETED
 
   """
@@ -31694,6 +34705,30 @@ enum WebhookEventTypeAsyncEnum {
 
   """A product variant is updated."""
   PRODUCT_VARIANT_UPDATED
+
+  """A promotion is created."""
+  PROMOTION_CREATED
+
+  """A promotion is deleted."""
+  PROMOTION_DELETED
+
+  """A promotion is deactivated."""
+  PROMOTION_ENDED
+
+  """A promotion rule is created."""
+  PROMOTION_RULE_CREATED
+
+  """A promotion rule is deleted."""
+  PROMOTION_RULE_DELETED
+
+  """A promotion rule is updated."""
+  PROMOTION_RULE_UPDATED
+
+  """A promotion is activated."""
+  PROMOTION_STARTED
+
+  """A promotion is updated."""
+  PROMOTION_UPDATED
 
   """A sale is created."""
   SALE_CREATED
@@ -31745,6 +34780,9 @@ enum WebhookEventTypeAsyncEnum {
   """A staff user is deleted."""
   STAFF_DELETED
 
+  """Setting a new password for the staff account is requested."""
+  STAFF_SET_PASSWORD_REQUESTED
+
   """A staff user is updated."""
   STAFF_UPDATED
 
@@ -31767,6 +34805,13 @@ enum WebhookEventTypeAsyncEnum {
 
   """A translation is updated."""
   TRANSLATION_UPDATED
+
+  """
+  A voucher code export is completed.
+  
+  Added in Saleor 3.18.
+  """
+  VOUCHER_CODE_EXPORT_COMPLETED
 
   """A new voucher created."""
   VOUCHER_CREATED
@@ -31803,21 +34848,26 @@ enum WebhookEventTypeAsyncEnum {
 
 """Enum determining type of webhook."""
 enum WebhookEventTypeEnum {
-  """Account email change is requested."""
+  """An account email change is requested."""
   ACCOUNT_CHANGE_EMAIL_REQUESTED
 
   """An account confirmation is requested."""
   ACCOUNT_CONFIRMATION_REQUESTED
 
-  """
-  An account is confirmed.
-  
-  Added in Saleor 3.15.
-  """
+  """An account is confirmed."""
   ACCOUNT_CONFIRMED
+
+  """An account is deleted."""
+  ACCOUNT_DELETED
 
   """An account delete is requested."""
   ACCOUNT_DELETE_REQUESTED
+
+  """An account email was changed"""
+  ACCOUNT_EMAIL_CHANGED
+
+  """Setting a new password for the account is requested."""
+  ACCOUNT_SET_PASSWORD_REQUESTED
 
   """A new address created."""
   ADDRESS_CREATED
@@ -31880,11 +34930,7 @@ enum WebhookEventTypeEnum {
   """A channel is deleted."""
   CHANNEL_DELETED
 
-  """
-  A channel metadata is updated.
-  
-  Added in Saleor 3.15.
-  """
+  """A channel metadata is updated."""
   CHANNEL_METADATA_UPDATED
 
   """A channel status is changed."""
@@ -31975,12 +35021,20 @@ enum WebhookEventTypeEnum {
   Added in Saleor 3.8.
   """
   FULFILLMENT_METADATA_UPDATED
+  FULFILLMENT_TRACKING_NUMBER_UPDATED
 
   """A new gift card created."""
   GIFT_CARD_CREATED
 
   """A gift card is deleted."""
   GIFT_CARD_DELETED
+
+  """
+  A gift card export is completed.
+  
+  Added in Saleor 3.16.
+  """
+  GIFT_CARD_EXPORT_COMPLETED
 
   """
   A gift card metadata is updated.
@@ -32012,6 +35066,7 @@ enum WebhookEventTypeEnum {
 
   """Invoice has been sent."""
   INVOICE_SENT
+  LIST_STORED_PAYMENT_METHODS
 
   """A new menu created."""
   MENU_CREATED
@@ -32031,7 +35086,11 @@ enum WebhookEventTypeEnum {
   """A menu is updated."""
   MENU_UPDATED
 
-  """User notification triggered."""
+  """
+  User notification triggered.
+  
+  DEPRECATED: this value will be removed in Saleor 4.0. See the docs for more details about migrating from NOTIFY_USER to other events: https://docs.saleor.io/docs/next/upgrade-guides/notify-user-deprecation
+  """
   NOTIFY_USER
 
   """An observability event is created."""
@@ -32142,9 +35201,12 @@ enum WebhookEventTypeEnum {
   """Confirm payment."""
   PAYMENT_CONFIRM
   PAYMENT_GATEWAY_INITIALIZE_SESSION
+  PAYMENT_GATEWAY_INITIALIZE_TOKENIZATION_SESSION
 
   """Listing available payment gateways."""
   PAYMENT_LIST_GATEWAYS
+  PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION
+  PAYMENT_METHOD_PROCESS_TOKENIZATION_SESSION
 
   """Process payment."""
   PAYMENT_PROCESS
@@ -32169,6 +35231,13 @@ enum WebhookEventTypeEnum {
 
   """A product is deleted."""
   PRODUCT_DELETED
+
+  """
+  A product export is completed.
+  
+  Added in Saleor 3.16.
+  """
+  PRODUCT_EXPORT_COMPLETED
 
   """
   A new product media is created.
@@ -32207,7 +35276,9 @@ enum WebhookEventTypeEnum {
   """A new product variant is created."""
   PRODUCT_VARIANT_CREATED
 
-  """A product variant is deleted."""
+  """
+  A product variant is deleted. Warning: this event will not be executed when parent product has been deleted. Check PRODUCT_DELETED.
+  """
   PRODUCT_VARIANT_DELETED
 
   """
@@ -32225,6 +35296,30 @@ enum WebhookEventTypeEnum {
 
   """A product variant is updated."""
   PRODUCT_VARIANT_UPDATED
+
+  """A promotion is created."""
+  PROMOTION_CREATED
+
+  """A promotion is deleted."""
+  PROMOTION_DELETED
+
+  """A promotion is deactivated."""
+  PROMOTION_ENDED
+
+  """A promotion rule is created."""
+  PROMOTION_RULE_CREATED
+
+  """A promotion rule is deleted."""
+  PROMOTION_RULE_DELETED
+
+  """A promotion rule is updated."""
+  PROMOTION_RULE_UPDATED
+
+  """A promotion is activated."""
+  PROMOTION_STARTED
+
+  """A promotion is updated."""
+  PROMOTION_UPDATED
 
   """A sale is created."""
   SALE_CREATED
@@ -32279,8 +35374,12 @@ enum WebhookEventTypeEnum {
   """A staff user is deleted."""
   STAFF_DELETED
 
+  """Setting a new password for the staff account is requested."""
+  STAFF_SET_PASSWORD_REQUESTED
+
   """A staff user is updated."""
   STAFF_UPDATED
+  STORED_PAYMENT_METHOD_DELETE_REQUESTED
 
   """
   A thumbnail is created.
@@ -32330,6 +35429,13 @@ enum WebhookEventTypeEnum {
 
   """A translation is updated."""
   TRANSLATION_UPDATED
+
+  """
+  A voucher code export is completed.
+  
+  Added in Saleor 3.18.
+  """
+  VOUCHER_CODE_EXPORT_COMPLETED
 
   """A new voucher created."""
   VOUCHER_CREATED
@@ -32375,6 +35481,7 @@ enum WebhookEventTypeSyncEnum {
 
   """Filter shipping methods for checkout."""
   CHECKOUT_FILTER_SHIPPING_METHODS
+  LIST_STORED_PAYMENT_METHODS
 
   """
   Event called for order tax calculation.
@@ -32395,9 +35502,12 @@ enum WebhookEventTypeSyncEnum {
   """Confirm payment."""
   PAYMENT_CONFIRM
   PAYMENT_GATEWAY_INITIALIZE_SESSION
+  PAYMENT_GATEWAY_INITIALIZE_TOKENIZATION_SESSION
 
   """Listing available payment gateways."""
   PAYMENT_LIST_GATEWAYS
+  PAYMENT_METHOD_INITIALIZE_TOKENIZATION_SESSION
+  PAYMENT_METHOD_PROCESS_TOKENIZATION_SESSION
 
   """Process payment."""
   PAYMENT_PROCESS
@@ -32410,6 +35520,7 @@ enum WebhookEventTypeSyncEnum {
 
   """Fetch external shipping methods for checkout."""
   SHIPPING_LIST_METHODS_FOR_CHECKOUT
+  STORED_PAYMENT_METHOD_DELETE_REQUESTED
 
   """
   Event called when cancel has been requested for transaction.
@@ -32446,7 +35557,10 @@ enum WebhookSampleEventTypeEnum {
   ACCOUNT_CHANGE_EMAIL_REQUESTED
   ACCOUNT_CONFIRMATION_REQUESTED
   ACCOUNT_CONFIRMED
+  ACCOUNT_DELETED
   ACCOUNT_DELETE_REQUESTED
+  ACCOUNT_EMAIL_CHANGED
+  ACCOUNT_SET_PASSWORD_REQUESTED
   ADDRESS_CREATED
   ADDRESS_DELETED
   ADDRESS_UPDATED
@@ -32487,8 +35601,10 @@ enum WebhookSampleEventTypeEnum {
   FULFILLMENT_CANCELED
   FULFILLMENT_CREATED
   FULFILLMENT_METADATA_UPDATED
+  FULFILLMENT_TRACKING_NUMBER_UPDATED
   GIFT_CARD_CREATED
   GIFT_CARD_DELETED
+  GIFT_CARD_EXPORT_COMPLETED
   GIFT_CARD_METADATA_UPDATED
   GIFT_CARD_SENT
   GIFT_CARD_STATUS_CHANGED
@@ -32527,6 +35643,7 @@ enum WebhookSampleEventTypeEnum {
   PERMISSION_GROUP_UPDATED
   PRODUCT_CREATED
   PRODUCT_DELETED
+  PRODUCT_EXPORT_COMPLETED
   PRODUCT_MEDIA_CREATED
   PRODUCT_MEDIA_DELETED
   PRODUCT_MEDIA_UPDATED
@@ -32539,6 +35656,14 @@ enum WebhookSampleEventTypeEnum {
   PRODUCT_VARIANT_OUT_OF_STOCK
   PRODUCT_VARIANT_STOCK_UPDATED
   PRODUCT_VARIANT_UPDATED
+  PROMOTION_CREATED
+  PROMOTION_DELETED
+  PROMOTION_ENDED
+  PROMOTION_RULE_CREATED
+  PROMOTION_RULE_DELETED
+  PROMOTION_RULE_UPDATED
+  PROMOTION_STARTED
+  PROMOTION_UPDATED
   SALE_CREATED
   SALE_DELETED
   SALE_TOGGLE
@@ -32553,11 +35678,13 @@ enum WebhookSampleEventTypeEnum {
   SHOP_METADATA_UPDATED
   STAFF_CREATED
   STAFF_DELETED
+  STAFF_SET_PASSWORD_REQUESTED
   STAFF_UPDATED
   THUMBNAIL_CREATED
   TRANSACTION_ITEM_METADATA_UPDATED
   TRANSLATION_CREATED
   TRANSLATION_UPDATED
+  VOUCHER_CODE_EXPORT_COMPLETED
   VOUCHER_CREATED
   VOUCHER_DELETED
   VOUCHER_METADATA_UPDATED

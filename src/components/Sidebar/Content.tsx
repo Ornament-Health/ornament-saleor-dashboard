@@ -1,4 +1,4 @@
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { Menu } from "./menu";
@@ -7,7 +7,7 @@ import { UserInfo } from "./user";
 
 export const SidebarContent = () => (
   <Box
-    backgroundColor="subdued"
+    backgroundColor="default2"
     as="aside"
     height="100%"
     display="grid"

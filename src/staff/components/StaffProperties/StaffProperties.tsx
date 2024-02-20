@@ -12,7 +12,7 @@ import { getFormErrors } from "@dashboard/utils/errors";
 import getStaffErrorMessage from "@dashboard/utils/errors/staff";
 import { Card, CardContent, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import SVG from "react-inlinesvg";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -45,12 +45,12 @@ const useStyles = makeStyles(
     },
     avatarDefault: {
       "& div": {
-        color: vars.colors.foreground.textNeutralContrasted,
+        color: vars.colors.text.buttonDefaultPrimary,
         fontSize: 35,
         fontWeight: 580,
         lineHeight: "120px",
       },
-      background: vars.colors.background.decorativeSurfacePlain3,
+      background: vars.colors.background.accent1,
       height: 120,
       textAlign: "center",
       width: 120,

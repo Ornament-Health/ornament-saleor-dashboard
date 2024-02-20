@@ -1,4 +1,4 @@
-import { Accordion, sprinkles, Text } from "@saleor/macaw-ui/next";
+import { Accordion, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 interface ChannelListProps {
@@ -18,7 +18,7 @@ export const ChannelsList: React.FC<ChannelListProps> = ({
           paddingBottom: 8,
         })}
       >
-        <Text variant="caption" size="large">
+        <Text variant="caption" color="default2">
           {summary}
         </Text>
         <Accordion.TriggerButton dataTestId="expand-icon" />

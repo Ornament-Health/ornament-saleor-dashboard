@@ -1,20 +1,21 @@
-// @ts-strict-ignore
 import { BulkDeleteButton } from "@dashboard/components/BulkDeleteButton";
 import { DashboardCard } from "@dashboard/components/Card";
 import { InternalLink } from "@dashboard/components/InternalLink";
 import { CategoryDetailsQuery } from "@dashboard/graphql";
 import { productAddUrl, productListUrl } from "@dashboard/products/urls";
 import { RelayToFlat } from "@dashboard/types";
-import { Box, Button } from "@saleor/macaw-ui/next";
+import { Box, Button } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { CategoryProductListDatagrid } from "../CategoryProductListDatagrid";
 
 interface CategoryProductsProps {
-  category: CategoryDetailsQuery["category"];
+  category: CategoryDetailsQuery["category"] | undefined | null;
   categoryId: string;
-  products: RelayToFlat<CategoryDetailsQuery["category"]["products"]>;
+  products: RelayToFlat<
+    NonNullable<CategoryDetailsQuery["category"]>["products"]
+  >;
   disabled: boolean;
   onProductsDelete: () => void;
   onSelectProductsIds: (ids: number[], clearSelection: () => void) => void;

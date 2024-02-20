@@ -134,11 +134,13 @@ export const ChannelDetails: React.FC<ChannelDetailsProps> = ({
           stockSettings: {
             allocationStrategy,
           },
+          paymentSettings: {
+            defaultTransactionFlowStrategy,
+          },
           orderSettings: {
             markAsPaidStrategy,
             deleteExpiredOrdersAfter,
             allowUnpaidOrders,
-            defaultTransactionFlowStrategy,
           },
         },
       },
@@ -276,6 +278,8 @@ export const ChannelDetails: React.FC<ChannelDetailsProps> = ({
         countries={shop?.countries || []}
       />
       <ChannelDeleteDialog
+        channelSlug={data?.channel?.slug}
+        currency={data?.channel?.currencyCode}
         channelsChoices={channelsChoices}
         hasOrders={data?.channel?.hasOrders}
         open={params.action === "remove"}

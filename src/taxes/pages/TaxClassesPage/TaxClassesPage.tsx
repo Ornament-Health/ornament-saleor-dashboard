@@ -37,7 +37,7 @@ import {
   PageTabs,
   SearchIcon,
 } from "@saleor/macaw-ui";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -120,7 +120,7 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
 
         return (
           <DetailPageLayout gridTemplateColumns={1}>
-            <TopNav title={<TaxPageTitle />} />
+            <TopNav title={<TaxPageTitle />} href={configurationMenuUrl} />
             <DetailPageLayout.Content>
               <Box padding={6}>
                 <PageTabs value="tax-classes" onChange={handleTabChange}>
@@ -203,7 +203,7 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                                 variant="outlined"
                                 onChange={e => setQuery(e.target.value)}
                                 placeholder={intl.formatMessage(
-                                  taxesMessages.searchTaxClasses,
+                                  taxesMessages.searchTaxCountries,
                                 )}
                                 fullWidth
                                 InputProps={{

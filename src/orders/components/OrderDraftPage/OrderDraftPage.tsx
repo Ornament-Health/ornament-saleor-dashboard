@@ -20,7 +20,7 @@ import OrderChannelSectionCard from "@dashboard/orders/components/OrderChannelSe
 import { orderDraftListUrl } from "@dashboard/orders/urls";
 import { FetchMoreProps, RelayToFlat } from "@dashboard/types";
 import { Typography } from "@material-ui/core";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -50,6 +50,7 @@ export interface OrderDraftPageProps extends FetchMoreProps {
   onShippingAddressEdit: () => void;
   onShippingMethodEdit: () => void;
   onProfileView: () => void;
+  onShowMetadata: (id: string) => void;
 }
 
 const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
@@ -70,6 +71,7 @@ const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
     onShippingAddressEdit,
     onShippingMethodEdit,
     onProfileView,
+    onShowMetadata,
     order,
     channelUsabilityData,
     users,
@@ -126,6 +128,7 @@ const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
           onOrderLineChange={onOrderLineChange}
           onOrderLineRemove={onOrderLineRemove}
           onShippingMethodEdit={onShippingMethodEdit}
+          onShowMetadata={onShowMetadata}
         />
         <OrderHistory
           history={order?.events}

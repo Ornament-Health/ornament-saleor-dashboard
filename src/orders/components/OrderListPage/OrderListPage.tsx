@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import {
   extensionMountPoints,
-  mapToMenuItems,
+  mapToMenuItemsForOrderListActions,
   useExtensions,
 } from "@dashboard/apps/hooks/useExtensions";
 import { useUserAccessibleChannels } from "@dashboard/auth/hooks/useUserAccessibleChannels";
@@ -30,7 +30,7 @@ import {
 } from "@dashboard/types";
 import { hasLimits, isLimitReached } from "@dashboard/utils/limits";
 import { Card } from "@material-ui/core";
-import { Box, Button, ChevronRightIcon, Tooltip } from "@saleor/macaw-ui/next";
+import { Box, Button, ChevronRightIcon, Tooltip } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -85,8 +85,12 @@ const OrderListPage: React.FC<OrderListPageProps> = ({
   const { ORDER_OVERVIEW_CREATE, ORDER_OVERVIEW_MORE_ACTIONS } = useExtensions(
     extensionMountPoints.ORDER_LIST,
   );
-  const extensionMenuItems = mapToMenuItems(ORDER_OVERVIEW_MORE_ACTIONS);
-  const extensionCreateButtonItems = mapToMenuItems(ORDER_OVERVIEW_CREATE);
+  const extensionMenuItems = mapToMenuItemsForOrderListActions(
+    ORDER_OVERVIEW_MORE_ACTIONS,
+  );
+  const extensionCreateButtonItems = mapToMenuItemsForOrderListActions(
+    ORDER_OVERVIEW_CREATE,
+  );
 
   const context = useDevModeContext();
 

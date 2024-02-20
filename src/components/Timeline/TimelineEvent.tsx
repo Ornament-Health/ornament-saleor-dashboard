@@ -1,4 +1,4 @@
-import { Accordion, Box, sprinkles, Text } from "@saleor/macaw-ui/next";
+import { Accordion, Box, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import TimelineEventHeader, { TitleElement } from "./TimelineEventHeader";
@@ -30,7 +30,7 @@ export const TimelineEvent: React.FC<TimelineEventProps> = props => {
       <Box
         as="span"
         position="absolute"
-        backgroundColor="interactiveNeutralPressing"
+        backgroundColor="default1Pressed"
         borderRadius="100%"
         __height="7px"
         __width="7px"

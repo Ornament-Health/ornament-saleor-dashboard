@@ -29,7 +29,7 @@ export interface AttributeValuesProps
   extends Pick<ListProps, Exclude<keyof ListProps, "getRowHref">>,
     PaginateListProps {
   disabled: boolean;
-  values: RelayToFlat<AttributeValueListFragment>;
+  values?: RelayToFlat<AttributeValueListFragment>;
   onValueAdd: () => void;
   onValueDelete: (id: string) => void;
   onValueReorder: ReorderAction;
@@ -173,6 +173,7 @@ const AttributeValues: React.FC<AttributeValuesProps> = ({
             values,
             (value, valueIndex) => (
               <SortableTableRow<"row">
+                data-test-id="attributes-rows"
                 className={!!value ? classes.link : undefined}
                 hover={!!value}
                 onClick={!!value ? () => onValueUpdate(value.id) : undefined}

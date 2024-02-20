@@ -19,10 +19,13 @@ import {
   FormsetAtomicData,
   FormsetChange,
   FormsetData,
+  FormsetMetadataChange,
 } from "@dashboard/hooks/useFormset";
+import { AttributeValuesMetadata } from "@dashboard/products/utils/data";
 import { FetchMoreProps, ReorderEvent } from "@dashboard/types";
 import { move, toggle } from "@dashboard/utils/lists";
 import isEqual from "lodash/isEqual";
+import uniqBy from "lodash/uniqBy";
 
 import { getFileValuesToUploadFromAttributes, isFileValueUnused } from "./data";
 
@@ -41,10 +44,16 @@ export function createAttributeMultiChangeHandler(
   attributes: FormsetData<AttributeInputData, string[]>,
   triggerChange: () => void,
 ): FormsetChange<string> {
-  return (attributeId: string, value: string) => {
+  return (attributeId: string, value: string | string[]) => {
     const attribute = attributes.find(
       attribute => attribute.id === attributeId,
     );
+
+    if (Array.isArray(value)) {
+      triggerChange();
+      changeAttributeData(attributeId, value);
+      return;
+    }
 
     const newAttributeValues = toggle(
       value,
@@ -63,6 +72,21 @@ export function createAttributeReferenceChangeHandler(
 ): FormsetChange<string[]> {
   return (attributeId: string, values: string[]) => {
     changeAttributeData(attributeId, values);
+    triggerChange();
+  };
+}
+
+const mergeReferencesMetadata = (
+  prev: AttributeValuesMetadata[],
+  next: AttributeValuesMetadata[],
+) => uniqBy([...(prev ?? []), ...(next ?? [])], "value");
+
+export function createAttributeReferenceMetadataHandler(
+  changeAttributeMetadata: FormsetMetadataChange<AttributeValuesMetadata[]>,
+  triggerChange: () => void,
+): FormsetMetadataChange<AttributeValuesMetadata[]> {
+  return (attributeId: string, values: AttributeValuesMetadata[]) => {
+    changeAttributeMetadata(attributeId, values, mergeReferencesMetadata);
     triggerChange();
   };
 }
@@ -290,6 +314,15 @@ export const prepareAttributesInput = ({
       });
       return attrInput;
     }
+    if (inputType === AttributeInputTypeEnum.SWATCH) {
+      attrInput.push({
+        id: attr.id,
+        swatch: {
+          value: attr.value[0] ?? "",
+        },
+      });
+      return attrInput;
+    }
 
     attrInput.push({
       id: attr.id,
@@ -341,5 +374,6 @@ export const handleDeleteMultipleAttributeValues = async (
           firstValues: 20,
         });
       }
+      return undefined;
     }),
   );

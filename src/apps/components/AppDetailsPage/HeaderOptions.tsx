@@ -1,6 +1,6 @@
 import { buttonMessages } from "@dashboard/intl";
 import { ButtonBase } from "@material-ui/core";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 import SVG from "react-inlinesvg";
 import { FormattedMessage } from "react-intl";
@@ -28,7 +28,7 @@ const HeaderOptions: React.FC<HeaderOptionsProps> = ({
     <Box
       paddingX={6}
       borderBottomStyle="solid"
-      borderColor="neutralHighlight"
+      borderColor="default1"
       borderBottomWidth={1}
     >
       <div className={classes.appHeaderLinks}>

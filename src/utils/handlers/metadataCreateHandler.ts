@@ -24,7 +24,7 @@ function createMetadataCreateHandler<T extends MetadataFormData, TError>(
       return errors;
     }
 
-    if (data.metadata.length > 0) {
+    if (data?.metadata?.length > 0) {
       const updateMetaResult = await setMetadata({
         variables: {
           id,
@@ -42,7 +42,7 @@ function createMetadataCreateHandler<T extends MetadataFormData, TError>(
       }
     }
 
-    if (data.privateMetadata.length > 0) {
+    if (data?.privateMetadata?.length > 0) {
       const updatePrivateMetaResult = await setPrivateMetadata({
         variables: {
           id,

@@ -90,7 +90,9 @@ export const OrderDiscountProvider: React.FC<OrderDiscountProviderProps> = ({
 
   const removeOrderDiscount = () =>
     orderDiscount &&
-    orderDiscountRemove({ variables: { discountId: orderDiscount.id } });
+    orderDiscountRemove({
+      variables: { discountId: orderDiscount.id },
+    });
 
   const orderDiscountAction = orderDiscount
     ? updateOrderDiscount

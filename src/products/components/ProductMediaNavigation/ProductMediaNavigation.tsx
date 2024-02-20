@@ -3,7 +3,7 @@ import CardTitle from "@dashboard/components/CardTitle";
 import Skeleton from "@dashboard/components/Skeleton";
 import { Card, CardContent } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { defineMessages, useIntl } from "react-intl";
@@ -31,7 +31,7 @@ const useStyles = makeStyles(
       width: "100%",
     },
     imageContainer: {
-      border: `2px solid ${vars.colors.border.neutralPlain}`,
+      border: `2px solid ${vars.colors.border.default1}`,
       borderRadius: theme.spacing(),
       cursor: "pointer",
       height: 48,

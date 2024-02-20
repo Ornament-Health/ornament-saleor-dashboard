@@ -3,7 +3,7 @@ import { useUser } from "@dashboard/auth";
 import { getUserInitials } from "@dashboard/misc";
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { DateTime } from "../Date";
@@ -20,12 +20,12 @@ const useStyles = makeStyles(
       marginBottom: theme.spacing(3),
       position: "relative",
       boxShadow: "none",
-      background: vars.colors.background.surfaceNeutralPlain,
+      background: vars.colors.background.default1,
     },
     cardContent: {
       wordBreak: "break-all",
       borderRadius: "4px",
-      border: `1px solid ${vars.colors.border.neutralDefault}`,
+      border: `1px solid ${vars.colors.border.default1}`,
       "&:last-child": {
         padding: 16,
       },

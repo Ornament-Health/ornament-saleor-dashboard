@@ -1,15 +1,16 @@
-import CardTitle from "@dashboard/components/CardTitle";
-import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
-import Grid from "@dashboard/components/Grid";
-import { DiscountErrorFragment } from "@dashboard/graphql";
+import { DashboardCard } from "@dashboard/components/Card";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
-import getDiscountErrorMessage from "@dashboard/utils/errors/discounts";
-import { Card, CardContent, TextField } from "@material-ui/core";
-import React from "react";
-import { useIntl } from "react-intl";
+import {
+  CommonError,
+  getCommonFormFieldErrorMessage,
+} from "@dashboard/utils/errors/common";
+import { Box, Checkbox, Input, Text } from "@saleor/macaw-ui-next";
+import React, { ChangeEvent } from "react";
+import { FieldError } from "react-hook-form";
+import { FormattedMessage, useIntl } from "react-intl";
 
-interface DiscountDatesProps {
+interface DiscountDatesProps<ErrorCode> {
   data: {
     endDate: string;
     endTime: string;
@@ -18,104 +19,129 @@ interface DiscountDatesProps {
     startTime: string;
   };
   disabled: boolean;
-  errors: DiscountErrorFragment[];
+  formErrors?: {
+    startDate?: FieldError;
+  };
+  errors: Array<CommonError<ErrorCode>>;
   onChange: (event: React.ChangeEvent<any>) => void;
+  onBlur?: (event: React.FocusEvent<any>) => void;
 }
 
-const DiscountDates = ({
+const DiscountDates = <ErrorCode,>({
   data,
   disabled,
   errors,
+  formErrors,
   onChange,
-}: DiscountDatesProps) => {
+  onBlur,
+}: DiscountDatesProps<ErrorCode>) => {
   const intl = useIntl();
 
-  const formErrors = getFormErrors(["startDate", "endDate"], errors);
+  const apiErrors = getFormErrors(["startDate", "endDate"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "zKOGkU",
-          defaultMessage: "Active Dates",
-          description: "time during discount is active, header",
-        })}
-      />
-      <CardContent>
-        <Grid variant="uniform">
-          <TextField
+    <DashboardCard>
+      <DashboardCard.Title>
+        <FormattedMessage
+          id="zKOGkU"
+          defaultMessage="Active Dates"
+          description="time during discount is active, header"
+        />
+      </DashboardCard.Title>
+
+      <DashboardCard.Content>
+        <Box display="flex" gap={4}>
+          <Input
             disabled={disabled}
-            error={!!formErrors.startDate}
-            helperText={getDiscountErrorMessage(formErrors.startDate, intl)}
-            name={"startDate" as keyof FormData}
+            error={!!apiErrors.startDate || !!formErrors?.startDate}
+            helperText={
+              getCommonFormFieldErrorMessage(apiErrors.startDate, intl) ||
+              formErrors?.startDate?.message
+            }
+            name="startDate"
             onChange={onChange}
+            onBlur={onBlur}
             label={intl.formatMessage(commonMessages.startDate)}
             value={data.startDate}
             type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
+            width="100%"
           />
-          <TextField
+          <Input
             disabled={disabled}
-            error={!!formErrors.startDate}
-            helperText={getDiscountErrorMessage(formErrors.startDate, intl)}
-            name={"startTime" as keyof FormData}
+            error={!!apiErrors.startDate}
+            helperText={getCommonFormFieldErrorMessage(
+              apiErrors.startDate,
+              intl,
+            )}
+            name="startTime"
             onChange={onChange}
+            onBlur={onBlur}
             label={intl.formatMessage(commonMessages.startHour)}
             value={data.startTime}
             type="time"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
+            width="100%"
           />
-        </Grid>
-        <ControlledCheckbox
+        </Box>
+        <Checkbox
+          marginY={4}
           checked={data.hasEndDate}
-          label={intl.formatMessage({
-            id: "AVF5T5",
-            defaultMessage: "Set end date",
-            description: "voucher end date, switch button",
-          })}
-          name={"hasEndDate" as keyof FormData}
-          onChange={onChange}
-        />
+          data-test-id="has-end-date"
+          name="hasEndDate"
+          disabled={disabled}
+          onCheckedChange={() => {
+            onChange({
+              target: {
+                name: "hasEndDate",
+                value: !data.hasEndDate,
+              },
+            } as ChangeEvent<any>);
+          }}
+          onBlur={onBlur}
+        >
+          <Text>
+            <FormattedMessage
+              id="AVF5T5"
+              defaultMessage="Set end date"
+              description="voucher end date, switch button"
+            />
+          </Text>
+        </Checkbox>
         {data.hasEndDate && (
-          <Grid variant="uniform">
-            <TextField
+          <Box display="flex" gap={4}>
+            <Input
               disabled={disabled}
-              error={!!formErrors.endDate}
-              helperText={getDiscountErrorMessage(formErrors.endDate, intl)}
-              name={"endDate" as keyof FormData}
+              error={!!apiErrors.endDate}
+              helperText={getCommonFormFieldErrorMessage(
+                apiErrors.endDate,
+                intl,
+              )}
+              name="endDate"
               onChange={onChange}
+              onBlur={onBlur}
               label={intl.formatMessage(commonMessages.endDate)}
               value={data.endDate}
               type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
+              width="100%"
             />
-            <TextField
+            <Input
               disabled={disabled}
-              error={!!formErrors.endDate}
-              helperText={getDiscountErrorMessage(formErrors.endDate, intl)}
-              name={"endTime" as keyof FormData}
+              error={!!apiErrors.endDate}
+              helperText={getCommonFormFieldErrorMessage(
+                apiErrors.endDate,
+                intl,
+              )}
+              name="endTime"
               onChange={onChange}
+              onBlur={onBlur}
               label={intl.formatMessage(commonMessages.endHour)}
               value={data.endTime}
               type="time"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
+              width="100%"
             />
-          </Grid>
+          </Box>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 export default DiscountDates;

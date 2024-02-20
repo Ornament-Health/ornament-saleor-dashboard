@@ -1,4 +1,4 @@
-import { List, Text } from "@saleor/macaw-ui/next";
+import { List, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { SidebarMenuItem } from "./types";
@@ -9,7 +9,7 @@ interface Props {
 
 export const Divider: React.FC<Props> = ({ menuItem }) => (
   <List.Divider paddingY={menuItem.paddingY ?? 1.5} paddingX={1}>
-    <Text variant="caption" size="small" color="textNeutralSubdued">
+    <Text variant="caption" size="small" color="default2">
       {menuItem.label}
     </Text>
   </List.Divider>

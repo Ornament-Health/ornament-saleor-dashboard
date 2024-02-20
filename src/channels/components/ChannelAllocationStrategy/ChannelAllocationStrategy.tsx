@@ -1,11 +1,10 @@
-// @ts-strict-ignore
 import CardTitle from "@dashboard/components/CardTitle";
 import PreviewPill from "@dashboard/components/PreviewPill";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
 import { AllocationStrategyEnum, StockSettingsInput } from "@dashboard/graphql";
 import { Card, CardContent, Typography } from "@material-ui/core";
 import HelpOutline from "@material-ui/icons/HelpOutline";
-import { Tooltip } from "@saleor/macaw-ui/next";
+import { Tooltip } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -96,7 +95,7 @@ const ChannelAllocationStrategy: React.FC<ChannelAllocationStrategyProps> = ({
           }))}
           disabled={disabled}
           name="allocationStrategy"
-          value={data?.allocationStrategy}
+          value={data?.allocationStrategy!}
           onChange={onChange}
         />
       </CardContent>

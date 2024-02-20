@@ -1,4 +1,4 @@
-import { Box, Text, Toggle } from "@saleor/macaw-ui/next";
+import { Box, Text, Toggle } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { AvailableColumn } from "../types";
@@ -29,7 +29,7 @@ export const ColumnPickerStaticColumns = ({
             selectedColumns,
           )}
         >
-          <Text variant="body" size="small" color="textNeutralDefault">
+          <Text variant="body" size="small" color="default1">
             {column.title}
           </Text>
         </Toggle>

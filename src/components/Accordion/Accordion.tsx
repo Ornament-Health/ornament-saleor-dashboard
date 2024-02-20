@@ -4,7 +4,7 @@ import {
   Divider,
   sprinkles,
   Text,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 
 export interface AccordionProps {
@@ -35,7 +35,7 @@ const Accordion: React.FC<AccordionProps> = ({
         className={sprinkles({
           borderStyle: "solid",
           borderWidth: 1,
-          borderColor: "neutralPlain",
+          borderColor: "default1",
           paddingX: 4,
           borderRadius: 5,
         })}

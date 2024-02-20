@@ -1,7 +1,7 @@
 // @ts-strict-ignore
 import { FileFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
-import { Box, Button, Text, TrashBinIcon } from "@saleor/macaw-ui/next";
+import { Box, Button, Text, TrashBinIcon } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -56,7 +56,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
 
   return (
     <>
-      <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" justifyContent="flex-start" alignItems="center">
         {file.label ? (
           <Box display="flex" gap={2} alignItems="center">
             <Text variant="caption">
@@ -89,7 +89,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
           </Button>
         )}
         {error && (
-          <Text variant="caption" color="textCriticalDefault">
+          <Text variant="caption" color="critical1" paddingLeft={3}>
             {helperText}
           </Text>
         )}

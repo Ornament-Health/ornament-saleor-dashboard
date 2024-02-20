@@ -3,9 +3,10 @@ import { AppLogo } from "@dashboard/apps/types";
 import { AppUrls } from "@dashboard/apps/urls";
 import { TopNavLink, TopNavWrapper } from "@dashboard/components/AppLayout";
 import useNavigator from "@dashboard/hooks/useNavigator";
-import { Box, Button, Text } from "@saleor/macaw-ui/next";
+import { Box, Button, Text } from "@saleor/macaw-ui-next";
 import React, { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
+type Logo = AppLogo | undefined;
 
 interface AppPageNavProps {
   name?: string | undefined | null;
@@ -42,7 +43,7 @@ export const AppPageNav: React.FC<AppPageNavProps> = ({
   };
 
   const logo = useMemo(
-    (): AppLogo | undefined =>
+    (): Logo =>
       appLogoUrl
         ? {
             source: appLogoUrl,
@@ -67,7 +68,7 @@ export const AppPageNav: React.FC<AppPageNavProps> = ({
               <Text variant="heading">{name}</Text>
               <Text
                 variant="caption"
-                color="textNeutralSubdued"
+                color="default2"
                 textTransform="uppercase"
               >
                 {author && (

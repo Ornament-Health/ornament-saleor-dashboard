@@ -61,6 +61,7 @@ export const OrderLineDiscountProvider: React.FC<DiscountProviderProps> = ({
 }) => {
   const intl = useIntl();
   const notify = useNotifier();
+
   const { isDialogOpen, openDialog, closeDialog } = useDiscountDialog();
   const [currentLineId, setCurrentLineId] = useState<string | null>(null);
 
@@ -94,7 +95,10 @@ export const OrderLineDiscountProvider: React.FC<DiscountProviderProps> = ({
   const addOrUpdateOrderLineDiscount =
     (orderLineId: string) => (input: OrderDiscountCommonInput) =>
       orderLineDiscountAddOrUpdate({
-        variables: { orderLineId, input: getParsedDiscountData(input) },
+        variables: {
+          orderLineId,
+          input: getParsedDiscountData(input),
+        },
       });
 
   const removeOrderLineDiscount = (orderLineId: string) => () =>

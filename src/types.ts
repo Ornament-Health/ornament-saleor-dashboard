@@ -39,6 +39,7 @@ export enum ListViews {
   PERMISSION_GROUP_LIST = "PERMISSION_GROUP_LIST",
   PRODUCT_TYPE_LIST = "PRODUCT_TYPE_LIST",
   SALES_LIST = "SALES_LIST",
+  DISCOUNTS_LIST = "DISCOUNTS_LIST",
   SHIPPING_METHODS_LIST = "SHIPPING_METHODS_LIST",
   STAFF_MEMBERS_LIST = "STAFF_MEMBERS_LIST",
   VOUCHER_LIST = "VOUCHER_LIST",
@@ -46,6 +47,9 @@ export enum ListViews {
   WEBHOOK_LIST = "WEBHOOK_LIST",
   TRANSLATION_ATTRIBUTE_VALUE_LIST = "TRANSLATION_ATTRIBUTE_VALUE_LIST",
   GIFT_CARD_LIST = "GIFT_CARD_LIST",
+  // Not strictly a list view, but there's a list of variants
+  PRODUCT_DETAILS = "PRODUCT_DETAILS",
+  VOUCHER_CODES = "VOUCHER_CODES",
 }
 
 export interface ListProps<TColumns extends string = string> {
@@ -82,7 +86,7 @@ export interface SortPage<TSortKey extends string> {
 export interface ListActionsWithoutToolbar {
   toggle: (id: string) => void;
   toggleAll: (items: Node[], selected: number) => void;
-  isChecked: (id: string) => boolean;
+  isChecked: (id: string) => boolean | undefined;
   selected: number;
 }
 export type TabListActions<TToolbars extends string> =
@@ -255,6 +259,5 @@ export enum StatusType {
   SUCCESS = "success",
 }
 
-export type RelayToFlat<T extends { edges: Array<{ node: any }> }> = Array<
-  T["edges"][0]["node"]
->;
+export type RelayToFlat<T extends { edges: Array<{ node: any }> } | null> =
+  T extends { edges: Array<{ node: infer U }> } ? U[] : null;

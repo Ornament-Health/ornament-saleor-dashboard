@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import CardTitle from "@dashboard/components/CardTitle";
 import FormSpacer from "@dashboard/components/FormSpacer";
 import RichTextEditor from "@dashboard/components/RichTextEditor";
@@ -15,7 +14,7 @@ import { useIntl } from "react-intl";
 interface CategoryDetailsFormProps {
   data: {
     name: string;
-    description: OutputData;
+    description: OutputData | null;
   };
   disabled: boolean;
   errors: ProductErrorFragment[];

@@ -1,4 +1,4 @@
-import { Box, Button, PlusIcon, RemoveIcon, Text } from "@saleor/macaw-ui/next";
+import { Box, Button, PlusIcon, RemoveIcon, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -23,7 +23,7 @@ export const ColumnPickerDynamicColumns = ({
       alignItems="center"
       marginTop={3}
     >
-      <Text variant="caption" size="small" color="textNeutralSubdued">
+      <Text variant="caption" size="small" color="default2">
         <FormattedMessage {...messages.custom} />
       </Text>
       <Button
@@ -34,41 +34,43 @@ export const ColumnPickerDynamicColumns = ({
         data-test-id="open-dynamic-search"
       />
     </Box>
-    {dynamicColumns?.map(column => (
-      <Box
-        display="flex"
-        alignItems="center"
-        gap={2}
-        padding={1}
-        key={column.id}
-      >
-        <Button
-          onClick={() => onToggle(column.id)}
-          data-test-id={`remove-dynamic-col-button-${column.title}`}
-          variant="tertiary"
-          size="small"
-          icon={<RemoveIcon color="iconNeutralPlain" />}
-          __width="20px"
-          __height="20px"
-        />
-        <Text
-          variant="body"
-          size="small"
-          color="textNeutralSubdued"
-          whiteSpace="nowrap"
+    {dynamicColumns
+      ?.filter(column => !!column.metaGroup)
+      .map(column => (
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+          padding={1}
+          key={column.id}
         >
-          {`${column.metaGroup} /`}
-        </Text>
-        <Text
-          variant="body"
-          size="small"
-          color="textNeutralDefault"
-          ellipsis
-          data-test-id={`column-name-${column.title}`}
-        >
-          {column.title}
-        </Text>
-      </Box>
-    ))}
+          <Button
+            onClick={() => onToggle(column.id)}
+            data-test-id={`remove-dynamic-col-button-${column.title}`}
+            variant="tertiary"
+            size="small"
+            icon={<RemoveIcon color="default1" />}
+            __width="20px"
+            __height="20px"
+          />
+          <Text
+            variant="body"
+            size="small"
+            color="default2"
+            whiteSpace="nowrap"
+          >
+            {`${column.metaGroup} /`}
+          </Text>
+          <Text
+            variant="body"
+            size="small"
+            color="default1"
+            ellipsis
+            data-test-id={`column-name-${column.title}`}
+          >
+            {column.pickerTitle ?? column.title}
+          </Text>
+        </Box>
+      ))}
   </Box>
 );

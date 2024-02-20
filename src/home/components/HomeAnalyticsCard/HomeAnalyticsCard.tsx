@@ -1,4 +1,4 @@
-import { Box, Text } from "@saleor/macaw-ui/next";
+import { Box, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -16,7 +16,7 @@ export const HomeAnalyticsCard = ({
   <Box
     borderWidth={1}
     borderStyle="solid"
-    borderColor="neutralPlain"
+    borderColor="default1"
     borderRadius={3}
     paddingX={3}
     paddingY={5}
@@ -28,7 +28,7 @@ export const HomeAnalyticsCard = ({
       <Text size="large" variant="body">
         {title}
       </Text>
-      <Text size="medium" variant="caption" color="iconNeutralPlain">
+      <Text size="medium" variant="caption" color="default1">
         <FormattedMessage id="zWgbGg" defaultMessage="Today" />
       </Text>
     </Box>

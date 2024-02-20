@@ -1,10 +1,10 @@
-import { Box, Divider, Skeleton } from "@saleor/macaw-ui/next";
+import { Box, Divider, Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 
 export const LoadingFiltersArea = () => (
   <Box
     padding={3}
-    backgroundColor="interactiveNeutralSecondaryHovering"
+    backgroundColor="default1Hovered"
     borderBottomLeftRadius={2}
     borderBottomRightRadius={2}
     display="flex"

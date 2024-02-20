@@ -1,4 +1,4 @@
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 
 interface DetailPageLayoutRightSidebarProps {
@@ -10,13 +10,14 @@ export const RightSidebar: React.FC<DetailPageLayoutRightSidebarProps> = ({
 }) => (
   <Box
     borderLeftStyle="solid"
-    borderColor="neutralPlain"
+    borderColor="default1"
     height="100%"
     overflowY="auto"
     className="hide-scrollbar"
     borderLeftWidth={1}
     gridColumn={"8"}
     gridRow={{ mobile: "6", tablet: "full", desktop: "full" }}
+    paddingBottom={6}
   >
     {children}
   </Box>

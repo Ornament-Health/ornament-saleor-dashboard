@@ -15,7 +15,6 @@ import {
   ProductFragment,
   SearchPagesQuery,
   SearchProductsQuery,
-  SearchWarehousesQuery,
 } from "@dashboard/graphql";
 import {
   CommonUseFormResultWithHandlers,
@@ -27,17 +26,20 @@ import {
   FormsetAtomicData,
   FormsetChange,
   FormsetData,
+  FormsetMetadataChange,
 } from "@dashboard/hooks/useFormset";
+import { AttributeValuesMetadata } from "@dashboard/products/utils/data";
 import { UseProductUpdateHandlerError } from "@dashboard/products/views/ProductUpdate/handlers/useProductUpdateHandler";
 import { FetchMoreProps, RelayToFlat, ReorderEvent } from "@dashboard/types";
 import { OutputData } from "@editorjs/editorjs";
+import { Option } from "@saleor/macaw-ui-next";
 
 import { ProductChannelsListingDialogSubmit } from "./ProductChannelsListingsDialog";
 
 export interface ProductUpdateFormData extends MetadataFormData {
   category: string | null;
   taxClassId: string;
-  collections: string[];
+  collections: Option[];
   isAvailable: boolean;
   name: string;
   rating: number;
@@ -74,7 +76,7 @@ export interface ProductUpdateSubmitData extends ProductUpdateFormData {
   attributes: AttributeInput[];
   attributesWithNewFileValue: FormsetData<null, File>;
   channels: ProductChannelListingUpdateInput;
-  collections: string[];
+  collections: Option[];
   description: OutputData;
   variants: DatagridChangeOpts;
 }
@@ -93,6 +95,9 @@ export interface ProductUpdateHandlers
     > {
   changeChannels: (id: string, data: ChannelOpts) => void;
   selectAttributeReference: FormsetChange<string[]>;
+  selectAttributeReferenceMetadata: FormsetMetadataChange<
+    AttributeValuesMetadata[]
+  >;
   selectAttributeFile: FormsetChange<File>;
   reorderAttributeValue: FormsetChange<ReorderEvent>;
   changeVariants: (data: DatagridChangeOpts) => void;
@@ -127,7 +132,6 @@ export interface UseProductUpdateFormOpts
   >;
   setSelectedTaxClass: React.Dispatch<React.SetStateAction<string>>;
   selectedCollections: MultiAutocompleteChoiceType[];
-  warehouses: RelayToFlat<SearchWarehousesQuery["search"]>;
   hasVariants: boolean;
   referencePages: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts: RelayToFlat<SearchProductsQuery["search"]>;

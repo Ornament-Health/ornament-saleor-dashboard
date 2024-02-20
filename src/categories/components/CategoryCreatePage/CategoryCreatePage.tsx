@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import { CardSpacer } from "@dashboard/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
@@ -8,7 +7,7 @@ import Savebar from "@dashboard/components/Savebar";
 import { SeoForm } from "@dashboard/components/SeoForm";
 import { ProductErrorFragment } from "@dashboard/graphql";
 import useNavigator from "@dashboard/hooks/useNavigator";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -79,7 +78,7 @@ export const CategoryCreatePage: React.FC<CategoryCreatePageProps> = ({
             onCancel={() => navigate(backUrl)}
             onSubmit={submit}
             state={saveButtonBarState}
-            disabled={isSaveDisabled}
+            disabled={!!isSaveDisabled}
           />
         </DetailPageLayout>
       )}

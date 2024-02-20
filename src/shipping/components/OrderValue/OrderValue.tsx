@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { ChannelShippingData } from "@dashboard/channels/utils";
 import CardTitle from "@dashboard/components/CardTitle";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
@@ -9,6 +8,7 @@ import TableRowLink from "@dashboard/components/TableRowLink";
 import { ShippingChannelsErrorFragment } from "@dashboard/graphql";
 import { ChangeEvent } from "@dashboard/hooks/useForm";
 import {
+  ChannelError,
   getFormChannelError,
   getFormChannelErrors,
 } from "@dashboard/utils/errors";
@@ -22,6 +22,7 @@ import { useStyles } from "./styles";
 interface Value {
   maxValue: string;
   minValue: string;
+  price: string;
 }
 export interface OrderValueProps {
   channels: ChannelShippingData[];
@@ -46,11 +47,11 @@ export const OrderValue: React.FC<OrderValueProps> = ({
   const intl = useIntl();
   const formErrors = getFormChannelErrors(
     ["maximumOrderPrice", "minimumOrderPrice"],
-    errors,
+    errors as ChannelError[],
   );
 
   return (
-    <Card>
+    <Card data-test-id="order-value">
       <CardTitle
         title={intl.formatMessage({
           id: "yatGsm",
@@ -61,6 +62,7 @@ export const OrderValue: React.FC<OrderValueProps> = ({
       <div className={classes.content}>
         <div className={classes.subheader}>
           <ControlledCheckbox
+            data-test-id="order-value-checkbox"
             name="orderValueRestricted"
             label={
               <>
@@ -132,6 +134,7 @@ export const OrderValue: React.FC<OrderValueProps> = ({
                     </TableCell>
                     <TableCell className={classes.price}>
                       <PriceField
+                        data-test-id="min-value-price-input"
                         disabled={disabled}
                         error={!!minError}
                         label={intl.formatMessage({
@@ -154,6 +157,7 @@ export const OrderValue: React.FC<OrderValueProps> = ({
                     </TableCell>
                     <TableCell className={classes.price}>
                       <PriceField
+                        data-test-id="max-value-price-input"
                         disabled={disabled}
                         error={!!maxError}
                         label={intl.formatMessage({
@@ -162,7 +166,7 @@ export const OrderValue: React.FC<OrderValueProps> = ({
                         })}
                         name={`maxValue:${channel.name}`}
                         value={channel.maxValue}
-                        InputProps={{ inputProps: { min: channel.minValue } }}
+                        minValue={channel.minValue}
                         onChange={e =>
                           onChannelsChange(channel.id, {
                             ...channel,

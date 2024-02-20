@@ -1,11 +1,12 @@
 // @ts-strict-ignore
+import { FetchResult } from "@apollo/client";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
 import {
   CreateManualTransactionCaptureMutation,
   CreateManualTransactionCaptureMutationVariables,
   FulfillmentFragment,
   FulfillmentStatus,
-  OrderDetailsQueryResult,
+  OrderDetailsWithMetadataQueryResult,
   OrderFulfillmentApproveMutation,
   OrderFulfillmentApproveMutationVariables,
   OrderTransactionRequestActionMutation,
@@ -28,6 +29,7 @@ import OrderFulfillmentApproveDialog from "@dashboard/orders/components/OrderFul
 import OrderFulfillStockExceededDialog from "@dashboard/orders/components/OrderFulfillStockExceededDialog";
 import OrderInvoiceEmailSendDialog from "@dashboard/orders/components/OrderInvoiceEmailSendDialog";
 import { OrderManualTransactionDialog } from "@dashboard/orders/components/OrderManualTransactionDialog";
+import { OrderMetadataDialog } from "@dashboard/orders/components/OrderMetadataDialog";
 import { OrderTransactionActionDialog } from "@dashboard/orders/components/OrderTransactionActionDialog/OrderTransactionActionDialog";
 import {
   isAnyAddressEditModalOpen,
@@ -64,7 +66,7 @@ import {
 interface OrderNormalDetailsProps {
   id: string;
   params: OrderUrlQueryParams;
-  data: OrderDetailsQueryResult["data"];
+  data: OrderDetailsWithMetadataQueryResult["data"];
   loading: boolean;
   orderAddNote: any;
   orderInvoiceRequest: any;
@@ -148,7 +150,7 @@ export const OrderNormalDetails: React.FC<OrderNormalDetailsProps> = ({
     });
   const handleCustomerChangeAddresses = async (
     data: Partial<OrderCustomerAddressesEditDialogOutput>,
-  ): Promise<any> =>
+  ): Promise<FetchResult<OrderUpdateMutation>> =>
     orderUpdate.mutate({
       id,
       input: data,
@@ -219,6 +221,7 @@ export const OrderNormalDetails: React.FC<OrderNormalDetailsProps> = ({
         )}
         shippingMethods={data?.order?.shippingMethods || []}
         onOrderCancel={() => openModal("cancel")}
+        onShowMetadata={id => openModal("view-metadata", { id })}
         onTransactionAction={(id, action) =>
           openModal("transaction-action", {
             type: action,
@@ -307,6 +310,11 @@ export const OrderNormalDetails: React.FC<OrderNormalDetailsProps> = ({
             transactionId: params.id,
           })
         }
+      />
+      <OrderMetadataDialog
+        open={params.action === "view-metadata"}
+        onClose={closeModal}
+        data={order?.lines?.find(orderLine => orderLine.id === params.id)}
       />
       <OrderMarkAsPaidDialog
         confirmButtonState={orderPaymentMarkAsPaid.opts.status}

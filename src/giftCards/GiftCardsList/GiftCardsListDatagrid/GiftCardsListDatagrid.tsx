@@ -11,7 +11,7 @@ import { giftCardListUrl, giftCardUrl } from "@dashboard/giftCards/urls";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import usePaginator from "@dashboard/hooks/usePaginator";
 import { Item } from "@glideapps/glide-data-grid";
-import { Box, useTheme } from "@saleor/macaw-ui/next";
+import { Box, useTheme } from "@saleor/macaw-ui-next";
 import isEqual from "lodash/isEqual";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useIntl } from "react-intl";
@@ -76,17 +76,11 @@ export const GiftCardsListDatagrid = () => {
     onSave: onColumnChange,
   });
 
-  const { theme: currentTheme, themeValues } = useTheme();
+  const { theme: currentTheme } = useTheme();
 
   const getCellContent = useCallback(
-    createGetCellContent(
-      giftCards,
-      visibleColumns,
-      intl,
-      themeValues,
-      currentTheme,
-    ),
-    [giftCards, visibleColumns, themeValues, currentTheme],
+    createGetCellContent(giftCards, visibleColumns, intl, currentTheme),
+    [giftCards, visibleColumns, currentTheme],
   );
 
   const handleHeaderClick = useCallback(
@@ -169,7 +163,7 @@ export const GiftCardsListDatagrid = () => {
       <Datagrid
         readonly
         loading={loading}
-        rowMarkers="checkbox"
+        rowMarkers="checkbox-visible"
         columnSelect="single"
         hasRowHover={true}
         onColumnMoved={handlers.onMove}

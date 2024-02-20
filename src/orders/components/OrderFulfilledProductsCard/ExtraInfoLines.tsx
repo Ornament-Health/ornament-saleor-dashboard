@@ -1,7 +1,7 @@
 import { FulfillmentStatus, OrderDetailsFragment } from "@dashboard/graphql";
 import { getStringOrPlaceholder } from "@dashboard/misc";
 import { Typography } from "@material-ui/core";
-import { Box } from "@saleor/macaw-ui/next";
+import { Box } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -26,7 +26,7 @@ const ExtraInfoLines: React.FC<ExtraInfoLinesProps> = ({ fulfillment }) => {
   return (
     <Box
       paddingY={4}
-      borderColor="neutralHighlight"
+      borderColor="default1"
       borderBottomStyle={"solid"}
       borderBottomWidth={1}
     >

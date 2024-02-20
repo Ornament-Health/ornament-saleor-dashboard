@@ -10,7 +10,7 @@ import {
   MoreOptionsIcon,
   sprinkles,
   Text,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React, { useEffect, useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
@@ -74,8 +74,8 @@ export const UserControls = () => {
             <List
               padding={2}
               borderRadius={4}
-              boxShadow="overlay"
-              backgroundColor="surfaceNeutralPlain"
+              boxShadow="defaultOverlay"
+              backgroundColor="default1"
             >
               <Dropdown.Item>
                 <List.Item

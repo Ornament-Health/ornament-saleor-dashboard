@@ -1,6 +1,7 @@
 import { PLACEHOLDER } from "@dashboard/components/Datagrid/const";
 import {
   moneyCell,
+  numberCell,
   readonlyTextCell,
 } from "@dashboard/components/Datagrid/customCells/cells";
 import { AvailableColumn } from "@dashboard/components/Datagrid/types";
@@ -22,7 +23,7 @@ export const vouchersListStaticColumnsAdapter = (
   [
     {
       id: "code",
-      title: intl.formatMessage(columnsMessages.code),
+      title: intl.formatMessage(columnsMessages.voucher),
       width: 350,
     },
     {
@@ -82,11 +83,11 @@ export const createGetCellContent =
 
     switch (columnId) {
       case "code":
-        return readonlyTextCell(rowData?.code ?? PLACEHOLDER);
+        return readonlyTextCell(rowData?.name ?? PLACEHOLDER);
       case "min-spent":
-        return rowData?.code && hasChannelsLoaded
+        return hasChannelsLoaded
           ? moneyCell(
-              channel?.minSpent?.amount ?? "",
+              channel?.minSpent?.amount ?? null,
               channel?.minSpent?.currency ?? "",
               {
                 readonly: true,
@@ -127,17 +128,15 @@ function getVoucherValueCell(
 ) {
   const hasChannelsLoaded = voucher?.channelListings?.length;
 
-  if (!hasChannelsLoaded) {
+  if (!hasChannelsLoaded || !channel) {
     return readonlyTextCell(PLACEHOLDER);
   }
 
   if (voucher?.discountValueType === "FIXED") {
-    return moneyCell(channel?.discountValue ?? "", channel?.currency ?? "", {
+    return moneyCell(channel?.discountValue, channel?.currency ?? "", {
       readonly: true,
     });
   }
 
-  return moneyCell(channel?.discountValue ?? "", "%", {
-    readonly: true,
-  });
+  return numberCell(channel?.discountValue, { format: "percent" });
 }

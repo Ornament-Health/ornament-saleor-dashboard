@@ -7,7 +7,7 @@ import { commonMessages } from "@dashboard/intl";
 import { getFormErrors, getProductErrorMessage } from "@dashboard/utils/errors";
 import { useRichTextContext } from "@dashboard/utils/richText/context";
 import { OutputData } from "@editorjs/editorjs";
-import { Box, Input } from "@saleor/macaw-ui/next";
+import { Box, Input } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -39,7 +39,7 @@ export const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({
       <DashboardCard.Title>
         {intl.formatMessage(commonMessages.generalInformations)}
       </DashboardCard.Title>
-      <DashboardCard.Content display="grid" gap={2} paddingX={5}>
+      <DashboardCard.Content display="grid" gap={2}>
         <Input
           label={intl.formatMessage({
             id: "6AMFki",

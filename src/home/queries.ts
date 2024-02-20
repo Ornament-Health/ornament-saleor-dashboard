@@ -1,10 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const home = gql`
-  query Home(
+export const homeAnalitics = gql`
+  query HomeAnalitics(
     $channel: String!
-    $datePeriod: DateRangeInput!
-    $hasPermissionToManageProducts: Boolean!
     $hasPermissionToManageOrders: Boolean!
   ) {
     salesToday: ordersTotal(period: TODAY, channel: $channel)
@@ -14,28 +12,41 @@ export const home = gql`
         currency
       }
     }
-    ordersToday: orders(filter: { created: $datePeriod }, channel: $channel)
+  }
+`;
+
+export const homeActivities = gql`
+  query HomeActivities($hasPermissionToManageOrders: Boolean!) {
+    activities: homepageEvents(last: 10)
       @include(if: $hasPermissionToManageOrders) {
-      totalCount
+      edges {
+        node {
+          amount
+          composedId
+          date
+          email
+          emailType
+          id
+          message
+          orderNumber
+          oversoldItems
+          quantity
+          type
+          user {
+            id
+            email
+          }
+        }
+      }
     }
-    ordersToFulfill: orders(
-      filter: { status: READY_TO_FULFILL }
-      channel: $channel
-    ) @include(if: $hasPermissionToManageOrders) {
-      totalCount
-    }
-    ordersToCapture: orders(
-      filter: { status: READY_TO_CAPTURE }
-      channel: $channel
-    ) @include(if: $hasPermissionToManageOrders) {
-      totalCount
-    }
-    productsOutOfStock: products(
-      filter: { stockAvailability: OUT_OF_STOCK }
-      channel: $channel
-    ) {
-      totalCount
-    }
+  }
+`;
+
+export const homeTopProducts = gql`
+  query HomeTopProducts(
+    $channel: String!
+    $hasPermissionToManageProducts: Boolean!
+  ) {
     productTopToday: reportProductSales(
       period: TODAY
       first: 5
@@ -67,27 +78,16 @@ export const home = gql`
         }
       }
     }
-    activities: homepageEvents(last: 10)
-      @include(if: $hasPermissionToManageOrders) {
-      edges {
-        node {
-          amount
-          composedId
-          date
-          email
-          emailType
-          id
-          message
-          orderNumber
-          oversoldItems
-          quantity
-          type
-          user {
-            id
-            email
-          }
-        }
-      }
+  }
+`;
+
+export const homeNotifications = gql`
+  query homeNotifications($channel: String!) {
+    productsOutOfStock: products(
+      filter: { stockAvailability: OUT_OF_STOCK }
+      channel: $channel
+    ) {
+      totalCount
     }
   }
 `;

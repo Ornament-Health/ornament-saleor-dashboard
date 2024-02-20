@@ -1,4 +1,4 @@
-import { Box, Drawer, MenuIcon } from "@saleor/macaw-ui/next";
+import { Box, Drawer, MenuIcon } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { SidebarContent } from "./Content";
@@ -17,7 +17,7 @@ export const Sidebar = () => (
           <Box
             as="button"
             borderWidth={0}
-            backgroundColor="interactiveNeutralHighlightDefault"
+            backgroundColor="default1"
             cursor="pointer"
             data-test-id="sidebar-drawer-open"
           >
@@ -25,7 +25,7 @@ export const Sidebar = () => (
           </Box>
         </Drawer.Trigger>
         <Drawer.Content
-          backgroundColor="subdued"
+          backgroundColor="default2"
           data-test-id="sidebar-drawer-content"
           paddingTop={0}
         >

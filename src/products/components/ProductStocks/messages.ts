@@ -11,6 +11,10 @@ export const messages = defineMessages({
     defaultMessage: "SKU (Stock Keeping Unit)",
     description: "input label",
   },
+  stock: {
+    id: "vuKrlW",
+    defaultMessage: "Stock",
+  },
   variantInPreorder: {
     id: "eAFU/E",
     defaultMessage: "Variant currently in preorder",
@@ -72,13 +76,13 @@ export const messages = defineMessages({
     description: "info text",
   },
   endDateCancel: {
-    id: "v9ILn/",
-    defaultMessage: "CANCEL END DATE",
+    id: "bk2M4q",
+    defaultMessage: "Cancel end date",
     description: "button",
   },
   endDateSetup: {
-    id: "9IWg/f",
-    defaultMessage: "SETUP END DATE",
+    id: "tqJwfo",
+    defaultMessage: "Set end date",
     description: "button",
   },
   preorderProductsAvailability: {

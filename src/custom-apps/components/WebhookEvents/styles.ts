@@ -1,5 +1,5 @@
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 
 export const useStyles = makeStyles<{ checkbox?: string }>(
   theme => ({
@@ -9,7 +9,7 @@ export const useStyles = makeStyles<{ checkbox?: string }>(
     },
     objectsWrapper: {
       borderRight: "1px solid",
-      borderRightColor: vars.colors.border.neutralPlain,
+      borderRightColor: vars.colors.border.default1,
       padding: theme.spacing(3),
     },
     listHeader: {

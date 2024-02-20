@@ -12,7 +12,7 @@ import { TablePaginationWithContext } from "@dashboard/components/TablePaginatio
 import { commonTooltipMessages } from "@dashboard/components/TooltipTableCellHeader/messages";
 import { ListProps, SortPage } from "@dashboard/types";
 import { Item } from "@glideapps/glide-data-grid";
-import { Box, useTheme } from "@saleor/macaw-ui/next";
+import { Box, useTheme } from "@saleor/macaw-ui-next";
 import React, { useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
 
@@ -53,7 +53,7 @@ export const CollectionListDatagrid = ({
   selectedChannelId,
 }: CollectionListDatagridProps) => {
   const intl = useIntl();
-  const { theme: currentTheme, themeValues } = useTheme();
+  const { theme: currentTheme } = useTheme();
   const datagrid = useDatagridChangeState();
 
   const collectionListStaticColumns = useMemo(
@@ -89,16 +89,8 @@ export const CollectionListDatagrid = ({
       columns: visibleColumns,
       selectedChannelId,
       currentTheme,
-      theme: themeValues,
     }),
-    [
-      collections,
-      intl,
-      visibleColumns,
-      selectedChannelId,
-      currentTheme,
-      themeValues,
-    ],
+    [collections, intl, visibleColumns, selectedChannelId, currentTheme],
   );
 
   const handleRowClick = useCallback(
@@ -155,7 +147,7 @@ export const CollectionListDatagrid = ({
       <Datagrid
         readonly
         loading={loading}
-        rowMarkers="checkbox"
+        rowMarkers="checkbox-visible"
         columnSelect="single"
         hasRowHover={hasRowHover}
         onColumnMoved={handlers.onMove}

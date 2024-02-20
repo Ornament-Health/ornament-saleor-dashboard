@@ -28,7 +28,7 @@ import {
   StorefrontIcon,
   TranslationsIcon,
   VouchersIcon,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import isEmpty from "lodash/isEmpty";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -37,7 +37,7 @@ import { SidebarMenuItem } from "./types";
 import { mapToExtensionsItems } from "./utils";
 
 const iconSettings = {
-  color: "iconNeutralSubdued",
+  color: "default2",
   size: "medium",
 } as const;
 

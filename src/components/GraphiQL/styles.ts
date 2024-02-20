@@ -4,7 +4,7 @@ import {
   useTheme as useGraphiQLTheme,
 } from "@graphiql/react";
 import { makeStyles } from "@saleor/macaw-ui";
-import { useTheme, vars } from "@saleor/macaw-ui/next";
+import { useTheme, vars } from "@saleor/macaw-ui-next";
 import { useEffect } from "react";
 
 export const useStyles = makeStyles(
@@ -77,7 +77,7 @@ export const useDashboardTheme = () => {
     },
   } = useTheme();
 
-  const match = background.plain.match(/hsla\(([^)]+)\)/);
+  const match = background.default1.match(/hsla\(([^)]+)\)/);
 
   const rootStyle = {
     "--font-size-body": vars.fontSize.bodyMedium,
@@ -87,7 +87,7 @@ export const useDashboardTheme = () => {
     "--font-weight-regular": vars.fontWeight.bodyLarge,
     "--font-size-hint": vars.fontSize.bodyEmpLarge,
     "--font-size-inline-code": vars.fontSize.bodySmall,
-    "--color-base": match ? match[1] : background.plain,
+    "--color-base": match ? match[1] : background.default1,
   } as React.CSSProperties;
 
   return { rootStyle };

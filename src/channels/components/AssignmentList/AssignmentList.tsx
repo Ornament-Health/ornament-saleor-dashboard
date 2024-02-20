@@ -1,8 +1,7 @@
-// @ts-strict-ignore
 import Skeleton from "@dashboard/components/Skeleton";
 import { ReorderEvent } from "@dashboard/types";
 import { Typography } from "@material-ui/core";
-import { Accordion, Divider } from "@saleor/macaw-ui/next";
+import { Accordion, Divider } from "@saleor/macaw-ui-next";
 import React from "react";
 import { defineMessages, useIntl } from "react-intl";
 
@@ -39,7 +38,10 @@ const AssignmentList: React.FC<AssignmentListProps> = props => {
 
   const handleSortEnd = (event: ReorderEvent) => {
     document.body.classList.remove(classes.grabbing);
-    reorderItem(event);
+
+    if (reorderItem) {
+      reorderItem(event);
+    }
   };
 
   const hasMoreItemsToBeSelected = totalCount !== items.length;

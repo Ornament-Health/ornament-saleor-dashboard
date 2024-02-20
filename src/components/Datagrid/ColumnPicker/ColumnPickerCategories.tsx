@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@saleor/macaw-ui/next";
+import { Box, Button, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -30,7 +30,7 @@ export const ColumnPickerCategories = ({
 
   return (
     <Box
-      backgroundColor="subdued"
+      backgroundColor="default2"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"

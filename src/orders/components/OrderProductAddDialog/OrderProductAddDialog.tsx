@@ -32,7 +32,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { Text } from "@saleor/macaw-ui/next";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -140,7 +140,7 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
         />
       </DialogTitle>
       <DialogContent className={classes.subtitle}>
-        <Text variant="caption" color="textNeutralSubdued">
+        <Text variant="caption" color="default2">
           <FormattedMessage {...messages.subtitle} />
         </Text>
       </DialogContent>
@@ -282,10 +282,11 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
         )}
       </DialogContent>
       <DialogActions>
-        <BackButton onClick={onClose} />
+        <BackButton onClick={onClose} data-test-id="back-button" />
         <ConfirmButton
           transitionState={confirmButtonState}
           type="submit"
+          data-test-id="confirm-button"
           onClick={handleSubmit}
           disabled={variants.length === 0}
         >

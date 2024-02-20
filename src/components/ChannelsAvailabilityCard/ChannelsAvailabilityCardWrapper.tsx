@@ -1,6 +1,6 @@
 import RequirePermissions from "@dashboard/components/RequirePermissions";
 import { PermissionEnum } from "@dashboard/graphql";
-import { Box, Button, Text } from "@saleor/macaw-ui/next";
+import { Box, Button, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -41,7 +41,7 @@ export const ChannelsAvailabilityCardWrapper: React.FC<
   return (
     <DashboardCard>
       <DashboardCard.Title>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" justifyContent="space-between">
           <Box display={"flex"} flexDirection={"column"} gap={1}>
             <div>
               {intl.formatMessage({
@@ -51,7 +51,13 @@ export const ChannelsAvailabilityCardWrapper: React.FC<
               })}
             </div>
             {!!channelsAvailabilityText && (
-              <Text variant={"caption"}>{channelsAvailabilityText}</Text>
+              <Text
+                variant="caption"
+                color="default2"
+                data-test-id="product-available-in-channels-text"
+              >
+                {channelsAvailabilityText}
+              </Text>
             )}
           </Box>
           <RequirePermissions requiredPermissions={managePermissions}>

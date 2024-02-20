@@ -1,11 +1,11 @@
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui/next";
+import { vars } from "@saleor/macaw-ui-next";
 
 const useStyles = makeStyles(
   theme => {
     const hover = {
       "&:hover": {
-        background: vars.colors.background.interactiveNeutralHighlightHovering,
+        background: vars.colors.background.default1Hovered,
       },
     };
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles(
           minHeight: 24,
         },
         "& .ce-block--selected .ce-block__content": {
-          background: `${vars.colors.background.interactiveNeutralHighlightPressing} !important`,
+          background: `${vars.colors.background.default1Pressed} !important`,
         },
         "& .ce-block__content": {
           margin: 0,
@@ -29,7 +29,7 @@ const useStyles = makeStyles(
           ...hover,
         },
         "& .ce-conversion-tool--focused": {
-          background: `${vars.colors.background.interactiveNeutralHighlightHovering} !important`,
+          background: `${vars.colors.background.default1Hovered} !important`,
         },
         "& .ce-conversion-tool__icon": {
           background: "none",
@@ -76,7 +76,7 @@ const useStyles = makeStyles(
           ...hover,
         },
         "& .ce-popover": {
-          backgroundColor: vars.colors.background.surfaceNeutralPlain,
+          backgroundColor: vars.colors.background.default1,
           position: "absolute",
           top: 0,
           left: "-186px",
@@ -89,8 +89,8 @@ const useStyles = makeStyles(
           ...hover,
         },
         "& .ce-popover__item-icon": {
-          color: vars.colors.foreground.iconNeutralDefault,
-          backgroundColor: vars.colors.background.surfaceNeutralPlain,
+          color: vars.colors.text.default1,
+          backgroundColor: vars.colors.background.default1,
         },
 
         "& .codex-editor__loader": {
@@ -104,61 +104,63 @@ const useStyles = makeStyles(
           paddingBottom: "0 !important",
         },
         "& a": {
-          color: vars.colors.foreground.textBrandDefault,
+          color: vars.colors.text.accent1,
         },
         "& .ce-popover__item--focused": {
-          background: `${vars.colors.background.interactiveNeutralHighlightHovering} !important`,
+          background: `${vars.colors.background.default1Hovered} !important`,
         },
         "& .cdx-search-field": {
-          backgroundColor: vars.colors.background.surfaceNeutralPlain,
+          backgroundColor: vars.colors.background.default1,
         },
       },
       root: {
-        border: "1px solid transparent",
+        border: `1px solid ${vars.colors.border.default1}`,
         borderRadius: vars.borderRadius[3],
         fontSize: vars.fontSize.bodyMedium,
-        backgroundColor: vars.colors.background.surfaceNeutralHighlight,
-        minHeight: 56,
         position: "relative",
         transition: theme.transitions.duration.short + "ms",
-        padding: theme.spacing(3, 2),
-        paddingBottom: theme.spacing(),
-        paddingLeft: vars.spacing[4],
+        padding: theme.spacing(0, 2),
+        paddingLeft: vars.spacing[2],
         "&:hover": {
-          border: `1px solid ${vars.colors.border.neutralHighlight}`,
+          border: `1px solid ${vars.colors.border.default1}`,
         },
       },
       rootActive: {
-        border: `1px solid ${vars.colors.border.brandSubdued} !important`,
-        backgroundColor: `${vars.colors.background.interactiveNeutralHighlightDefault} !important`,
+        border: `1px solid ${vars.colors.border.accent1} !important`,
+        backgroundColor: `${vars.colors.background.default1} !important`,
       },
       rootDisabled: {
         pointerEvents: "none",
-        backgroundColor: vars.colors.background.surfaceNeutralPlain,
-        border: `1px solid ${vars.colors.border.neutralHighlight}`,
-        color: vars.colors.foreground.textNeutralDisabled,
+        backgroundColor: vars.colors.background.default1,
+        border: `1px solid ${vars.colors.border.default1}`,
+        color: vars.colors.text.defaultDisabled,
       },
       rootError: {
-        backgroundColor: vars.colors.background.surfaceCriticalSubdued,
+        backgroundColor: vars.colors.background.critical2,
       },
       rootStatic: {
         fontSize: theme.typography.body1.fontSize,
       },
       labelRoot: {
-        marginLeft: "-6px",
-        color: `${vars.colors.foreground.textNeutralSubdued} !important`,
+        marginLeft: "-4px",
+        color: `${vars.colors.text.default2} !important`,
       },
       labelError: {
-        color: `${vars.colors.foreground.textCriticalSubdued} !important`,
+        color: `${vars.colors.text.critical2} !important`,
       },
       rootErrorFocus: {
         border: "1px solid transparent !important",
       },
       labelDisabled: {
-        color: `${vars.colors.foreground.textNeutralDisabled} !important`,
+        color: `${vars.colors.text.defaultDisabled} !important`,
       },
       rootTyped: {
-        backgroundColor: vars.colors.background.surfaceNeutralPlain,
+        backgroundColor: vars.colors.background.default1,
+      },
+      rootHasLabel: {
+        minHeight: 56,
+        padding: `${vars.spacing[6]} ${vars.spacing[2]}`,
+        paddingBottom: vars.spacing[1.5],
       },
     };
   },

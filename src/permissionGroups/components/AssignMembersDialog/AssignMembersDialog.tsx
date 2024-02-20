@@ -38,7 +38,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { Box, Text } from "@saleor/macaw-ui/next";
+import { Box, Text } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -250,7 +250,7 @@ const AssignMembersDialog: React.FC<AssignMembersDialogProps> = ({
                           justifyContent="center"
                         >
                           <Text>{getUserName(member) || <Skeleton />}</Text>
-                          <Text variant="caption" color="textNeutralSubdued">
+                          <Text variant="caption" color="default2">
                             {!!member ? (
                               member.isActive ? (
                                 intl.formatMessage(messages.staffActive)

@@ -2,11 +2,12 @@ import {
   Box,
   Button,
   Popover,
+  PopoverContentProps,
   sprinkles,
   TableEditIcon,
   Text,
   vars,
-} from "@saleor/macaw-ui/next";
+} from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -23,6 +24,8 @@ export interface ColumnPickerProps {
   selectedColumns: string[];
   columnCategories?: ColumnCategory[];
   onToggle: (columnId: string) => void;
+  side?: PopoverContentProps["side"];
+  align?: PopoverContentProps["align"];
 }
 
 export const ColumnPicker = ({
@@ -31,6 +34,8 @@ export const ColumnPicker = ({
   columnCategories,
   dynamicColumns,
   onToggle,
+  side,
+  align,
 }: ColumnPickerProps) => {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -51,16 +56,16 @@ export const ColumnPicker = ({
           icon={<TableEditIcon />}
           pointerEvents={pickerOpen ? "none" : undefined}
           __backgroundColor={
-            pickerOpen
-              ? vars.colors.background.interactiveNeutralSecondaryPressing
-              : undefined
+            pickerOpen ? vars.colors.background.default1Pressed : undefined
           }
-          __borderColor={
-            pickerOpen ? vars.colors.border.neutralSubdued : undefined
-          }
+          __borderColor={pickerOpen ? vars.colors.border.default2 : undefined}
         />
       </Popover.Trigger>
-      <Popover.Content className={sprinkles({ margin: 1.5 })} align="end">
+      <Popover.Content
+        className={sprinkles({ margin: 1.5 })}
+        align={align}
+        side={side}
+      >
         <Box
           display="grid"
           gridTemplateColumns={expanded ? 2 : 1}
@@ -76,14 +81,14 @@ export const ColumnPicker = ({
           )}
           <Box
             __width="320px"
-            __maxHeight="70vh"
+            __maxHeight="50vh"
             __minHeight={expanded ? "502px" : undefined}
-            backgroundColor="plain"
+            backgroundColor="default1"
             padding={4}
             overflow="scroll"
           >
             <Box marginBottom={3}>
-              <Text variant="caption" size="small" color="textNeutralSubdued">
+              <Text variant="caption" size="small" color="default2">
                 <FormattedMessage {...messages.column} />
               </Text>
             </Box>

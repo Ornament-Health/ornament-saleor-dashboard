@@ -10,6 +10,7 @@ import {
   OrderAction,
   OrderDetailsFragment,
   OrderDetailsQuery,
+  OrderDetailsWithMetadataFragment,
   OrderEventsEmailsEnum,
   OrderEventsEnum,
   OrderFulfillLineFragment,
@@ -914,7 +915,9 @@ export const orders: RelayToFlat<OrderListQuery["orders"]> = [
 
 export const ORDER_AMOUNT = 234.93;
 
-export const order = (placeholder: string): OrderDetailsFragment => ({
+export const order = (
+  placeholder: string,
+): OrderDetailsWithMetadataFragment => ({
   __typename: "Order",
   giftCards: [],
   actions: [
@@ -1291,6 +1294,8 @@ export const order = (placeholder: string): OrderDetailsFragment => ({
               name: "XS",
               quantityAvailable: 10,
               preorder: null,
+              metadata: [],
+              privateMetadata: [],
               product: {
                 __typename: "Product",
                 id: "UHJvZHVjdDo1",
@@ -1418,6 +1423,8 @@ export const order = (placeholder: string): OrderDetailsFragment => ({
               name: "XS",
               quantityAvailable: 10,
               preorder: null,
+              metadata: [],
+              privateMetadata: [],
               product: {
                 __typename: "Product",
                 id: "UHJvZHVjdDo1",
@@ -1551,6 +1558,8 @@ export const order = (placeholder: string): OrderDetailsFragment => ({
         name: "Soft",
         quantityAvailable: 10,
         preorder: null,
+        metadata: [],
+        privateMetadata: [],
         product: {
           __typename: "Product",
           id: "UHJvZHVjdDo1",
@@ -1661,6 +1670,8 @@ export const order = (placeholder: string): OrderDetailsFragment => ({
         name: "XXL",
         quantityAvailable: 10,
         preorder: null,
+        metadata: [],
+        privateMetadata: [],
         product: {
           __typename: "Product",
           id: "UHJvZHVjdDo1",
@@ -1802,7 +1813,9 @@ export const order = (placeholder: string): OrderDetailsFragment => ({
   transactions: orderTransactions,
 });
 
-export const draftOrder = (placeholder: string): OrderDetailsFragment => ({
+export const draftOrder = (
+  placeholder: string,
+): OrderDetailsWithMetadataFragment => ({
   __typename: "Order" as "Order",
   giftCards: [],
   actions: [OrderAction.CAPTURE],
@@ -1936,6 +1949,8 @@ export const draftOrder = (placeholder: string): OrderDetailsFragment => ({
         name: "Hard",
         quantityAvailable: 10,
         preorder: null,
+        metadata: [],
+        privateMetadata: [],
         product: {
           __typename: "Product",
           id: "UHJvZHVjdDo1",
@@ -2046,6 +2061,8 @@ export const draftOrder = (placeholder: string): OrderDetailsFragment => ({
         name: "15-1337",
         quantityAvailable: 10,
         preorder: null,
+        metadata: [],
+        privateMetadata: [],
         product: {
           __typename: "Product",
           id: "UHJvZHVjdDo1",

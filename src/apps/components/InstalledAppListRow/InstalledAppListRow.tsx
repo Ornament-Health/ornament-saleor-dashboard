@@ -3,7 +3,7 @@ import { InstalledApp } from "@dashboard/apps/types";
 import { AppPaths, AppUrls } from "@dashboard/apps/urls";
 import { isAppInTunnel } from "@dashboard/apps/utils";
 import Link from "@dashboard/components/Link";
-import { Box, Chip, List, sprinkles, Text } from "@saleor/macaw-ui/next";
+import { Box, Chip, List, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useLocation } from "react-router";
@@ -39,14 +39,14 @@ export const InstalledAppListRow: React.FC<InstalledApp> = props => {
         padding={4}
         borderTopStyle="solid"
         borderWidth={1}
-        borderColor="neutralPlain"
+        borderColor="default1"
         justifyContent="space-between"
         flexDirection="row"
         flexWrap="wrap"
         transition={"ease"}
         backgroundColor={{
-          default: !app.isActive ? "surfaceNeutralSubdued" : undefined,
-          hover: "surfaceNeutralSubdued",
+          default: !app.isActive ? "default2" : undefined,
+          hover: "default2",
         }}
         cursor={"pointer"}
       >
@@ -65,7 +65,7 @@ export const InstalledAppListRow: React.FC<InstalledApp> = props => {
           >
             <Box display="flex" gap={2}>
               <Text variant="bodyStrong">{app.name}</Text>
-              <Text variant="body" color="textNeutralSubdued">
+              <Text variant="body" color="default2">
                 {`v${app.version}`}
               </Text>
               {isExternal && (
@@ -78,7 +78,7 @@ export const InstalledAppListRow: React.FC<InstalledApp> = props => {
               {app.manifestUrl && isAppInTunnel(app.manifestUrl) ? (
                 <Text
                   variant="caption"
-                  color="textNeutralSubdued"
+                  color="default2"
                   data-test-id="app-tunnel-label"
                 >
                   {`(${intl.formatMessage(messages.tunnelDevelopment)})`}
@@ -99,7 +99,7 @@ export const InstalledAppListRow: React.FC<InstalledApp> = props => {
         >
           <Box marginLeft="auto" display="flex" alignItems="center" gap={5}>
             {!app.isActive && (
-              <Text variant="caption" color="textNeutralSubdued">
+              <Text variant="caption" color="default2">
                 <FormattedMessage {...messages.appDisabled} />
               </Text>
             )}

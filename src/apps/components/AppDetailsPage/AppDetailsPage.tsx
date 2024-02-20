@@ -1,6 +1,6 @@
 import { AppQuery } from "@dashboard/graphql";
 import errorTracker from "@dashboard/services/errorTracking";
-import { Box, Text } from "@saleor/macaw-ui/next";
+import { Box, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -49,7 +49,7 @@ export const AppDetailsPage: React.FC<AppDetailsPageProps> = ({
         gridTemplateColumns={{ desktop: 2, tablet: 2, mobile: 1 }}
       >
         <Box
-          borderColor="neutralHighlight"
+          borderColor="default1"
           borderRightStyle={"solid"}
           borderRightWidth={1}
         >
@@ -57,7 +57,7 @@ export const AppDetailsPage: React.FC<AppDetailsPageProps> = ({
             padding={6}
             borderBottomStyle="solid"
             borderBottomWidth={1}
-            borderColor="neutralHighlight"
+            borderColor="default1"
             aboutApp={data?.aboutApp}
             loading={loading}
           />
@@ -66,7 +66,7 @@ export const AppDetailsPage: React.FC<AppDetailsPageProps> = ({
             padding={6}
             borderBottomStyle="solid"
             borderBottomWidth={1}
-            borderColor="neutralHighlight"
+            borderColor="default1"
             permissions={data?.permissions}
             loading={loading}
           />
@@ -74,7 +74,7 @@ export const AppDetailsPage: React.FC<AppDetailsPageProps> = ({
             padding={6}
             borderBottomStyle="solid"
             borderBottomWidth={1}
-            borderColor="neutralHighlight"
+            borderColor="default1"
             dataPrivacyUrl={data?.dataPrivacyUrl}
             loading={loading}
           />
