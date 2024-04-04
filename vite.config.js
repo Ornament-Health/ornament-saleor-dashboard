@@ -50,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
     Object.entries(env).filter(([flagKey]) => flagKey.startsWith("FF_")),
   );
 
-  const sourcemap = SKIP_SOURCEMAPS ? false : true;
+  const sourcemap = !SKIP_SOURCEMAPS;
 
   const plugins = [
     react(),
@@ -85,7 +85,6 @@ export default defineConfig(({ command, mode }) => {
     }),
     copyOgImage(),
   ];
-
 
   if (!isDev) {
     console.log("Enabling service worker...");

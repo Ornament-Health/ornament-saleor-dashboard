@@ -4,6 +4,11 @@ import { expect } from "@playwright/test";
 
 export class BasePage {
   readonly page: Page;
+  readonly pageHeader: Locator;
+  readonly gridCanvas: Locator;
+  readonly successBanner: Locator;
+  readonly errorBanner: Locator;
+  readonly gridInput: Locator;
 
   constructor(
     page: Page,
@@ -28,6 +33,11 @@ export class BasePage {
     readonly searchInputListView = page.getByTestId("search-input"),
   ) {
     this.page = page;
+    this.pageHeader = page.getByTestId("page-header");
+    this.gridCanvas = page.locator('[data-testid="data-grid-canvas"]');
+    this.gridInput = this.page.locator('[class="clip-region"]').locator("textarea")
+    this.successBanner = page.locator(LOCATORS.successBanner);
+    this.errorBanner = page.locator(LOCATORS.errorBanner);
   }
 
   async getGridCellText(rowNumber: number, tdNumber: number) {

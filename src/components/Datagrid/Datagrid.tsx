@@ -227,21 +227,21 @@ export const Datagrid: React.FC<DatagridProps> = ({
         ...getCellContent(item, opts),
         ...(changed && areCellsDirty
           ? {
-              themeOverride: {
-                bgCell:
-                  // Consider moving this to MacawUI if we need it in other places
-                  theme === "defaultLight"
-                    ? "hsla(215, 100%, 96%, 1)"
-                    : "hsla(215, 100%, 21%, 1)",
-              },
-            }
+            themeOverride: {
+              bgCell:
+                // Consider moving this to MacawUI if we need it in other places
+                theme === "defaultLight"
+                  ? "hsla(215, 100%, 96%, 1)"
+                  : "hsla(215, 100%, 21%, 1)",
+            },
+          }
           : {}),
         ...(getCellError(item, opts)
           ? {
-              themeOverride: {
-                bgCell: themeValues.colors.background.critical2,
-              },
-            }
+            themeOverride: {
+              bgCell: themeValues.colors.background.critical2,
+            },
+          }
           : {}),
       };
     },
@@ -422,8 +422,8 @@ export const Datagrid: React.FC<DatagridProps> = ({
     () =>
       selection?.rows && selection?.rows.length > 0
         ? selectionActions(Array.from(selection.rows), {
-            removeRows: handleRemoveRows,
-          })
+          removeRows: handleRemoveRows,
+        })
         : null,
     [selection, selectionActions, handleRemoveRows],
   );

@@ -42,6 +42,51 @@ jobs:
           BACKUP_ID: ${{ steps.cloud_variables.outputs.BACKUP_ID }}
 
   deploy-dashboard:
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@102b1a064a9b145e56556e22b18b19c624538d94
+
+      - name: Saleor login
+        uses: ./.github/actions/cli-login
+        with:
+          token: ${{ secrets.STAGING_TOKEN }}     
+
+      - name: Instance check
+        id: instance_check
+        env:
+          SALEOR_CLI_ENV: staging
+          INSTANCE_NAME: ${{ needs.prepare_variables.outputs.POOL_NAME }}
+        run: |
+          INSTANCE_KEY=$(npx saleor env show "$INSTANCE_NAME" --json | jq .key)
+          echo "INSTANCE_KEY=$INSTANCE_KEY" >> $GITHUB_OUTPUT
+
+      - name: Reload snapshot
+        if: ${{ steps.instance_check.outputs.INSTANCE_KEY }}
+        env:
+          SALEOR_CLI_ENV: staging
+          BACKUP_ID: ${{ needs.prepare_variables.outputs.BACKUP_ID }}
+          INSTANCE_NAME: ${{ needs.prepare_variables.outputs.POOL_NAME }}
+        run: |
+          npx saleor backup restore "$BACKUP_ID" \
+            --environment="$INSTANCE_NAME" \
+            --skip-webhooks-update
+
+      - name: Create new instance
+        if: ${{ !steps.instance_check.outputs.INSTANCE_KEY }}
+        env:
+          SALEOR_CLI_ENV: staging
+          BACKUP_ID:  ${{ needs.prepare_variables.outputs.BACKUP_ID }}
+          INSTANCE_NAME: ${{ needs.prepare_variables.outputs.POOL_NAME }}
+        run: |
+          npx saleor env create "$INSTANCE_NAME" \
+            --project=project-for-pr-testing \
+            --database=snapshot \
+            --restore-from="$BACKUP_ID" \
+            --saleor=saleor-master-staging \
+            --domain="$INSTANCE_NAME" \
+            --skip-restrict \
+            --skip-webhooks-update
+
+  deploy_dashboard:
     if: github.event.pull_request.head.repo.full_name == 'saleor/saleor-dashboard'
     runs-on: ubuntu-22.04
     needs: initialize-cloud
