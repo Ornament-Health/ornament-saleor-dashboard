@@ -1,106 +1,124 @@
 import * as faker from "faker";
+import path from "path";
 
 import { URL_LIST } from "@data/url";
+import { DeleteDialog } from "@dialogs/deleteDialog";
+import { FiltersPage } from "@pageElements/filtersPage";
+import { BasePage } from "@pages/basePage";
 import { ChannelSelectDialog } from "@pages/dialogs/channelSelectDialog";
+import { ExportProductsDialog } from "@pages/dialogs/exportProductsDialog";
 import { MetadataSeoPage } from "@pages/pageElements/metadataSeoPage";
 import { RightSideDetailsPage } from "@pages/pageElements/rightSideDetailsSection";
-import type { Locator, Page } from "@playwright/test";
-
-import { BasePage } from "./basePage";
+import { expect, Page } from "@playwright/test";
 
 const productName = `e2e-productName-${faker.datatype.number()}`;
 const productDescription = `e2e-productDescription-${faker.datatype.number()}`;
 
-export class ProductPage {
-  readonly page: Page;
+export class ProductPage extends BasePage {
+  readonly metadataSeoPage: MetadataSeoPage;
+  readonly exportProductsDialog: ExportProductsDialog;
+  readonly rightSideDetailsPage: RightSideDetailsPage;
+  readonly basePage: BasePage;
+  readonly channelSelectDialog: ChannelSelectDialog;
+  readonly deleteProductDialog: DeleteDialog;
+  readonly filtersPage: FiltersPage;
 
-  readonly productNameInput: Locator;
-  readonly productTypeInput: Locator;
-  readonly categoryInput: Locator;
-  readonly productsNames: Locator;
-  readonly createProductButton: Locator;
-  readonly searchProducts: Locator;
-  readonly categoryItem: Locator;
-  readonly collectionInput: Locator;
-  readonly autocompleteDropdown: Locator;
-  readonly firstCategoryItem: Locator;
-  readonly visibleRadioBtn: Locator;
-  readonly channelAvailabilityItem: Locator;
-  readonly addVariantButton: Locator;
-  readonly descriptionInput: Locator;
-  readonly ratingInput: Locator;
-  readonly variantRow: Locator;
-  readonly variantPrice: Locator;
-  readonly collectionRemoveButtons: Locator;
-  readonly addWarehouseButton: Locator;
-  readonly warehouseOption: Locator;
-  readonly stockInput: Locator;
-  readonly costPriceInput: Locator;
-  readonly sellingPriceInput: Locator;
-  readonly productImage: Locator;
-  readonly uploadImageButton: Locator;
-  readonly uploadSavedImagesButton: Locator;
-  readonly uploadMediaUrlButton: Locator;
-  readonly saveUploadUrlButton: Locator;
-  readonly editVariantButton: Locator;
-  readonly saveButton: Locator;
-  readonly firstRowDataGrid: Locator;
-  readonly addProductButton: Locator;
-  readonly productUpdateFormSection: Locator;
-  readonly manageChannelsButton: Locator;
-  metadataSeoPage: MetadataSeoPage;
-  rightSideDetailsPage: RightSideDetailsPage;
-  basePage: BasePage;
-  channelSelectDialog: ChannelSelectDialog;
-
-  constructor(page: Page) {
-    this.page = page;
+  constructor(
+    page: Page,
+    readonly productsNames = page.getByTestId("name"),
+    readonly productAvailableInChannelsText = page.getByTestId(
+      "product-available-in-channels-text",
+    ),
+    readonly createProductButton = page.getByTestId("add-product"),
+    readonly cogShowMoreButtonButton = page.getByTestId("show-more-button"),
+    readonly exportButton = page.getByTestId("export"),
+    readonly bulkDeleteButton = page.getByTestId("bulk-delete-button"),
+    readonly deleteProductButton = page.getByTestId("button-bar-delete"),
+    readonly productNameInput = page.locator("[name='name']"),
+    readonly addProductButton = page.getByTestId("add-product"),
+    readonly productTypeInput = page.getByTestId("product-type"),
+    readonly saveButton = page.getByTestId("button-bar-confirm"),
+    readonly categoryInput = page.getByTestId("category"),
+    readonly categoryItem = page.getByTestId(
+      "single-autocomplete-select-option",
+    ),
+    readonly collectionInput = page.getByTestId("collections"),
+    readonly autocompleteDropdown = page.getByTestId("autocomplete-dropdown"),
+    readonly descriptionInput = page
+      .getByTestId("rich-text-editor-description")
+      .locator("[contenteditable]"),
+    readonly variantRow = page.getByTestId("product-variant-row"),
+    readonly variantPrice = page.getByTestId("price"),
+    readonly collectionRemoveButtons = page.getByTestId("collection-remove"),
+    readonly addWarehouseButton = page.getByTestId("add-warehouse"),
+    readonly stockInput = page.getByTestId("stock-input"),
+    readonly productImage = page.getByTestId("product-image"),
+    readonly uploadProductImageButton = page.getByTestId("button-upload-image"),
+    readonly chooseMediaVariantButton = page.getByTestId("choose-media-button"),
+    readonly uploadSavedImagesButton = page.getByTestId("upload-images"),
+    readonly uploadMediaUrlButton = page.getByTestId("upload-media-url"),
+    readonly saveUploadUrlButton = page.getByTestId("upload-url-button"),
+    readonly editVariantButton = page.getByTestId("row-action-button"),
+    readonly productUpdateFormSection = page.getByTestId("product-update-form"),
+    readonly noVariantsText = page.getByTestId("empty-data-grid-text"),
+    readonly firstCategoryItem = page.locator("#downshift-0-item-0"),
+    readonly visibleRadioBtn = page.locator("[name='isPublished']"),
+    readonly channelAvailabilityItem = page.locator(
+      "[data-test-id*='channel-availability-item']",
+    ),
+    readonly addVariantButton = page.locator(
+      "[data-test-id*='button-add-variant']",
+    ),
+    readonly ratingInput = page.locator("[name='rating']"),
+    readonly warehouseOption = page.locator("[role='menuitem']"),
+    readonly costPriceInput = page.locator("[name*='costPrice']"),
+    readonly sellingPriceInput = page.locator("[name*='channel-price']"),
+    readonly firstRowDataGrid = page.locator("[data-testid='glide-cell-1-0']"),
+  ) {
+    super(page);
     this.basePage = new BasePage(page);
+    this.exportProductsDialog = new ExportProductsDialog(page);
+    this.deleteProductDialog = new DeleteDialog(page);
     this.channelSelectDialog = new ChannelSelectDialog(page);
     this.metadataSeoPage = new MetadataSeoPage(page);
     this.rightSideDetailsPage = new RightSideDetailsPage(page);
-    this.productsNames = page.getByTestId("name");
-    this.createProductButton = page.getByTestId("add-product");
-    this.searchProducts = page.locator("[placeholder='Search Products...']");
-    this.productNameInput = page.locator("[name='name']");
-    this.addProductButton = page.getByTestId("add-product");
-    this.productTypeInput = page.getByTestId("product-type");
-    this.saveButton = page.getByTestId("button-bar-confirm");
-    this.categoryInput = page.getByTestId("category");
-    this.categoryItem = page.getByTestId("single-autocomplete-select-option");
-    this.collectionInput = page.getByTestId("collections");
-    this.autocompleteDropdown = page.getByTestId("autocomplete-dropdown");
-    this.descriptionInput = page
-      .getByTestId("rich-text-editor-description")
-      .locator("[contenteditable]");
-    this.variantRow = page.getByTestId("product-variant-row");
-    this.variantPrice = page.getByTestId("price");
-    this.collectionRemoveButtons = page.getByTestId("collection-remove");
-    this.addWarehouseButton = page.getByTestId("add-warehouse");
-    this.stockInput = page.getByTestId("stock-input");
-    this.productImage = page.getByTestId("product-image");
-    this.uploadImageButton = page.getByTestId("button-upload-image");
-    this.uploadSavedImagesButton = page.getByTestId("upload-images");
-    this.uploadMediaUrlButton = page.getByTestId("upload-media-url");
-    this.saveUploadUrlButton = page.getByTestId("upload-url-button");
-    this.editVariantButton = page.getByTestId("row-action-button");
-    this.productUpdateFormSection = page.getByTestId("product-update-form");
-    this.firstCategoryItem = page.locator("#downshift-0-item-0");
-    this.visibleRadioBtn = page.locator("[name='isPublished']");
-    this.channelAvailabilityItem = page.locator(
-      "[data-test-id*='channel-availability-item']",
-    );
-    this.manageChannelsButton = page.getByTestId(
-      "channels-availability-manage-button",
-    );
-    this.addVariantButton = page.locator(
-      "[data-test-id*='button-add-variant']",
-    );
-    this.ratingInput = page.locator("[name='rating']");
-    this.warehouseOption = page.locator("[role='menuitem']");
-    this.costPriceInput = page.locator("[name*='costPrice']");
-    this.sellingPriceInput = page.locator("[name*='channel-price']");
-    this.firstRowDataGrid = page.locator("[data-testid='glide-cell-1-0']");
+    this.filtersPage = new FiltersPage(page);
+  }
+
+  async gotoCreateProductPage(productTypeId: string) {
+    const createProductUrl = `${URL_LIST.products}${URL_LIST.productsAdd}${productTypeId}`;
+    await console.log("Navigating to create product view: " + createProductUrl);
+    await this.page.goto(createProductUrl);
+    await expect(this.basePage.pageHeader).toBeVisible({ timeout: 10000 });
+  }
+
+  async gotoExistingProductPage(productId: string) {
+    const existingProductUrl = `${URL_LIST.products}${productId}`;
+    console.log(`Navigating to existing product: ${existingProductUrl}`);
+    await this.page.goto(existingProductUrl);
+    await expect(this.basePage.pageHeader).toBeVisible({ timeout: 10000 });
+  }
+
+  async clickDeleteProductButton() {
+    await this.deleteProductButton.click();
+  }
+  async clickExportButton() {
+    await this.exportButton.click();
+  }
+  async clickCogShowMoreButtonButton() {
+    await this.cogShowMoreButtonButton.click();
+  }
+  async clickUploadImagesButton() {
+    await this.uploadSavedImagesButton.click();
+  }
+  async clickUploadMediaButton() {
+    await this.uploadProductImageButton.click();
+  }
+  async clickChooseMediaVariantButton() {
+    await this.chooseMediaVariantButton.click();
+  }
+  async clickBulkDeleteButton() {
+    await this.bulkDeleteButton.click();
   }
 
   async addSeo() {
@@ -154,12 +172,6 @@ export class ProductPage {
   async expectSuccessBanner() {
     await this.basePage.expectSuccessBanner();
   }
-  async selectOneChannelAsAvailable() {
-    await this.manageChannelsButton.click();
-    await this.channelSelectDialog.clickAllChannelsCheckbox();
-    await this.channelSelectDialog.selectFirstChannel();
-    await this.channelSelectDialog.clickConfirmButton();
-  }
 
   async clickCreateProductButton() {
     await this.createProductButton.click();
@@ -167,8 +179,19 @@ export class ProductPage {
   async clickFirstEditVariantButton() {
     await this.editVariantButton.first().click();
   }
+  async clickAddVariantButton() {
+    await this.addVariantButton.click();
+  }
 
   async gotoProductListPage() {
     await this.page.goto(URL_LIST.products);
+  }
+
+  async uploadProductImage(fileName: string) {
+    const fileChooserPromise = this.page.waitForEvent("filechooser");
+    await this.clickUploadImagesButton();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(path.join("playwright/data/images/", fileName));
+    await this.page.waitForLoadState("domcontentloaded");
   }
 }

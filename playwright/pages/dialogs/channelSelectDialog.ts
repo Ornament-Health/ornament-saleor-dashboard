@@ -1,26 +1,30 @@
-import type { Locator, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 export class ChannelSelectDialog {
   readonly page: Page;
-  readonly allChannelsCheckbox: Locator;
-  readonly displayedChannels: Locator;
-  readonly confirmButton: Locator;
-  readonly displayedChannelsCheckboxes: Locator;
 
-  constructor(page: Page) {
+  constructor(
+    page: Page,
+    readonly allChannelsCheckbox = page.locator("[name='allChannels']"),
+    readonly displayedChannels = page.getByTestId("channel-row"),
+    readonly displayedChannelsCheckboxes = page.locator("[type=checkbox]"),
+    readonly confirmButton = page.getByTestId("submit"),
+  ) {
     this.page = page;
-    this.allChannelsCheckbox = page.locator("[name='allChannels']");
-    this.displayedChannels = page.getByTestId("channel-row");
-    this.displayedChannelsCheckboxes = page.locator("[type=checkbox]");
-    this.confirmButton = page.getByTestId("submit");
   }
 
   async clickAllChannelsCheckbox() {
     await this.allChannelsCheckbox.click();
   }
-  async selectFirstChannel() {
+  async selectChannel(channelName: string) {
     await this.displayedChannels
-      .first()
+      .filter({ hasText: channelName })
+      .locator(this.displayedChannelsCheckboxes)
+      .click();
+  }
+  async selectLastChannel() {
+    await this.displayedChannels
+      .last()
       .locator(this.displayedChannelsCheckboxes)
       .click();
   }
