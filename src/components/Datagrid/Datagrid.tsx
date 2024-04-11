@@ -227,21 +227,21 @@ export const Datagrid: React.FC<DatagridProps> = ({
         ...getCellContent(item, opts),
         ...(changed && areCellsDirty
           ? {
-              themeOverride: {
-                bgCell:
-                  // Consider moving this to MacawUI if we need it in other places
-                  theme === "defaultLight"
-                    ? "hsla(215, 100%, 96%, 1)"
-                    : "hsla(215, 100%, 21%, 1)",
-              },
-            }
+            themeOverride: {
+              bgCell:
+                // Consider moving this to MacawUI if we need it in other places
+                theme === "defaultLight"
+                  ? "hsla(215, 100%, 96%, 1)"
+                  : "hsla(215, 100%, 21%, 1)",
+            },
+          }
           : {}),
         ...(getCellError(item, opts)
           ? {
-              themeOverride: {
-                bgCell: themeValues.colors.background.critical2,
-              },
-            }
+            themeOverride: {
+              bgCell: themeValues.colors.background.critical2,
+            },
+          }
           : {}),
       };
     },
@@ -345,7 +345,13 @@ export const Datagrid: React.FC<DatagridProps> = ({
       }
 
       const overrideTheme: Partial<Theme> = {
-        bgCell: themeValues.colors.background.default1Hovered,
+        /*
+          Grid-specific colors. Transparency matters when we highlight entire row.
+        */
+        bgCell:
+          theme === "defaultLight"
+            ? "hsla(220, 18%, 97%, 1)"
+            : "hsla(211, 32%, 19%, 1)",
         bgCellMedium: themeValues.colors.background.default1Hovered,
       };
 
@@ -416,8 +422,8 @@ export const Datagrid: React.FC<DatagridProps> = ({
     () =>
       selection?.rows && selection?.rows.length > 0
         ? selectionActions(Array.from(selection.rows), {
-            removeRows: handleRemoveRows,
-          })
+          removeRows: handleRemoveRows,
+        })
         : null,
     [selection, selectionActions, handleRemoveRows],
   );
@@ -483,7 +489,10 @@ export const Datagrid: React.FC<DatagridProps> = ({
             )}
           </Header>
         )}
-        <CardContent classes={{ root: classes.cardContentRoot }}>
+        <CardContent
+          classes={{ root: classes.cardContentRoot }}
+          data-test-id="list"
+        >
           {rowsTotal > 0 || showEmptyDatagrid ? (
             <>
               {selection?.rows &&
@@ -588,7 +597,9 @@ export const Datagrid: React.FC<DatagridProps> = ({
             </>
           ) : (
             <Box padding={6} textAlign="center">
-              <Text size="small">{emptyText}</Text>
+              <Text data-test-id="empty-data-grid-text" size="small">
+                {emptyText}
+              </Text>
             </Box>
           )}
         </CardContent>

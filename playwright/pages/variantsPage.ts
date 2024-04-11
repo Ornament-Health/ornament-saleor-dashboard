@@ -1,93 +1,92 @@
-import type { Locator, Page } from "@playwright/test";
-
-import { BasePage } from "./basePage";
-import { ChannelSelectDialog } from "./dialogs/channelSelectDialog";
-import { MetadataSeoPage } from "./pageElements/metadataSeoPage";
+import { URL_LIST } from "@data/url";
+import { ChannelSelectDialog } from "@dialogs/channelSelectDialog";
+import { DeleteVariantDialog } from "@dialogs/deleteVariantDialog";
+import { MetadataSeoPage } from "@pageElements/metadataSeoPage";
+import { BasePage } from "@pages/basePage";
+import type { Page } from "@playwright/test";
 
 export class VariantsPage {
   readonly page: Page;
-  readonly variantNameInput: Locator;
-  readonly skuTextField: Locator;
-  readonly attributeOption: Locator;
-  readonly attributeSelector: Locator;
-  readonly addWarehouseButton: Locator;
-  readonly warehouseOption: Locator;
-  readonly saveButton: Locator;
-  readonly stockInput: Locator;
-  readonly booleanAttributeCheckbox: Locator;
-  readonly selectOption: Locator;
-  readonly manageChannels: Locator;
-  readonly allChannels: Locator;
-  readonly chooseMediaButton: Locator;
-  readonly assignWarehouseButton: Locator;
-  readonly addVariantButton: Locator;
-  readonly priceFieldInput: Locator;
-  readonly variantsList: Locator;
-  readonly variantsNames: Locator;
-  readonly checkoutLimitInput: Locator;
-  readonly shippingWeightInput: Locator;
   channelSelectDialog: ChannelSelectDialog;
   metadataSeoPage: MetadataSeoPage;
   basePage: BasePage;
+  deleteVariantDialog: DeleteVariantDialog;
 
-  constructor(page: Page) {
+  constructor(
+    page: Page,
+    readonly variantNameInput = page.getByTestId("variant-name-input"),
+    readonly skuTextField = page.getByTestId("sku"),
+    readonly variantsList = page.getByTestId("variants-list"),
+    readonly variantsNames = page.getByTestId("variant-name"),
+    readonly attributeOption = page.getByTestId("select-option"),
+    readonly attributeSelector = page.getByTestId("attribute-value"),
+    readonly addWarehouseButton = page.getByTestId("add-warehouse"),
+    readonly chooseMediaButton = page.getByTestId("choose-media-button"),
+    readonly addVariantButton = page.getByTestId("button-add-variant"),
+    readonly deleteVariantButton = page.getByTestId("button-bar-delete"),
+    readonly warehouseOption = page.getByRole("menuitem"),
+    readonly saveButton = page.getByTestId("button-bar-confirm"),
+    readonly stockInput = page.getByTestId("stock-input"),
+    readonly shippingWeightInput = page.locator("[name='weight']"),
+    readonly priceFieldInput = page.getByTestId("price-field"),
+    readonly checkoutLimitInput = page.getByTestId("checkout-limit-input"),
+    readonly assignWarehouseButton = page.getByTestId(
+      "assign-warehouse-button",
+    ),
+    readonly booleanAttributeCheckbox = page.locator(
+      "[name*='attribute'][type='checkbox']",
+    ),
+    readonly selectOption = page.getByTestId(
+      "multi-autocomplete-select-option",
+    ),
+    readonly manageChannels = page.getByTestId("manage-channels-button"),
+    readonly allChannels = page.locator("[name='allChannels']"),
+  ) {
     this.page = page;
     this.basePage = new BasePage(page);
     this.metadataSeoPage = new MetadataSeoPage(page);
     this.channelSelectDialog = new ChannelSelectDialog(page);
-    this.variantNameInput = page.getByTestId("variant-name-input");
-    this.skuTextField = page.getByTestId("sku");
-    this.variantsList = page.getByTestId("variants-list");
-    this.variantsNames = page.getByTestId("variant-name");
-    this.attributeOption = page.getByTestId("select-option");
-    this.attributeSelector = page.getByTestId("attribute-value");
-    this.addWarehouseButton = page.getByTestId("add-warehouse");
-    this.chooseMediaButton = page.getByTestId("choose-media-button");
-    this.addVariantButton = page.getByTestId("button-add-variant");
-    this.warehouseOption = page.getByRole("menuitem");
-    this.saveButton = page.getByTestId("button-bar-confirm");
-    this.stockInput = page.getByTestId("stock-input");
-    this.shippingWeightInput = page.locator("[name='weight']");
-    this.priceFieldInput = page.getByTestId("price-field");
-    this.checkoutLimitInput = page.getByTestId("checkout-limit-input");
-    this.assignWarehouseButton = page.getByTestId("assign-warehouse-button");
-    this.booleanAttributeCheckbox = page.locator(
-      "[name*='attribute'][type='checkbox']",
-    );
-    this.selectOption = page.getByTestId("multi-autocomplete-select-option");
-    this.manageChannels = page.getByTestId("manage-channels-button");
-    this.allChannels = page.locator("[name='allChannels']");
+    this.deleteVariantDialog = new DeleteVariantDialog(page);
   }
 
   async typeVariantName(variantName = "XXL beverage") {
+    await this.variantNameInput.clear();
     await this.variantNameInput.fill(variantName);
   }
   async typeShippingWeight(weight = "150") {
+    await this.shippingWeightInput.clear();
     await this.shippingWeightInput.fill(weight);
   }
   async typeCheckoutLimit(checkoutLimit = "10") {
+    await this.checkoutLimitInput.clear();
     await this.checkoutLimitInput.fill(checkoutLimit);
   }
   async typeSellingPriceInChannel(
     channelName: string,
     sellingPriceValue = "99",
   ) {
-    await this.page
+    const sellingPriceInput = await this.page
       .locator(`[data-test-id="Channel-${channelName}"]`)
       .locator(this.priceFieldInput)
-      .first()
-      .fill(sellingPriceValue);
+      .first();
+    await sellingPriceInput.clear();
+    await sellingPriceInput.fill(sellingPriceValue);
   }
   async typeCostPriceInChannel(channelName: string, costPriceValue = "10") {
-    await this.page
+    const costPriceInput = await this.page
       .locator(`[data-test-id="Channel-${channelName}"]`)
       .locator(this.priceFieldInput)
-      .last()
-      .fill(costPriceValue);
+      .last();
+
+    await costPriceInput.clear();
+    await costPriceInput.fill(costPriceValue);
   }
 
   async clickMageChannelsButton() {
     await this.manageChannels.click();
+  }
+  async clickDeleteVariantButton() {
+    await this.deleteVariantButton.click();
   }
   async clickChooseMediaButton() {
     await this.chooseMediaButton.click();
@@ -97,6 +96,7 @@ export class VariantsPage {
   }
 
   async typeSku(sku = "sku dummy e2e") {
+    await this.skuTextField.clear();
     await this.skuTextField.fill(sku);
   }
   async clickAssignWarehouseButton() {
@@ -112,6 +112,11 @@ export class VariantsPage {
     await this.attributeSelector.click();
     await this.attributeOption.first().click();
   }
+  async selectLastAttributeValue() {
+    await this.attributeSelector.locator("input").clear();
+    await this.attributeSelector.click();
+    await this.attributeOption.last().click();
+  }
   async selectWarehouse(warehouse = "Oceania") {
     await this.clickAssignWarehouseButton();
     await this.warehouseOption.locator(`text=${warehouse}`).click();
@@ -125,5 +130,12 @@ export class VariantsPage {
   }
   async addAllMetaData() {
     await this.metadataSeoPage.expandAndAddAllMetadata();
+  }
+
+  async gotoExistingVariantPage(productId: string, variantId: string) {
+    const existingVariantUrl = `${URL_LIST.products}${productId}/${URL_LIST.variant}${variantId}`;
+    console.log(`Navigating to existing variant: ${existingVariantUrl}`);
+    await this.page.goto(existingVariantUrl);
+    await this.variantNameInput.waitFor({ state: "visible" });
   }
 }

@@ -42,6 +42,7 @@ export default defineConfig(({ command, mode }) => {
     DEMO_MODE,
     CUSTOM_VERSION,
     FLAGS_SERVICE_ENABLED,
+    LOCALE_CODE,
   } = env;
 
   const base = STATIC_URL ?? "/";
@@ -63,6 +64,7 @@ export default defineConfig(({ command, mode }) => {
           APPS_MARKETPLACE_API_URI,
           APPS_TUNNEL_URL_KEYWORDS,
           IS_CLOUD_INSTANCE,
+          LOCALE_CODE,
           injectOgTags:
             DEMO_MODE &&
             `
@@ -142,6 +144,7 @@ export default defineConfig(({ command, mode }) => {
         ENVIRONMENT,
         DEMO_MODE,
         CUSTOM_VERSION,
+        LOCALE_CODE,
         SENTRY_RELEASE,
         STATIC_URL
       },

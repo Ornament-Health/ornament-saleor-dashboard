@@ -98,6 +98,7 @@ jobs:
         env:
           DEPLOYMENT_BUCKET: ${{ secrets.AWS_CLOUD_STAGING_DEPLOYMENT_BUCKET }}
           CDN_DISTRIBUTIONS: ${{ secrets.AWS_CLOUD_STAGING_CDN_DISTRIBUTIONS }}
+
       - name: Prepare Sandbox release pull request
         run: |
           export GITHUB_TOKEN=$( \
