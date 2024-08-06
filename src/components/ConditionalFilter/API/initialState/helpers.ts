@@ -1,6 +1,7 @@
 import { ApolloQueryResult } from "@apollo/client";
 import {
   _GetChannelOperandsQuery,
+  _GetLegacyChannelOperandsQuery,
   _SearchAttributeOperandsQuery,
   _SearchCategoriesOperandsQuery,
   _SearchCollectionsOperandsQuery,
@@ -10,37 +11,29 @@ import {
 import { createBooleanOptions } from "../../constants";
 import { createOptionsFromAPI } from "../Handler";
 import { InitialState } from "../InitialStateResponse";
-import { InitialAPIResponse } from "./types";
+import { InitialOrderState } from "./orders/InitialOrderState";
+import { InitialAPIResponse, InitialOrderAPIResponse } from "./types";
 
 const isChannelQuery = (
   query: InitialAPIResponse,
-): query is ApolloQueryResult<_GetChannelOperandsQuery> =>
-  "channels" in query.data;
-
+): query is ApolloQueryResult<_GetChannelOperandsQuery> => "channels" in query.data;
+const isChannelsQuery = (
+  query: InitialOrderAPIResponse,
+): query is ApolloQueryResult<_GetLegacyChannelOperandsQuery> => "channels" in query.data;
 const isCollectionQuery = (
   query: InitialAPIResponse,
-): query is ApolloQueryResult<_SearchCollectionsOperandsQuery> =>
-  "collections" in query.data;
-
+): query is ApolloQueryResult<_SearchCollectionsOperandsQuery> => "collections" in query.data;
 const isCategoryQuery = (
   query: InitialAPIResponse,
-): query is ApolloQueryResult<_SearchCategoriesOperandsQuery> =>
-  "categories" in query.data;
-
+): query is ApolloQueryResult<_SearchCategoriesOperandsQuery> => "categories" in query.data;
 const isProductTypeQuery = (
   query: InitialAPIResponse,
-): query is ApolloQueryResult<_SearchProductTypesOperandsQuery> =>
-  "productTypes" in query.data;
-
+): query is ApolloQueryResult<_SearchProductTypesOperandsQuery> => "productTypes" in query.data;
 const isAttributeQuery = (
   query: InitialAPIResponse,
-): query is ApolloQueryResult<_SearchAttributeOperandsQuery> =>
-  "attributes" in query.data;
+): query is ApolloQueryResult<_SearchAttributeOperandsQuery> => "attributes" in query.data;
 
-export const createInitialStateFromData = (
-  data: InitialAPIResponse[],
-  channel: string[],
-) =>
+export const createInitialStateFromData = (data: InitialAPIResponse[], channel: string[]) =>
   data.reduce<InitialState>(
     (acc, query) => {
       if (isChannelQuery(query)) {
@@ -55,9 +48,7 @@ export const createInitialStateFromData = (
       if (isCollectionQuery(query)) {
         return {
           ...acc,
-          collection: createOptionsFromAPI(
-            query.data?.collections?.edges ?? [],
-          ),
+          collection: createOptionsFromAPI(query.data?.collections?.edges ?? []),
         };
       }
 
@@ -71,9 +62,7 @@ export const createInitialStateFromData = (
       if (isProductTypeQuery(query)) {
         return {
           ...acc,
-          productType: createOptionsFromAPI(
-            query.data?.productTypes?.edges ?? [],
-          ),
+          productType: createOptionsFromAPI(query.data?.productTypes?.edges ?? []),
         };
       }
 
@@ -113,5 +102,38 @@ export const createInitialStateFromData = (
       hasCategory: createBooleanOptions(),
       giftCard: createBooleanOptions(),
       attribute: {},
+    },
+  );
+
+export const createInitialOrderState = (data: InitialOrderAPIResponse[]) =>
+  data.reduce<InitialOrderState>(
+    (acc, query) => {
+      if (isChannelsQuery(query)) {
+        return {
+          ...acc,
+          channels: (query.data?.channels ?? []).map(({ id, name, slug }) => ({
+            label: name,
+            value: id,
+            slug,
+          })),
+        };
+      }
+
+      return acc;
+    },
+    {
+      channels: [],
+      paymentStatus: [],
+      status: [],
+      authorizeStatus: [],
+      chargeStatus: [],
+      isClickAndCollect: createBooleanOptions(),
+      isPreorder: createBooleanOptions(),
+      giftCardBought: createBooleanOptions(),
+      giftCardUsed: createBooleanOptions(),
+      customer: [],
+      ids: [],
+      created: "",
+      updatedAt: "",
     },
   );

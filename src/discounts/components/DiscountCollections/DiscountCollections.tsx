@@ -1,21 +1,18 @@
 // @ts-strict-ignore
 import { collectionUrl } from "@dashboard/collections/urls";
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Checkbox from "@dashboard/components/Checkbox";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import { TableButtonWrapper } from "@dashboard/components/TableButtonWrapper/TableButtonWrapper";
 import TableHead from "@dashboard/components/TableHead";
 import { TablePaginationWithContext } from "@dashboard/components/TablePagination";
 import TableRowLink from "@dashboard/components/TableRowLink";
-import {
-  SaleDetailsFragment,
-  VoucherDetailsFragment,
-} from "@dashboard/graphql";
+import { SaleDetailsFragment, VoucherDetailsFragment } from "@dashboard/graphql";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
-import { Card, TableBody, TableCell, TableFooter } from "@material-ui/core";
+import { TableBody, TableCell, TableFooter } from "@material-ui/core";
 import { DeleteIcon, IconButton } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -31,7 +28,6 @@ export interface DiscountCollectionsProps extends ListProps, ListActions {
 }
 
 const numberOfColumns = 4;
-
 const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
   const {
     discount: sale,
@@ -45,22 +41,20 @@ const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
     toolbar,
   } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
 
   return (
-    <Card data-test-id="assign-collection-section">
-      <CardTitle
-        title={intl.formatMessage(messages.discountCollectionsHeader)}
-        toolbar={
-          <Button
-            onClick={onCollectionAssign}
-            data-test-id="assign-collection-button"
-          >
+    <DashboardCard data-test-id="assign-collection-section">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(messages.discountCollectionsHeader)}
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
+          <Button onClick={onCollectionAssign} data-test-id="assign-collection-button">
             <FormattedMessage {...messages.discountCollectionsButton} />
           </Button>
-        }
-      />
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
       <ResponsiveTable>
         <colgroup>
           <col />
@@ -77,14 +71,10 @@ const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
           toolbar={toolbar}
         >
           <TableCell className={classes.colName}>
-            <FormattedMessage
-              {...messages.discountCollectionsTableProductHeader}
-            />
+            <FormattedMessage {...messages.discountCollectionsTableProductHeader} />
           </TableCell>
           <TableCell className={classes.colProducts}>
-            <FormattedMessage
-              {...messages.discountCollectionsTableProductNumber}
-            />
+            <FormattedMessage {...messages.discountCollectionsTableProductNumber} />
           </TableCell>
           <TableCell />
         </TableHead>
@@ -98,6 +88,7 @@ const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
             mapEdgesToItems(sale?.collections),
             collection => {
               const isSelected = collection ? isChecked(collection.id) : false;
+
               return (
                 <TableRowLink
                   data-test-id="assigned-specific-product"
@@ -116,16 +107,10 @@ const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
                     />
                   </TableCell>
                   <TableCell className={classes.colName}>
-                    {maybe<React.ReactNode>(
-                      () => collection.name,
-                      <Skeleton />,
-                    )}
+                    {maybe<React.ReactNode>(() => collection.name, <Skeleton />)}
                   </TableCell>
                   <TableCell className={classes.colProducts}>
-                    {maybe<React.ReactNode>(
-                      () => collection.products.totalCount,
-                      <Skeleton />,
-                    )}
+                    {maybe<React.ReactNode>(() => collection.products.totalCount, <Skeleton />)}
                   </TableCell>
                   <TableCell className={classes.colActions}>
                     <TableButtonWrapper>
@@ -154,8 +139,9 @@ const DiscountCollections: React.FC<DiscountCollectionsProps> = props => {
           )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };
+
 DiscountCollections.displayName = "DiscountCollections";
 export default DiscountCollections;

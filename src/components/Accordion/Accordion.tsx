@@ -1,10 +1,4 @@
-import {
-  Accordion as AccordionMacaw,
-  Box,
-  Divider,
-  sprinkles,
-  Text,
-} from "@saleor/macaw-ui-next";
+import { Accordion as AccordionMacaw, Box, Divider, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 
 export interface AccordionProps {
@@ -16,7 +10,6 @@ export interface AccordionProps {
 }
 
 const AccordionItemId = "accordionItemId";
-
 const Accordion: React.FC<AccordionProps> = ({
   children,
   initialExpand,
@@ -26,7 +19,7 @@ const Accordion: React.FC<AccordionProps> = ({
   dataTestId = "expand-icon",
 }) => {
   const [openedAccordionId, setOpendAccordionId] = useState<undefined | string>(
-    !!initialExpand ? AccordionItemId : undefined,
+    initialExpand ? AccordionItemId : undefined,
   );
 
   return (
@@ -44,7 +37,7 @@ const Accordion: React.FC<AccordionProps> = ({
       >
         <AccordionMacaw.Item value={AccordionItemId}>
           <AccordionMacaw.Trigger>
-            <Text paddingY={3} variant="body" size="small">
+            <Text paddingY={3} size={3}>
               {title}
             </Text>
             <AccordionMacaw.TriggerButton dataTestId={dataTestId} />

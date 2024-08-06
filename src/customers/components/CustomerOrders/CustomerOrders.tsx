@@ -1,17 +1,17 @@
 // @ts-strict-ignore
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { DateTime } from "@dashboard/components/Date";
 import Money from "@dashboard/components/Money";
 import { Pill } from "@dashboard/components/Pill";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { CustomerDetailsQuery } from "@dashboard/graphql";
 import { orderUrl } from "@dashboard/orders/urls";
 import { RelayToFlat } from "@dashboard/types";
-import { Card, TableBody, TableCell, TableHead } from "@material-ui/core";
+import { TableBody, TableCell, TableHead } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -37,33 +37,30 @@ export interface CustomerOrdersProps {
 const CustomerOrders: React.FC<CustomerOrdersProps> = props => {
   const { orders, viewAllHref } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
-
   const orderList = orders
     ? orders.map(order => ({
         ...order,
         paymentStatus: transformPaymentStatus(order.paymentStatus, intl),
       }))
     : undefined;
+
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "1LiVhv",
-          defaultMessage: "Recent Orders",
-          description: "section header",
-        })}
-        toolbar={
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "1LiVhv",
+            defaultMessage: "Recent Orders",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
           <Button variant="tertiary" href={viewAllHref}>
-            <FormattedMessage
-              id="3+990c"
-              defaultMessage="View all orders"
-              description="button"
-            />
+            <FormattedMessage id="3+990c" defaultMessage="View all orders" description="button" />
           </Button>
-        }
-      />
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
       <ResponsiveTable>
         <TableHead>
           <TableRowLink>
@@ -82,11 +79,7 @@ const CustomerOrders: React.FC<CustomerOrdersProps> = props => {
               />
             </TableCell>
             <TableCell>
-              <FormattedMessage
-                id="pURrk1"
-                defaultMessage="Status"
-                description="order status"
-              />
+              <FormattedMessage id="pURrk1" defaultMessage="Status" description="order status" />
             </TableCell>
             <TableCell className={classes.textRight}>
               <FormattedMessage
@@ -103,16 +96,12 @@ const CustomerOrders: React.FC<CustomerOrdersProps> = props => {
             order => (
               <TableRowLink
                 hover={!!order}
-                className={!!order ? classes.link : undefined}
+                className={order ? classes.link : undefined}
                 href={order && orderUrl(order.id)}
                 key={order ? order.id : "skeleton"}
               >
                 <TableCell>
-                  {maybe(() => order.number) ? (
-                    "#" + order.number
-                  ) : (
-                    <Skeleton />
-                  )}
+                  {maybe(() => order.number) ? "#" + order.number : <Skeleton />}
                 </TableCell>
                 <TableCell>
                   {maybe(() => order.created) ? (
@@ -145,17 +134,14 @@ const CustomerOrders: React.FC<CustomerOrdersProps> = props => {
             () => (
               <TableRowLink>
                 <TableCell colSpan={6}>
-                  <FormattedMessage
-                    id="RlfqSV"
-                    defaultMessage="No orders found"
-                  />
+                  <FormattedMessage id="RlfqSV" defaultMessage="No orders found" />
                 </TableCell>
               </TableRowLink>
             ),
           )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };
 

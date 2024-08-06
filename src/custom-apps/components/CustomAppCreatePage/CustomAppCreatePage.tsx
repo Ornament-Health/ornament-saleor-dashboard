@@ -4,13 +4,9 @@ import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { CustomAppUrls } from "@dashboard/custom-apps/urls";
-import {
-  AppErrorFragment,
-  PermissionEnum,
-  PermissionFragment,
-} from "@dashboard/graphql";
+import { AppErrorFragment, PermissionEnum, PermissionFragment } from "@dashboard/graphql";
 import { SubmitPromise } from "@dashboard/hooks/useForm";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { getFormErrors } from "@dashboard/utils/errors";
@@ -30,32 +26,23 @@ export interface CustomAppCreatePageProps {
   errors: AppErrorFragment[];
   permissions: PermissionFragment[];
   saveButtonBarState: ConfirmButtonTransitionState;
-  onSubmit: (
-    data: CustomAppCreatePageFormData,
-  ) => SubmitPromise<AppErrorFragment[]>;
+  onSubmit: (data: CustomAppCreatePageFormData) => SubmitPromise<AppErrorFragment[]>;
 }
 
 const CustomAppCreatePage: React.FC<CustomAppCreatePageProps> = props => {
   const { disabled, errors, permissions, saveButtonBarState, onSubmit } = props;
   const intl = useIntl();
   const navigate = useNavigator();
-
   const initialForm: CustomAppCreatePageFormData = {
     hasFullAccess: false,
     name: "",
     permissions: [],
   };
-
   const formErrors = getFormErrors(["permissions"], errors || []);
   const permissionsError = getAppErrorMessage(formErrors.permissions, intl);
 
   return (
-    <Form
-      confirmLeave
-      initial={initialForm}
-      onSubmit={onSubmit}
-      disabled={disabled}
-    >
+    <Form confirmLeave initial={initialForm} onSubmit={onSubmit} disabled={disabled}>
       {({ data, change, submit, isSaveDisabled }) => (
         <DetailPageLayout>
           <TopNav
@@ -95,12 +82,15 @@ const CustomAppCreatePage: React.FC<CustomAppCreatePageProps> = props => {
               })}
             />
           </DetailPageLayout.RightSidebar>
-          <Savebar
-            disabled={isSaveDisabled}
-            state={saveButtonBarState}
-            onCancel={() => navigate(CustomAppUrls.resolveAppListUrl())}
-            onSubmit={submit}
-          />
+          <Savebar>
+            <Savebar.Spacer />
+            <Savebar.CancelButton onClick={() => navigate(CustomAppUrls.resolveAppListUrl())} />
+            <Savebar.ConfirmButton
+              transitionState={saveButtonBarState}
+              onClick={submit}
+              disabled={isSaveDisabled}
+            />
+          </Savebar>
         </DetailPageLayout>
       )}
     </Form>

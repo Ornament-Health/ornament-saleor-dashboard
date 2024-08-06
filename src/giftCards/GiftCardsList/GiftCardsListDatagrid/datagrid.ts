@@ -21,10 +21,7 @@ import { giftCardUpdatePageHeaderMessages as giftCardStatusChipMessages } from "
 import { GiftCardUrlSortField } from "../types";
 import { columnsMessages, messages } from "./messages";
 
-export const getColumns = (
-  intl: IntlShape,
-  sort?: Sort<GiftCardUrlSortField>,
-): AvailableColumn[] =>
+export const getColumns = (intl: IntlShape, sort?: Sort<GiftCardUrlSortField>): AvailableColumn[] =>
   [
     {
       id: "giftCardCode",
@@ -61,12 +58,12 @@ export const getColumns = (
     icon: sort ? getColumnSortDirectionIcon(sort, column.id) : undefined,
   }));
 
+const COMMON_CELL_PROPS: Partial<GridCell> = { cursor: "pointer" };
+
 export const createGetCellContent =
   (
     categories: Array<
-      ExtendedGiftCard<
-        NonNullable<GiftCardListQuery["giftCards"]>["edges"][0]["node"]
-      >
+      ExtendedGiftCard<NonNullable<GiftCardListQuery["giftCards"]>["edges"][0]["node"]>
     >,
     columns: AvailableColumn[],
     intl: IntlShape,
@@ -104,12 +101,11 @@ export const createGetCellContent =
               },
             ],
             [intl.formatMessage(messages.active)],
+            COMMON_CELL_PROPS,
           );
         }
 
-        const statusLabel = status?.label
-          ? intl.formatMessage(status.label)
-          : "";
+        const statusLabel = status?.label ? intl.formatMessage(status.label) : "";
 
         return tagsCell(
           [
@@ -119,6 +115,7 @@ export const createGetCellContent =
             },
           ],
           [statusLabel],
+          COMMON_CELL_PROPS,
         );
       }
       case "tag":
@@ -127,9 +124,7 @@ export const createGetCellContent =
         return readonlyTextCell(rowData?.product?.name ?? PLACEHOLDER);
       case "usedBy":
         if (rowData.usedBy) {
-          return readonlyTextCell(
-            `${rowData.usedBy.firstName} ${rowData.usedBy.lastName}`,
-          );
+          return readonlyTextCell(`${rowData.usedBy.firstName} ${rowData.usedBy.lastName}`);
         }
 
         return readonlyTextCell(rowData?.usedByEmail ?? PLACEHOLDER);
@@ -137,6 +132,7 @@ export const createGetCellContent =
         return moneyCell(
           rowData.currentBalance.amount,
           rowData.currentBalance.currency,
+          COMMON_CELL_PROPS,
         );
       default:
         return readonlyTextCell("", false);
@@ -144,16 +140,14 @@ export const createGetCellContent =
   };
 
 export const getTagCellText = (tags: GiftCardDataFragment["tags"]) => {
-  if (!!tags.length) {
+  if (tags.length) {
     return tags.map(({ name }) => name).join(", ");
   }
 
   return PLACEHOLDER;
 };
 
-export const getStatusText = (
-  giftCard: ExtendedGiftCard<GiftCardBase & { isActive: boolean }>,
-) => {
+export const getStatusText = (giftCard: ExtendedGiftCard<GiftCardBase & { isActive: boolean }>) => {
   const { isExpired, isActive } = giftCard;
 
   if (isExpired) {

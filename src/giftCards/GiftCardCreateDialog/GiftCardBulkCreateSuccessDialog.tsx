@@ -1,12 +1,7 @@
 import { Button } from "@dashboard/components/Button";
 import { DialogProps } from "@dashboard/types";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -17,12 +12,13 @@ interface GiftCardBulkCreateSuccessDialogProps extends DialogProps {
   idsToExport: string[] | null;
 }
 
-const GiftCardBulkCreateSuccessDialog: React.FC<
-  GiftCardBulkCreateSuccessDialogProps
-> = ({ open, onClose, idsToExport }) => {
+const GiftCardBulkCreateSuccessDialog: React.FC<GiftCardBulkCreateSuccessDialogProps> = ({
+  open,
+  onClose,
+  idsToExport,
+}) => {
   const intl = useIntl();
   const [openEmailExport, setOpenEmailExport] = useState(false);
-
   const onExportDialogClose = () => {
     setOpenEmailExport(false);
     onClose();
@@ -35,9 +31,7 @@ const GiftCardBulkCreateSuccessDialog: React.FC<
           {intl.formatMessage(messages.bulkCreateIssuedTitle)}
         </DialogTitle>
         <DialogContent>
-          <Typography>
-            {intl.formatMessage(messages.bulkCreateIssuedExplanation)}
-          </Typography>
+          <Text>{intl.formatMessage(messages.bulkCreateIssuedExplanation)}</Text>
         </DialogContent>
         <DialogActions>
           <Button variant="secondary" onClick={() => setOpenEmailExport(true)}>
@@ -49,10 +43,7 @@ const GiftCardBulkCreateSuccessDialog: React.FC<
         </DialogActions>
       </Dialog>
       <Dialog open={openEmailExport} maxWidth="sm">
-        <GiftCardExportDialogContent
-          idsToExport={idsToExport}
-          onClose={onExportDialogClose}
-        />
+        <GiftCardExportDialogContent idsToExport={idsToExport} onClose={onExportDialogClose} />
       </Dialog>
     </>
   );

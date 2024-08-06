@@ -4,8 +4,7 @@ import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButto
 import Grid from "@dashboard/components/Grid";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata } from "@dashboard/components/Metadata";
-import Savebar from "@dashboard/components/Savebar";
-import Skeleton from "@dashboard/components/Skeleton";
+import { Savebar } from "@dashboard/components/Savebar";
 import VerticalSpacer from "@dashboard/components/VerticalSpacer";
 import { configurationMenuUrl } from "@dashboard/configuration";
 import { TaxClassFragment } from "@dashboard/graphql";
@@ -21,13 +20,7 @@ import { useAutofocus } from "@dashboard/taxes/utils/useAutofocus";
 import { isLastElement } from "@dashboard/taxes/utils/utils";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getTaxesErrorMessage from "@dashboard/utils/errors/taxes";
-import {
-  Card,
-  CardContent,
-  Divider,
-  InputAdornment,
-  TextField,
-} from "@material-ui/core";
+import { Card, CardContent, Divider, InputAdornment, TextField } from "@material-ui/core";
 import {
   List,
   ListHeader,
@@ -37,7 +30,7 @@ import {
   PageTabs,
   SearchIcon,
 } from "@saleor/macaw-ui";
-import { Box } from "@saleor/macaw-ui-next";
+import { Box, Skeleton } from "@saleor/macaw-ui-next";
 import React, { useEffect, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -74,7 +67,6 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
   const intl = useIntl();
   const navigate = useNavigator();
   const classes = useStyles();
-
   const [query, setQuery] = useState("");
   const {
     rowNumber,
@@ -84,15 +76,11 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
     changeCurrentPage,
     changeRowNumber,
   } = useClientPagination();
-
   const currentTaxClass = useMemo(
     () => taxClasses?.find(getById(selectedTaxClassId)),
     [selectedTaxClassId, taxClasses],
   );
-
-  const nameInputRef = useAutofocus(currentTaxClass?.id === "new", [
-    currentTaxClass?.id,
-  ]);
+  const nameInputRef = useAutofocus(currentTaxClass?.id === "new", [currentTaxClass?.id]);
 
   useEffect(() => {
     restartPagination();
@@ -109,13 +97,7 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
         const filteredRates = data.updateTaxClassRates.filter(
           rate => rate.label.search(new RegExp(parseQuery(query), "i")) >= 0,
         );
-
-        const {
-          data: paginatedRates,
-          hasNextPage,
-          hasPreviousPage,
-        } = paginate(filteredRates);
-
+        const { data: paginatedRates, hasNextPage, hasPreviousPage } = paginate(filteredRates);
         const formErrors = getFormErrors(["name"], validationErrors);
 
         return (
@@ -151,11 +133,7 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                   {taxClasses?.length !== 0 && (
                     <div>
                       <Card>
-                        <CardTitle
-                          title={intl.formatMessage(
-                            taxesMessages.generalInformation,
-                          )}
-                        />
+                        <CardTitle title={intl.formatMessage(taxesMessages.generalInformation)} />
                         <CardContent>
                           <TextField
                             value={data?.name}
@@ -163,39 +141,24 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                             name="name"
                             data-test-id="class-name-input"
                             variant="outlined"
-                            placeholder={intl.formatMessage(
-                              taxesMessages.taxRateName,
-                            )}
+                            placeholder={intl.formatMessage(taxesMessages.taxRateName)}
                             fullWidth
                             inputProps={{ className: classes.namePadding }}
                             inputRef={nameInputRef}
                             error={!!formErrors.name}
-                            helperText={getTaxesErrorMessage(
-                              formErrors.name,
-                              intl,
-                            )}
+                            helperText={getTaxesErrorMessage(formErrors.name, intl)}
                           />
                         </CardContent>
                       </Card>
                       <VerticalSpacer spacing={3} />
                       <Card>
-                        <CardTitle
-                          title={intl.formatMessage(
-                            taxesMessages.taxClassRates,
-                          )}
-                        />
+                        <CardTitle title={intl.formatMessage(taxesMessages.taxClassRates)} />
                         {currentTaxClass?.countries.length === 0 ? (
                           <CardContent className={classes.supportText}>
                             <FormattedMessage
                               {...taxesMessages.noRatesInTaxClass}
                               values={{
-                                tab: (
-                                  <b>
-                                    {intl.formatMessage(
-                                      taxesMessages.countriesSection,
-                                    )}
-                                  </b>
-                                ),
+                                tab: <b>{intl.formatMessage(taxesMessages.countriesSection)}</b>,
                               }}
                             />
                           </CardContent>
@@ -207,9 +170,7 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                                 value={query}
                                 variant="outlined"
                                 onChange={e => setQuery(e.target.value)}
-                                placeholder={intl.formatMessage(
-                                  taxesMessages.searchTaxCountries,
-                                )}
+                                placeholder={intl.formatMessage(taxesMessages.searchTaxCountries)}
                                 fullWidth
                                 InputProps={{
                                   startAdornment: (
@@ -227,48 +188,34 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                               <ListHeader>
                                 <ListItem>
                                   <ListItemCell>
-                                    <FormattedMessage
-                                      {...taxesMessages.countryNameHeader}
-                                    />
+                                    <FormattedMessage {...taxesMessages.countryNameHeader} />
                                   </ListItemCell>
                                   <ListItemCell className={classes.right}>
-                                    <FormattedMessage
-                                      {...taxesMessages.taxRateHeader}
-                                    />
+                                    <FormattedMessage {...taxesMessages.taxRateHeader} />
                                   </ListItemCell>
                                 </ListItem>
                               </ListHeader>
                               <Divider />
-                              {paginatedRates?.map(
-                                (countryRate, countryRateIndex) => (
-                                  <React.Fragment key={countryRate.id}>
-                                    <ListItem
-                                      hover={false}
-                                      className={classes.noDivider}
-                                      data-test-id="country-rows"
-                                    >
-                                      <ListItemCell>
-                                        {countryRate.label}
-                                      </ListItemCell>
-                                      <ListItemCell>
-                                        <TaxInput
-                                          value={countryRate.value}
-                                          change={e =>
-                                            handlers.handleRateChange(
-                                              countryRate.id,
-                                              e.target.value,
-                                            )
-                                          }
-                                        />
-                                      </ListItemCell>
-                                    </ListItem>
-                                    {!isLastElement(
-                                      filteredRates,
-                                      countryRateIndex,
-                                    ) && <Divider />}
-                                  </React.Fragment>
-                                ),
-                              ) ?? (
+                              {paginatedRates?.map((countryRate, countryRateIndex) => (
+                                <React.Fragment key={countryRate.id}>
+                                  <ListItem
+                                    hover={false}
+                                    className={classes.noDivider}
+                                    data-test-id="country-rows"
+                                  >
+                                    <ListItemCell>{countryRate.label}</ListItemCell>
+                                    <ListItemCell>
+                                      <TaxInput
+                                        value={countryRate.value}
+                                        change={e =>
+                                          handlers.handleRateChange(countryRate.id, e.target.value)
+                                        }
+                                      />
+                                    </ListItemCell>
+                                  </ListItem>
+                                  {!isLastElement(filteredRates, countryRateIndex) && <Divider />}
+                                </React.Fragment>
+                              )) ?? (
                                 <>
                                   <Skeleton />
                                   <VerticalSpacer />
@@ -288,20 +235,20 @@ export const TaxClassesPage: React.FC<TaxClassesPageProps> = props => {
                         )}
                       </Card>
                       <VerticalSpacer spacing={3} />
-                      <Metadata
-                        data={data}
-                        onChange={handlers.changeMetadata}
-                      />
+                      <Metadata data={data} onChange={handlers.changeMetadata} />
                     </div>
                   )}
                 </Grid>
               </Box>
-              <Savebar
-                state={savebarState}
-                disabled={disabled}
-                onSubmit={submit}
-                onCancel={() => navigate(configurationMenuUrl)}
-              />
+              <Savebar>
+                <Savebar.Spacer />
+                <Savebar.CancelButton onClick={() => navigate(configurationMenuUrl)} />
+                <Savebar.ConfirmButton
+                  transitionState={savebarState}
+                  onClick={submit}
+                  disabled={disabled}
+                />
+              </Savebar>
             </DetailPageLayout.Content>
           </DetailPageLayout>
         );

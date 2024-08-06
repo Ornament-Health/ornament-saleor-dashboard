@@ -1,6 +1,6 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -15,21 +15,18 @@ interface AppStatusProps {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const AppStatus: React.FC<AppStatusProps> = ({
-  data,
-  disabled,
-  label,
-  onChange,
-}) => {
+const AppStatus: React.FC<AppStatusProps> = ({ data, disabled, label, onChange }) => {
   const intl = useIntl();
 
   return (
-    <Card>
-      <CardTitle title={intl.formatMessage(messages.userStatus)} />
-      <CardContent>
-        <Typography variant="body2">
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(messages.userStatus)}</DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
+        <Text fontSize={3} display="block">
           {intl.formatMessage(messages.userDisableInstruction)}
-        </Typography>
+        </Text>
         <ControlledCheckbox
           data-test-id="is-active-checkbox"
           checked={data.isActive}
@@ -38,9 +35,10 @@ const AppStatus: React.FC<AppStatusProps> = ({
           name="isActive"
           onChange={onChange}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 AppStatus.displayName = "AppStatus";
 export default AppStatus;

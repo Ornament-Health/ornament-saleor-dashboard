@@ -1,7 +1,6 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import FormSpacer from "@dashboard/components/FormSpacer";
-import { Card, CardContent } from "@material-ui/core";
 import { Box, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -22,15 +21,17 @@ const OrderFulfillmentSettings: React.FC<OrderFulfillmentSettingsProps> = ({
   const intl = useIntl();
 
   return (
-    <Card data-test-id="order-fulfillment-settings">
-      <CardTitle
-        title={intl.formatMessage({
-          id: "G3ay2p",
-          defaultMessage: "Fulfillment settings",
-          description: "section header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard data-test-id="order-fulfillment-settings">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "G3ay2p",
+            defaultMessage: "Fulfillment settings",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <ControlledCheckbox
           name={"fulfillmentAutoApprove" as keyof OrderSettingsFormData}
           label={
@@ -42,7 +43,7 @@ const OrderFulfillmentSettings: React.FC<OrderFulfillmentSettingsProps> = ({
                   description="checkbox label"
                 />
               </Text>
-              <Text variant="caption" color="default2">
+              <Text size={2} color="default2">
                 <FormattedMessage
                   id="XwQQ1f"
                   defaultMessage="All fulfillments will be automatically approved"
@@ -68,7 +69,7 @@ const OrderFulfillmentSettings: React.FC<OrderFulfillmentSettingsProps> = ({
                   description="checkbox label"
                 />
               </Text>
-              <Text variant="caption" color="default2">
+              <Text size={2} color="default2">
                 <FormattedMessage
                   id="l9ETHu"
                   defaultMessage="You will be able to fulfill products without capturing payment for the order."
@@ -82,9 +83,10 @@ const OrderFulfillmentSettings: React.FC<OrderFulfillmentSettingsProps> = ({
           disabled={disabled}
           data-test-id="fulfillment-allow-unpaid-checkbox"
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 OrderFulfillmentSettings.displayName = "OrderFulfillmentSettings";
 export default OrderFulfillmentSettings;

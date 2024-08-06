@@ -9,6 +9,7 @@ import {
   useAppDeleteMutation,
   useAppQuery,
 } from "@dashboard/graphql";
+import { useHasManagedAppsPermission } from "@dashboard/hooks/useHasManagedAppsPermission";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import getAppErrorMessage from "@dashboard/utils/errors/app";
@@ -19,12 +20,7 @@ import { useIntl } from "react-intl";
 import AppActivateDialog from "../../components/AppActivateDialog";
 import AppDeactivateDialog from "../../components/AppDeactivateDialog";
 import { AppDetailsPage } from "../../components/AppDetailsPage";
-import {
-  AppDetailsUrlDialog,
-  AppDetailsUrlQueryParams,
-  AppPaths,
-  AppUrls,
-} from "../../urls";
+import { AppDetailsUrlDialog, AppDetailsUrlQueryParams, AppPaths, AppUrls } from "../../urls";
 import { messages } from "./messages";
 
 interface Props {
@@ -34,13 +30,12 @@ interface Props {
 
 export const AppManageView: React.FC<Props> = ({ id, params }) => {
   const client = useApolloClient();
+  const { hasManagedAppsPermission } = useHasManagedAppsPermission();
   const { data, loading, refetch } = useAppQuery({
     displayLoader: true,
-    variables: { id },
+    variables: { id, hasManagedAppsPermission },
   });
-
   const appExists = data?.app !== null;
-
   const navigate = useNavigator();
   const notify = useNotifier();
   const intl = useIntl();
@@ -48,6 +43,7 @@ export const AppManageView: React.FC<Props> = ({ id, params }) => {
   const [activateApp, activateAppResult] = useAppActivateMutation({
     onCompleted: data => {
       const errors = data?.appActivate?.errors;
+
       if (errors?.length === 0) {
         notify({
           status: "success",
@@ -70,6 +66,7 @@ export const AppManageView: React.FC<Props> = ({ id, params }) => {
   const [deactivateApp, deactivateAppResult] = useAppDeactivateMutation({
     onCompleted: data => {
       const errors = data?.appDeactivate?.errors;
+
       if (errors?.length === 0) {
         notify({
           status: "success",
@@ -89,20 +86,17 @@ export const AppManageView: React.FC<Props> = ({ id, params }) => {
       }
     },
   });
-
   const refetchExtensionList = () => {
     client.refetchQueries({
       include: [EXTENSION_LIST_QUERY],
     });
   };
-
   const removeAppNotify = () => {
     notify({
       status: "success",
       text: intl.formatMessage(messages.appRemoved),
     });
   };
-
   const [deleteApp, deleteAppOpts] = useAppDeleteMutation({
     onCompleted: data => {
       if (!data?.appDelete?.errors?.length) {
@@ -113,15 +107,13 @@ export const AppManageView: React.FC<Props> = ({ id, params }) => {
       }
     },
   });
-
   const [openModal, closeModal] = createDialogActionHandlers<
     AppDetailsUrlDialog,
     AppDetailsUrlQueryParams
   >(navigate, params => AppUrls.resolveAppDetailsUrl(id, params), params);
-
   const handleActivateConfirm = () => activateApp(mutationOpts);
   const handleDeactivateConfirm = () => deactivateApp(mutationOpts);
-  const handleRemoveConfirm = () => deleteApp(mutationOpts);
+  const handleRemoveConfirm = () => deleteApp({ ...mutationOpts });
 
   if (!appExists) {
     return <NotFoundPage backHref={AppPaths.appListPath} />;

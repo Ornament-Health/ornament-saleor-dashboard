@@ -5,7 +5,6 @@ import { ShippingMethodsPage } from "@pages/shippingMethodsPage";
 import { expect, test } from "@playwright/test";
 
 test.use({ storageState: "playwright/.auth/shipping.json" });
-
 test("TC: SALEOR_21 User should be able to navigate to shipping zones page as a staff member using SHIPPING permission @e2e", async ({
   page,
 }) => {
@@ -17,5 +16,5 @@ test("TC: SALEOR_21 User should be able to navigate to shipping zones page as a 
   await page.waitForTimeout(8000);
   await configurationPage.openShippingMethods();
   await expect(shippingMethodsPage.createShippingZoneButton).toBeVisible();
-  await mainMenuPage.expectMenuItemsCount(2);
+  await mainMenuPage.expectMenuItemsCount(3);
 });

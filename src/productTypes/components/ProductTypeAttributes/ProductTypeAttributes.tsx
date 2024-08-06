@@ -1,22 +1,19 @@
 // @ts-strict-ignore
 import { attributeUrl } from "@dashboard/attributes/urls";
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Checkbox from "@dashboard/components/Checkbox";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
-import {
-  SortableTableBody,
-  SortableTableRow,
-} from "@dashboard/components/SortableTable";
+import { SortableTableBody, SortableTableRow } from "@dashboard/components/SortableTable";
 import { TableButtonWrapper } from "@dashboard/components/TableButtonWrapper/TableButtonWrapper";
 import TableHead from "@dashboard/components/TableHead";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { AttributeFragment, ProductAttributeType } from "@dashboard/graphql";
 import { maybe, renderCollection } from "@dashboard/misc";
 import { ListActions, ReorderAction } from "@dashboard/types";
-import { Card, CardContent, TableCell } from "@material-ui/core";
+import { TableCell } from "@material-ui/core";
 import { DeleteIcon, IconButton, makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -56,7 +53,6 @@ interface ProductTypeAttributesProps extends ListActions {
 }
 
 const numberOfColumns = 5;
-
 const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
   const {
     attributes,
@@ -74,33 +70,30 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     onAttributeUnassign,
   } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
 
   return (
-    <Card data-test-id="product-attributes">
-      <CardTitle
-        title={intl.formatMessage({
-          id: "9scTQ0",
-          defaultMessage: "Product Attributes",
-          description: "section header",
-        })}
-        toolbar={
+    <DashboardCard data-test-id="product-attributes">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "9scTQ0",
+            defaultMessage: "Product Attributes",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
           <Button
             disabled={disabled}
             data-test-id={testId}
             variant="tertiary"
             onClick={() => onAttributeAssign(ProductAttributeType[type])}
           >
-            <FormattedMessage
-              id="uxPpRx"
-              defaultMessage="Assign attribute"
-              description="button"
-            />
+            <FormattedMessage id="uxPpRx" defaultMessage="Assign attribute" description="button" />
           </Button>
-        }
-      />
-      <CardContent>
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <ResponsiveTable>
           <colgroup>
             <col className={classes.colGrab} />
@@ -141,7 +134,7 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                 return (
                   <SortableTableRow
                     selected={isSelected}
-                    className={!!attribute ? classes.link : undefined}
+                    className={attribute ? classes.link : undefined}
                     hover={!!attribute}
                     href={attribute ? attributeUrl(attribute.id) : undefined}
                     key={maybe(() => attribute.id)}
@@ -157,18 +150,10 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       />
                     </TableCell>
                     <TableCell className={classes.colName} data-test-id="name">
-                      {maybe(() => attribute.name) ? (
-                        attribute.name
-                      ) : (
-                        <Skeleton />
-                      )}
+                      {maybe(() => attribute.name) ? attribute.name : <Skeleton />}
                     </TableCell>
                     <TableCell className={classes.colSlug} data-test-id="slug">
-                      {maybe(() => attribute.slug) ? (
-                        attribute.slug
-                      ) : (
-                        <Skeleton />
-                      )}
+                      {maybe(() => attribute.slug) ? attribute.slug : <Skeleton />}
                     </TableCell>
                     <TableCell className={classes.colAction}>
                       <TableButtonWrapper>
@@ -188,19 +173,17 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
               () => (
                 <TableRowLink>
                   <TableCell colSpan={numberOfColumns}>
-                    <FormattedMessage
-                      id="ztQgD8"
-                      defaultMessage="No attributes found"
-                    />
+                    <FormattedMessage id="ztQgD8" defaultMessage="No attributes found" />
                   </TableCell>
                 </TableRowLink>
               ),
             )}
           </SortableTableBody>
         </ResponsiveTable>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 ProductTypeAttributes.displayName = "ProductTypeAttributes";
 export default ProductTypeAttributes;

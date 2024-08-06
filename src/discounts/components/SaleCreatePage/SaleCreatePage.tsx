@@ -5,7 +5,7 @@ import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButto
 import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata, MetadataFormData } from "@dashboard/components/Metadata";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { createSaleChannelsChangeHandler } from "@dashboard/discounts/handlers";
 import { saleListUrl } from "@dashboard/discounts/urls";
 import { SALE_CREATE_FORM_ID } from "@dashboard/discounts/views/SaleCreate/consts";
@@ -61,9 +61,7 @@ const SaleCreatePage: React.FC<SaleCreatePageProps> = ({
   onBack,
 }) => {
   const intl = useIntl();
-  const { makeChangeHandler: makeMetadataChangeHandler } =
-    useMetadataChangeTrigger();
-
+  const { makeChangeHandler: makeMetadataChangeHandler } = useMetadataChangeTrigger();
   const initialForm: FormData = {
     channelListings,
     endDate: "",
@@ -77,10 +75,8 @@ const SaleCreatePage: React.FC<SaleCreatePageProps> = ({
     metadata: [],
     privateMetadata: [],
   };
-
   const checkIfSaveIsDisabled = (data: FormData) =>
-    data.channelListings?.some(channel => validateSalePrice(data, channel)) ||
-    disabled;
+    data.channelListings?.some(channel => validateSalePrice(data, channel)) || disabled;
 
   return (
     <Form
@@ -110,12 +106,7 @@ const SaleCreatePage: React.FC<SaleCreatePageProps> = ({
               })}
             />
             <DetailPageLayout.Content>
-              <SaleInfo
-                data={data}
-                disabled={disabled}
-                errors={errors}
-                onChange={change}
-              />
+              <SaleInfo data={data} disabled={disabled} errors={errors} onChange={change} />
               <SaleType data={data} disabled={disabled} onChange={change} />
               <SaleValue
                 data={data}
@@ -123,12 +114,7 @@ const SaleCreatePage: React.FC<SaleCreatePageProps> = ({
                 errors={errors}
                 onChange={handleChannelChange}
               />
-              <DiscountDates
-                data={data}
-                disabled={disabled}
-                errors={errors}
-                onChange={change}
-              />
+              <DiscountDates data={data} disabled={disabled} errors={errors} onChange={change} />
               <Metadata data={data} onChange={changeMetadata} />
             </DetailPageLayout.Content>
             <DetailPageLayout.RightSidebar>
@@ -143,17 +129,21 @@ const SaleCreatePage: React.FC<SaleCreatePageProps> = ({
                 openModal={openChannelsModal}
               />
             </DetailPageLayout.RightSidebar>
-            <Savebar
-              disabled={disabled}
-              onCancel={onBack}
-              onSubmit={submit}
-              state={saveButtonBarState}
-            />
+            <Savebar>
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={onBack} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={disabled}
+              />
+            </Savebar>
           </DetailPageLayout>
         );
       }}
     </Form>
   );
 };
+
 SaleCreatePage.displayName = "SaleCreatePage";
 export default SaleCreatePage;

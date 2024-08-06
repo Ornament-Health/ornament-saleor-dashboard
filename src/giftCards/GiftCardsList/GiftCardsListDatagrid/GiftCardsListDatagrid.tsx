@@ -41,48 +41,33 @@ export const GiftCardsListDatagrid = () => {
     paginationState,
     params,
   } = useGiftCardList();
-
   const isCurrencySelected = !!params.currency;
-
   const paginationValues = usePaginator({
     pageInfo,
     paginationState,
     queryString: params,
   });
-
   const availableColumns = useMemo(() => getColumns(intl, sort), [intl, sort]);
-
   const onColumnChange = useCallback(
     (columns: string[]) => {
       if (updateListSettings) {
-        updateListSettings(
-          "columns",
-          (columns as GiftCardListColummns[]).filter(Boolean),
-        );
+        updateListSettings("columns", (columns as GiftCardListColummns[]).filter(Boolean));
       }
     },
     [updateListSettings],
   );
-
-  const {
-    handlers,
-    staticColumns,
-    visibleColumns,
-    selectedColumns,
-    recentlyAddedColumn,
-  } = useColumns({
-    staticColumns: availableColumns,
-    selectedColumns: settings?.columns ?? [],
-    onSave: onColumnChange,
-  });
-
+  const { handlers, staticColumns, visibleColumns, selectedColumns, recentlyAddedColumn } =
+    useColumns({
+      gridName: "gift_cards_list",
+      staticColumns: availableColumns,
+      selectedColumns: settings?.columns ?? [],
+      onSave: onColumnChange,
+    });
   const { theme: currentTheme } = useTheme();
-
   const getCellContent = useCallback(
     createGetCellContent(giftCards, visibleColumns, intl, currentTheme),
     [giftCards, visibleColumns, currentTheme],
   );
-
   const handleHeaderClick = useCallback(
     (col: number) => {
       const columnName = visibleColumns[col].id;
@@ -100,19 +85,16 @@ export const GiftCardsListDatagrid = () => {
     },
     [visibleColumns, onSort, sort, isCurrencySelected],
   );
-
   const handleRowAnchor = useCallback(
     ([, row]: Item) => giftCardUrl(giftCards[row].id),
     [giftCards],
   );
-
   const handleRowClick = useCallback(
     ([_, row]: Item) => {
       navigate(giftCardUrl(giftCards[row].id));
     },
     [giftCards],
   );
-
   const handleGetColumnTooltipContent = useCallback(
     (colIndex: number) => {
       const columnName = visibleColumns[colIndex].id;
@@ -127,7 +109,6 @@ export const GiftCardsListDatagrid = () => {
     },
     [visibleColumns, isCurrencySelected],
   );
-
   const handleGiftCardSelectionChange = useCallback(
     (rows: number[], clearSelection: () => void) => {
       if (!giftCards) {
@@ -135,7 +116,6 @@ export const GiftCardsListDatagrid = () => {
       }
 
       const rowsIds = rows.map(row => giftCards[row].id);
-
       const haveSaveValues = isEqual(rowsIds, selectedRowIds);
 
       if (!haveSaveValues) {
@@ -168,7 +148,7 @@ export const GiftCardsListDatagrid = () => {
         hasRowHover={true}
         onColumnMoved={handlers.onMove}
         onColumnResize={handlers.onResize}
-        verticalBorder={col => col > 0}
+        verticalBorder={false}
         rows={giftCards?.length ?? 0}
         availableColumns={visibleColumns}
         emptyText={intl.formatMessage(messages.noData)}

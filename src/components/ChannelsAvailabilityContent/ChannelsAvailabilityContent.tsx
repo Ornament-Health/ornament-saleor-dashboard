@@ -1,8 +1,9 @@
 import { Channel } from "@dashboard/channels/utils";
 import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
 import Hr from "@dashboard/components/Hr";
-import { TextField, Typography } from "@material-ui/core";
-import { filter } from "fuzzaldrin";
+import { fuzzySearch } from "@dashboard/misc";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -19,9 +20,7 @@ export interface ChannelsAvailabilityContentProps {
   toggleAll?: (items: Channel[], selected: number) => void;
 }
 
-export const ChannelsAvailabilityContent: React.FC<
-  ChannelsAvailabilityContentProps
-> = ({
+export const ChannelsAvailabilityContent: React.FC<ChannelsAvailabilityContentProps> = ({
   isSelected,
   channels,
   contentType = "",
@@ -37,18 +36,18 @@ export const ChannelsAvailabilityContent: React.FC<
     defaultMessage: "Search through channels",
   });
   const [query, onQueryChange] = React.useState("");
-  const filteredChannels = filter(channels, query, { key: "name" });
+  const searchResults = fuzzySearch(channels, query, ["name"]);
 
   return (
     <div className={classes.content}>
       {!!contentType && (
-        <Typography className={classes.text} variant="caption">
+        <Text className={classes.text} size={2} fontWeight="light">
           <FormattedMessage
             id="tQuE1q"
             defaultMessage="Select channels you want for {contentType} to be available on"
             values={{ contentType }}
           />
-        </Typography>
+        </Text>
       )}
       <TextField
         name="query"
@@ -67,12 +66,9 @@ export const ChannelsAvailabilityContent: React.FC<
               name="allChannels"
               label={
                 toggleAllText || (
-                  <Typography className={classes.label}>
-                    <FormattedMessage
-                      id="2/L4zZ"
-                      defaultMessage="Select all channels"
-                    />
-                  </Typography>
+                  <Text className={classes.label}>
+                    <FormattedMessage id="2/L4zZ" defaultMessage="Select all channels" />
+                  </Text>
                 )
               }
               onChange={() => toggleAll(channels, selected)}
@@ -80,28 +76,20 @@ export const ChannelsAvailabilityContent: React.FC<
             <Hr />
           </>
         )}
-        <Typography className={classes.contentTitle}>
+        <Text className={classes.contentTitle}>
           <FormattedMessage id="EWCUdP" defaultMessage="Channels A to Z" />
-        </Typography>
+        </Text>
         <div
           className={classes.scrollArea}
           data-test-id="manage-products-channels-availiability-list"
         >
-          {filteredChannels?.length ? (
-            filteredChannels.map(option => (
-              <div
-                key={option.id}
-                className={classes.option}
-                data-test-id="channel-row"
-              >
+          {searchResults.length ? (
+            searchResults.map(option => (
+              <div key={option.id} className={classes.option} data-test-id="channel-row">
                 <ControlledCheckbox
                   checked={isSelected(option)}
                   name={option.name}
-                  label={
-                    <Typography className={classes.label}>
-                      {option.name}
-                    </Typography>
-                  }
+                  label={<Text className={classes.label}>{option.name}</Text>}
                   onChange={() => onChange(option)}
                 />
                 <Hr />
@@ -109,10 +97,7 @@ export const ChannelsAvailabilityContent: React.FC<
             ))
           ) : (
             <div className={classes.notFound}>
-              <FormattedMessage
-                id="B9yrkK"
-                defaultMessage="No Channels found"
-              />
+              <FormattedMessage id="B9yrkK" defaultMessage="No Channels found" />
             </div>
           )}
         </div>

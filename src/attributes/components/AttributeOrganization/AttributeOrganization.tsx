@@ -1,8 +1,8 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
 import { AttributeTypeEnum } from "@dashboard/graphql";
-import { Card, CardContent, Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
@@ -27,7 +27,6 @@ const messages = defineMessages({
     description: "attribute type",
   },
 });
-
 const useStyles = makeStyles(
   theme => ({
     card: {
@@ -43,23 +42,24 @@ const useStyles = makeStyles(
   }),
   { name: "AttributeOrganization" },
 );
-
 const AttributeOrganization: React.FC<AttributeOrganizationProps> = props => {
   const { canChangeType, data, disabled, onChange } = props;
-
   const classes = useStyles(props);
   const intl = useIntl();
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "nwvQPg",
-          defaultMessage: "Organization",
-          description: "section header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "nwvQPg",
+            defaultMessage: "Organization",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+
+      <DashboardCard.Content>
         {canChangeType ? (
           <RadioGroupField
             choices={[
@@ -75,16 +75,13 @@ const AttributeOrganization: React.FC<AttributeOrganizationProps> = props => {
             disabled={disabled}
             label={
               <>
-                <FormattedMessage
-                  id="v1pNHW"
-                  defaultMessage="Attribute Class"
-                />
-                <Typography variant="caption">
+                <FormattedMessage id="v1pNHW" defaultMessage="Attribute Class" />
+                <Text fontWeight="medium" fontSize={3} display="block">
                   <FormattedMessage
                     id="ErNH3D"
                     defaultMessage="Define where this attribute should be used in Saleor system"
                   />
-                </Typography>
+                </Text>
               </>
             }
             name={"type" as keyof FormData}
@@ -93,19 +90,20 @@ const AttributeOrganization: React.FC<AttributeOrganizationProps> = props => {
           />
         ) : (
           <>
-            <Typography className={classes.label} variant="caption">
+            <Text className={classes.label} size={2} fontWeight="light" display="block">
               <FormattedMessage id="v1pNHW" defaultMessage="Attribute Class" />
-            </Typography>
-            <Typography>
+            </Text>
+            <Text>
               {data.type === AttributeTypeEnum.PRODUCT_TYPE
                 ? intl.formatMessage(messages.productAttribute)
                 : intl.formatMessage(messages.contentAttribute)}
-            </Typography>
+            </Text>
           </>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 AttributeOrganization.displayName = "AttributeOrganization";
 export default AttributeOrganization;

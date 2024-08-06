@@ -1,5 +1,6 @@
 import { ListFilters } from "@dashboard/components/AppLayout/ListFilters";
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
+import { DashboardCard } from "@dashboard/components/Card";
 import { FilterPresetsSelect } from "@dashboard/components/FilterPresetsSelect";
 import { ListPageLayout } from "@dashboard/components/Layouts";
 import LimitReachedAlert from "@dashboard/components/LimitReachedAlert";
@@ -8,23 +9,14 @@ import { RefreshLimitsQuery } from "@dashboard/graphql";
 import { sectionNames } from "@dashboard/intl";
 import { StaffMembers } from "@dashboard/staff/types";
 import { StaffListUrlSortField } from "@dashboard/staff/urls";
-import {
-  FilterPagePropsWithPresets,
-  ListProps,
-  SortPage,
-} from "@dashboard/types";
+import { FilterPagePropsWithPresets, ListProps, SortPage } from "@dashboard/types";
 import { hasLimits, isLimitReached } from "@dashboard/utils/limits";
-import { Card } from "@material-ui/core";
 import { Box, Button, ChevronRightIcon } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { StaffListDatagrid } from "../StaffListDatagrid";
-import {
-  createFilterStructure,
-  StaffFilterKeys,
-  StaffListFilterOpts,
-} from "./filters";
+import { createFilterStructure, StaffFilterKeys, StaffListFilterOpts } from "./filters";
 
 export interface StaffListPageProps
   extends ListProps,
@@ -55,7 +47,6 @@ const StaffListPage: React.FC<StaffListPageProps> = ({
 }) => {
   const intl = useIntl();
   const [isFilterPresetOpen, setFilterPresetOpen] = useState(false);
-
   const structure = createFilterStructure(intl, filterOpts);
   const reachedLimit = isLimitReached(limits, "staffUsers");
 
@@ -67,12 +58,7 @@ const StaffListPage: React.FC<StaffListPageProps> = ({
         isAlignToRight={false}
         withoutBorder
       >
-        <Box
-          __flex={1}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <Box __flex={1} display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex">
             <Box marginX={3} display="flex" alignItems="center">
               <ChevronRightIcon />
@@ -141,7 +127,7 @@ const StaffListPage: React.FC<StaffListPageProps> = ({
           />
         </LimitReachedAlert>
       )}
-      <Card>
+      <DashboardCard>
         <ListFilters<StaffFilterKeys>
           currencySymbol={currencySymbol}
           initialSearch={initialSearch}
@@ -155,9 +141,10 @@ const StaffListPage: React.FC<StaffListPageProps> = ({
         />
 
         <StaffListDatagrid {...listProps} />
-      </Card>
+      </DashboardCard>
     </ListPageLayout>
   );
 };
+
 StaffListPage.displayName = "StaffListPage";
 export default StaffListPage;

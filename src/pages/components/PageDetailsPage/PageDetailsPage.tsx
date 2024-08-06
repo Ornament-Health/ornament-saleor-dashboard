@@ -11,7 +11,7 @@ import CardSpacer from "@dashboard/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata } from "@dashboard/components/Metadata";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { SeoForm } from "@dashboard/components/SeoForm";
 import VisibilityCard from "@dashboard/components/VisibilityCard";
 import {
@@ -46,9 +46,7 @@ export interface PageDetailsPageProps {
   allowEmptySlug?: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
   selectedPageType?: PageDetailsFragment["pageType"];
-  attributeValues: RelayToFlat<
-    SearchAttributeValuesQuery["attribute"]["choices"]
-  >;
+  attributeValues: RelayToFlat<SearchAttributeValuesQuery["attribute"]["choices"]>;
   onRemove: () => void;
   onSubmit: (data: PageData) => SubmitPromise;
   fetchPageTypes?: (data: string) => void;
@@ -95,15 +93,9 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
   const intl = useIntl();
   const localizeDate = useDateLocalize();
   const navigate = useNavigator();
-
   const pageExists = page !== null;
-
   const canOpenAssignReferencesAttributeDialog = !!assignReferencesAttributeId;
-
-  const pageTypes = pageTypeChoiceList
-    ? mapNodeToChoice(pageTypeChoiceList)
-    : [];
-
+  const pageTypes = pageTypeChoiceList ? mapNodeToChoice(pageTypeChoiceList) : [];
   const handleAssignReferenceAttribute = (
     attributeValues: Container[],
     data: PageData,
@@ -123,7 +115,6 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
     );
     onCloseDialog();
   };
-
   const handleSelectPageType = (pageTypeId: string) =>
     onSelectPageType && onSelectPageType(pageTypeId);
 
@@ -143,31 +134,17 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
       onSubmit={onSubmit}
       disabled={loading}
     >
-      {({
-        change,
-        data,
-        validationErrors,
-        handlers,
-        submit,
-        attributeRichTextGetters,
-      }) => {
+      {({ change, data, validationErrors, handlers, submit, attributeRichTextGetters }) => {
         const errors = [...apiErrors, ...validationErrors];
 
         return (
           <DetailPageLayout>
             <TopNav
               href={pageListUrl()}
-              title={
-                !pageExists ? intl.formatMessage(messages.title) : page?.title
-              }
+              title={!pageExists ? intl.formatMessage(messages.title) : page?.title}
             />
             <DetailPageLayout.Content>
-              <PageInfo
-                data={data}
-                disabled={loading}
-                errors={errors}
-                onChange={change}
-              />
+              <PageInfo data={data} disabled={loading} errors={errors} onChange={change} />
               <CardSpacer />
               <SeoForm
                 errors={errors}
@@ -212,13 +189,11 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
                 disabled={loading}
                 messages={{
                   hiddenLabel: intl.formatMessage(messages.hiddenLabel),
-                  hiddenSecondLabel: intl.formatMessage(
-                    messages.hiddenSecondLabel,
-                    {
-                      date: localizeDate(data.publicationDate),
-                    },
-                  ),
+                  hiddenSecondLabel: intl.formatMessage(messages.hiddenSecondLabel, {
+                    date: localizeDate(data.publishedAt, "llll"),
+                  }),
                   visibleLabel: intl.formatMessage(messages.visibleLabel),
+                  setAvailabilityDateLabel: intl.formatMessage(messages.setAvailabilityDate),
                 }}
                 onChange={change}
               />
@@ -236,22 +211,23 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
                 canChangeType={!page?.pageType}
               />
             </DetailPageLayout.RightSidebar>
-            <Savebar
-              disabled={loading}
-              state={saveButtonBarState}
-              onCancel={() => navigate(pageListUrl())}
-              onDelete={page === null ? undefined : onRemove}
-              onSubmit={submit}
-            />
+            <Savebar>
+              {page !== null && <Savebar.DeleteButton onClick={onRemove} />}
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(pageListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={loading}
+              />
+            </Savebar>
             {canOpenAssignReferencesAttributeDialog && (
               <AssignAttributeValueDialog
                 entityType={getReferenceAttributeEntityTypeFromAttribute(
                   assignReferencesAttributeId,
                   data.attributes,
                 )}
-                attribute={data.attributes.find(
-                  ({ id }) => id === assignReferencesAttributeId,
-                )}
+                attribute={data.attributes.find(({ id }) => id === assignReferencesAttributeId)}
                 confirmButtonState={"default"}
                 products={referenceProducts}
                 pages={referencePages}
@@ -262,11 +238,7 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
                 loading={handlers.fetchMoreReferences?.loading}
                 onClose={onCloseDialog}
                 onSubmit={attributeValues =>
-                  handleAssignReferenceAttribute(
-                    attributeValues,
-                    data,
-                    handlers,
-                  )
+                  handleAssignReferenceAttribute(attributeValues, data, handlers)
                 }
               />
             )}
@@ -276,5 +248,6 @@ const PageDetailsPage: React.FC<PageDetailsPageProps> = ({
     </PageForm>
   );
 };
+
 PageDetailsPage.displayName = "PageDetailsPage";
 export default PageDetailsPage;

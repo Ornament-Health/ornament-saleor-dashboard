@@ -16,13 +16,13 @@ import {
   useUpdateMetadataMutation,
   useUpdatePrivateMetadataMutation,
   useVariantCreateMutation,
-  useWarehouseListQuery,
 } from "@dashboard/graphql";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import useShop from "@dashboard/hooks/useShop";
 import usePageSearch from "@dashboard/searches/usePageSearch";
 import useProductSearch from "@dashboard/searches/useProductSearch";
+import useWarehouseSearch from "@dashboard/searches/useWarehouseSearch";
 import useAttributeValueSearchHandler from "@dashboard/utils/handlers/attributeValueSearchHandler";
 import createMetadataCreateHandler from "@dashboard/utils/handlers/metadataCreateHandler";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
@@ -47,20 +47,19 @@ interface ProductVariantCreateProps {
   params: ProductVariantAddUrlQueryParams;
 }
 
-export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
-  productId,
-  params,
-}) => {
+export const ProductVariant: React.FC<ProductVariantCreateProps> = ({ productId, params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
-
   const shop = useShop();
   const intl = useIntl();
-  const warehouses = useWarehouseListQuery({
-    displayLoader: true,
+
+  const { loadMore: fetchMoreWarehouses, result: searchWarehousesResult } = useWarehouseSearch({
     variables: {
-      first: 50,
+      first: 100,
+      channnelsId: [],
+      query: "",
     },
+    skip: true,
   });
 
   const { data, loading: productLoading } = useProductVariantCreateDataQuery({
@@ -70,11 +69,8 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
       firstValues: 10,
     },
   });
-
   const [uploadFile, uploadFileOpts] = useFileUploadMutation({});
-
   const product = data?.product;
-
   const [variantCreate, variantCreateResult] = useVariantCreateMutation({
     onCompleted: data => {
       const variantId = data.productVariantCreate.productVariant.id;
@@ -91,26 +87,17 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
   const [updateChannels] = useProductVariantChannelListingUpdateMutation({});
   const [updateMetadata] = useUpdateMetadataMutation({});
   const [updatePrivateMetadata] = useUpdatePrivateMetadataMutation({});
-
-  const [reorderProductVariants, reorderProductVariantsOpts] =
-    useProductVariantReorderMutation({});
-
-  const handleVariantReorder = createVariantReorderHandler(
-    product,
-    reorderProductVariants,
-  );
-
+  const [reorderProductVariants, reorderProductVariantsOpts] = useProductVariantReorderMutation({});
+  const handleVariantReorder = createVariantReorderHandler(product, reorderProductVariants);
   const handleCreate = async (formData: ProductVariantCreateData) => {
     const uploadFilesResult = await handleUploadMultipleFiles(
       formData.attributesWithNewFileValue,
       variables => uploadFile({ variables }),
     );
-
     const updatedFileAttributes = getAttributesAfterFileAttributesUpdate(
       formData.attributesWithNewFileValue,
       uploadFilesResult,
     );
-
     const variantCreateResult = await variantCreate({
       variables: {
         input: {
@@ -130,8 +117,7 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
           })),
           trackInventory: true,
           weight: weight(formData.weight),
-          quantityLimitPerCustomer:
-            Number(formData.quantityLimitPerCustomer) || null,
+          quantityLimitPerCustomer: Number(formData.quantityLimitPerCustomer) || null,
           preorder: formData.isPreorder
             ? {
                 globalThreshold: formData.globalThreshold
@@ -144,7 +130,6 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
         firstValues: 10,
       },
     });
-
     const variantCreateResultErrors = getMutationErrors(variantCreateResult);
 
     if (variantCreateResultErrors.length > 0) {
@@ -152,7 +137,6 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
     }
 
     const id = variantCreateResult.data.productVariantCreate.productVariant.id;
-
     const updateChannelsResult = await updateChannels({
       variables: {
         id,
@@ -164,20 +148,16 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
         })),
       },
     });
-
     const updateChannelsErrors = getMutationErrors(updateChannelsResult);
 
     return { id, errors: updateChannelsErrors };
   };
-
   const handleSubmit = createMetadataCreateHandler(
     handleCreate,
     updateMetadata,
     updatePrivateMetadata,
   );
-  const handleVariantClick = (id: string) =>
-    navigate(productVariantEditUrl(productId, id));
-
+  const handleVariantClick = (id: string) => navigate(productVariantEditUrl(productId, id));
   const handleAssignAttributeReferenceClick = (attribute: AttributeInput) =>
     navigate(
       productVariantAddUrl(productId, {
@@ -186,7 +166,6 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
         id: attribute.id,
       }),
     );
-
   const {
     loadMore: loadMorePages,
     search: searchPages,
@@ -207,7 +186,6 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
     result: searchAttributeValuesOpts,
     reset: searchAttributeReset,
   } = useAttributeValueSearchHandler(DEFAULT_INITIAL_SEARCH_DATA);
-
   const fetchMoreReferencePages = {
     hasMore: searchPagesOpts.data?.search?.pageInfo?.hasNextPage,
     loading: searchPagesOpts.loading,
@@ -219,16 +197,11 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
     onFetchMore: loadMoreProducts,
   };
   const fetchMoreAttributeValues = {
-    hasMore:
-      !!searchAttributeValuesOpts.data?.attribute?.choices?.pageInfo
-        ?.hasNextPage,
+    hasMore: !!searchAttributeValuesOpts.data?.attribute?.choices?.pageInfo?.hasNextPage,
     loading: !!searchAttributeValuesOpts.loading,
     onFetchMore: loadMoreAttributeValues,
   };
-
-  const attributeValues =
-    mapEdgesToItems(searchAttributeValuesOpts?.data?.attribute.choices) || [];
-
+  const attributeValues = mapEdgesToItems(searchAttributeValuesOpts?.data?.attribute.choices) || [];
   const disableForm =
     productLoading ||
     uploadFileOpts.loading ||
@@ -258,6 +231,8 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
           defaultMessage: "Create Variant",
           description: "header",
         })}
+        fetchMoreWarehouses={fetchMoreWarehouses}
+        searchWarehousesResult={searchWarehousesResult}
         product={data?.product}
         attributeValues={attributeValues}
         onSubmit={handleSubmit}
@@ -265,16 +240,11 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
         onWarehouseConfigure={() => navigate(warehouseAddPath)}
         onVariantReorder={handleVariantReorder}
         saveButtonBarState={variantCreateResult.status}
-        warehouses={mapEdgesToItems(warehouses?.data?.warehouses) || []}
         weightUnit={shop?.defaultWeightUnit}
-        assignReferencesAttributeId={
-          params.action === "assign-attribute-value" && params.id
-        }
+        assignReferencesAttributeId={params.action === "assign-attribute-value" && params.id}
         onAssignReferencesClick={handleAssignAttributeReferenceClick}
         referencePages={mapEdgesToItems(searchPagesOpts?.data?.search) || []}
-        referenceProducts={
-          mapEdgesToItems(searchProductsOpts?.data?.search) || []
-        }
+        referenceProducts={mapEdgesToItems(searchProductsOpts?.data?.search) || []}
         fetchReferencePages={searchPages}
         fetchMoreReferencePages={fetchMoreReferencePages}
         fetchReferenceProducts={searchProducts}

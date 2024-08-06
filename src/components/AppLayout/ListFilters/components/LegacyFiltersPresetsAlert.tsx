@@ -9,7 +9,6 @@ export const LegacyFiltersPresetsAlert = () => {
   const presets = storageUtils.getFilterTabs();
   const { theme: currentTheme } = useTheme();
   const { formatMessage } = useIntl();
-
   const legacyPresets = presets.filter(
     preset => !preset.data.match(`[${Object.values(TokenType)}][0-9].`),
   );
@@ -25,7 +24,7 @@ export const LegacyFiltersPresetsAlert = () => {
         <Text>
           {formatMessage(messages.alertText, {
             presetNames: (
-              <Text variant="bodyStrong">
+              <Text size={4} fontWeight="bold">
                 {legacyPresets.map(p => p.name).join(", ")}
               </Text>
             ),
@@ -34,6 +33,7 @@ export const LegacyFiltersPresetsAlert = () => {
       </Box>
     );
   }
+
   return null;
 };
 

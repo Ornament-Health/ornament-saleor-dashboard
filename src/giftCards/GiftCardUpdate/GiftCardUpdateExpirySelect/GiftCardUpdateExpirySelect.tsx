@@ -3,7 +3,8 @@ import VerticalSpacer from "@dashboard/components/VerticalSpacer";
 import { getGiftCardErrorMessage } from "@dashboard/giftCards/GiftCardUpdate/messages";
 import useGiftCardUpdateForm from "@dashboard/giftCards/GiftCardUpdate/providers/GiftCardUpdateFormProvider/hooks/useGiftCardUpdateForm";
 import useStateFromProps from "@dashboard/hooks/useStateFromProps";
-import { TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React, { useEffect } from "react";
 import { useIntl } from "react-intl";
 
@@ -13,16 +14,12 @@ import { useGiftCardExpirySelectStyles as useStyles } from "./styles";
 const GiftCardUpdateExpirySelect: React.FC = () => {
   const intl = useIntl();
   const classes = useStyles({});
-
   const {
     change,
     data: { expiryDate },
     formErrors,
   } = useGiftCardUpdateForm();
-
-  const [cardExpiresSelected, setCardExpiresSelected] = useStateFromProps(
-    !!expiryDate,
-  );
+  const [cardExpiresSelected, setCardExpiresSelected] = useStateFromProps(!!expiryDate);
 
   useEffect(() => {
     if (!cardExpiresSelected) {
@@ -37,9 +34,10 @@ const GiftCardUpdateExpirySelect: React.FC = () => {
 
   return (
     <>
-      <Typography>{intl.formatMessage(messages.expiryDateLabel)}</Typography>
+      <Text>{intl.formatMessage(messages.expiryDateLabel)}</Text>
       <VerticalSpacer />
       <ControlledCheckbox
+        data-test-id="gift-card-expire-section"
         name="cardExpires"
         label={intl.formatMessage(messages.expiryDateCheckboxLabel)}
         checked={cardExpiresSelected}

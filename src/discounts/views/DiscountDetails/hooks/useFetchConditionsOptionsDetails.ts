@@ -10,11 +10,8 @@ import { useEffect, useState } from "react";
 export const useFetchConditionsOptionsDetails = (
   promotionData: PromotionDetailsQuery | undefined,
 ) => {
-  const conditionsOptionsIdsToFetch =
-    getAllConditionsOptionsIdsToFetch(promotionData);
-
+  const conditionsOptionsIdsToFetch = getAllConditionsOptionsIdsToFetch(promotionData);
   const [hasBeenLoaded, setHasBeenLoaded] = useState(false);
-
   const { data: ruleConditionsOptionsDetails, loading } =
     useRuleConditionsSelectedOptionsDetailsQuery({
       variables: conditionsOptionsIdsToFetch,
@@ -56,6 +53,7 @@ export function getAllConditionsOptionsIdsToFetch(
 
   const allConditionsIds = data.promotion.rules.reduce((acc, rule) => {
     reduceConditionsLabels(rule.cataloguePredicate, acc);
+
     return acc;
   }, initAllConditionsIds);
 
@@ -76,17 +74,22 @@ function reduceConditionsLabels(
       predicate.forEach(item => reduceConditionsLabels(item, allConditionsIds));
     }
 
+    const ids = predicate?.ids ?? [];
+
     if (key === "productPredicate") {
-      allConditionsIds.productsIds.push(...predicate.ids);
+      allConditionsIds.productsIds.push(...ids);
     }
+
     if (key === "categoryPredicate") {
-      allConditionsIds.categoriesIds.push(...predicate.ids);
+      allConditionsIds.categoriesIds.push(...ids);
     }
+
     if (key === "collectionPredicate") {
-      allConditionsIds.collectionsIds.push(...predicate.ids);
+      allConditionsIds.collectionsIds.push(...ids);
     }
+
     if (key === "variantPredicate") {
-      allConditionsIds.variantsIds.push(...predicate.ids);
+      allConditionsIds.variantsIds.push(...ids);
     }
 
     return allConditionsIds;
@@ -102,11 +105,14 @@ export function getRuleConditionsOptionsDetailsMap(
 
   return Object.values(data).reduce<Record<string, string>>((acc, value) => {
     const items =
-      mapEdgesToItems(
-        value as RuleConditionsSelectedOptionsDetailsQuery["categories"],
-      ) ?? [];
+      mapEdgesToItems(value as RuleConditionsSelectedOptionsDetailsQuery["productVariants"]) ?? [];
+
     items.forEach(item => {
-      acc[item.id] = item.name;
+      if (item.product) {
+        acc[item.id] = `${item.product.name} - ${item.name}`;
+      } else {
+        acc[item.id] = item.name;
+      }
     });
 
     return acc;
@@ -114,7 +120,5 @@ export function getRuleConditionsOptionsDetailsMap(
 }
 
 function whenNoCondtionsIds(conditionsOptionsIdsToFetch: AllConditionsIds) {
-  return Object.values(conditionsOptionsIdsToFetch).every(
-    ids => ids.length === 0,
-  );
+  return Object.values(conditionsOptionsIdsToFetch).every(ids => ids.length === 0);
 }

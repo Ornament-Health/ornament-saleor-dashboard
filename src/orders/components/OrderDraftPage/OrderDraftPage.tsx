@@ -5,8 +5,7 @@ import CardSpacer from "@dashboard/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { DateTime } from "@dashboard/components/Date";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Savebar from "@dashboard/components/Savebar";
-import Skeleton from "@dashboard/components/Skeleton";
+import { Savebar } from "@dashboard/components/Savebar";
 import {
   ChannelUsabilityDataQuery,
   OrderDetailsFragment,
@@ -19,8 +18,7 @@ import useNavigator from "@dashboard/hooks/useNavigator";
 import OrderChannelSectionCard from "@dashboard/orders/components/OrderChannelSectionCard";
 import { orderDraftListUrl } from "@dashboard/orders/urls";
 import { FetchMoreProps, RelayToFlat } from "@dashboard/types";
-import { Typography } from "@material-ui/core";
-import { Box } from "@saleor/macaw-ui-next";
+import { Box, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -79,7 +77,6 @@ const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
     errors,
   } = props;
   const navigate = useNavigator();
-
   const intl = useIntl();
 
   return (
@@ -91,9 +88,9 @@ const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
             <span>{order?.number ? "#" + order?.number : undefined}</span>
             <div>
               {order && order.created ? (
-                <Typography variant="body2">
+                <Text size={3} fontWeight="regular">
                   <DateTime date={order.created} plain />
-                </Typography>
+                </Text>
               ) : (
                 <Skeleton style={{ width: "10em" }} />
               )}
@@ -155,21 +152,24 @@ const OrderDraftPage: React.FC<OrderDraftPageProps> = props => {
           onShippingAddressEdit={onShippingAddressEdit}
         />
       </DetailPageLayout.RightSidebar>
-      <Savebar
-        state={saveButtonBarState}
-        disabled={loading}
-        onCancel={() => navigate(orderDraftListUrl())}
-        onSubmit={onDraftFinalize}
-        labels={{
-          confirm: intl.formatMessage({
+      <Savebar>
+        <Savebar.Spacer />
+        <Savebar.CancelButton onClick={() => navigate(orderDraftListUrl())} />
+        <Savebar.ConfirmButton
+          transitionState={saveButtonBarState}
+          onClick={onDraftFinalize}
+          disabled={loading}
+        >
+          {intl.formatMessage({
             id: "4Z14xW",
             defaultMessage: "Finalize",
             description: "button",
-          }),
-        }}
-      />
+          })}
+        </Savebar.ConfirmButton>
+      </Savebar>
     </DetailPageLayout>
   );
 };
+
 OrderDraftPage.displayName = "OrderDraftPage";
 export default OrderDraftPage;

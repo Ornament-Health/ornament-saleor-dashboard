@@ -9,17 +9,11 @@ import {
 import useNavigator from "@dashboard/hooks/useNavigator";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import { commonMessages } from "@dashboard/intl";
-import { DialogContentText } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import ProductMediaPage from "../components/ProductMediaPage";
-import {
-  productImageUrl,
-  ProductImageUrlQueryParams,
-  productListUrl,
-  productUrl,
-} from "../urls";
+import { productImageUrl, ProductImageUrlQueryParams, productListUrl, productUrl } from "../urls";
 
 interface ProductMediaProps {
   mediaId: string;
@@ -27,17 +21,11 @@ interface ProductMediaProps {
   params: ProductImageUrlQueryParams;
 }
 
-export const ProductImage: React.FC<ProductMediaProps> = ({
-  mediaId,
-  productId,
-  params,
-}) => {
+export const ProductImage: React.FC<ProductMediaProps> = ({ mediaId, productId, params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
   const intl = useIntl();
-
   const handleBack = () => navigate(productUrl(productId));
-
   const { data, loading } = useProductMediaByIdQuery({
     displayLoader: true,
     variables: {
@@ -45,7 +33,6 @@ export const ProductImage: React.FC<ProductMediaProps> = ({
       productId,
     },
   });
-
   const [updateImage, updateResult] = useProductMediaUpdateMutation({
     onCompleted: data => {
       if (data.productMediaUpdate.errors.length === 0) {
@@ -56,11 +43,9 @@ export const ProductImage: React.FC<ProductMediaProps> = ({
       }
     },
   });
-
   const [deleteImage, deleteResult] = useProductMediaDeleteMutation({
     onCompleted: handleBack,
   });
-
   const product = data?.product;
 
   if (product === null) {
@@ -68,8 +53,7 @@ export const ProductImage: React.FC<ProductMediaProps> = ({
   }
 
   const handleDelete = () => deleteImage({ variables: { id: mediaId } });
-  const handleImageClick = (id: string) => () =>
-    navigate(productImageUrl(productId, id));
+  const handleImageClick = (id: string) => () => navigate(productImageUrl(productId, id));
   const handleUpdate = (formData: { description: string }) => {
     updateImage({
       variables: {
@@ -100,9 +84,7 @@ export const ProductImage: React.FC<ProductMediaProps> = ({
         saveButtonBarState={updateResult.status}
       />
       <ActionDialog
-        onClose={() =>
-          navigate(productImageUrl(productId, mediaId), { replace: true })
-        }
+        onClose={() => navigate(productImageUrl(productId, mediaId), { replace: true })}
         onConfirm={handleDelete}
         open={params.action === "remove"}
         title={intl.formatMessage({
@@ -113,12 +95,10 @@ export const ProductImage: React.FC<ProductMediaProps> = ({
         variant="delete"
         confirmButtonState={deleteResult.status}
       >
-        <DialogContentText>
-          <FormattedMessage
-            id="VEext+"
-            defaultMessage="Are you sure you want to delete this image?"
-          />
-        </DialogContentText>
+        <FormattedMessage
+          id="VEext+"
+          defaultMessage="Are you sure you want to delete this image?"
+        />
       </ActionDialog>
     </>
   );

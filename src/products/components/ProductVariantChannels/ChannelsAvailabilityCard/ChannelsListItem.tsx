@@ -7,33 +7,29 @@ import React from "react";
 import { useIntl } from "react-intl";
 
 import { variantDetailsChannelsAvailabilityCardMessages as messages } from "./../messages";
-import { Channel, ProductChannelListing } from "./../types";
 
-type ChannelsListItemProps = Pick<Channel, "id" | "name"> & {
-  listings: ProductChannelListing;
-};
+interface ChannelsListItemProps {
+  id: string;
+  name: string;
+  isPublished: boolean;
+  publishedAt: string;
+}
 
 export const ChannelsListItem: React.FC<ChannelsListItemProps> = ({
   id,
   name,
-  listings,
+  isPublished,
+  publishedAt,
 }) => {
   const intl = useIntl();
   const localizeDate = useDateLocalize();
-
-  const getItemSubtitle = (channelId: string) => {
-    const channelListing = listings.find(
-      ({ channel }) => channel.id === channelId,
-    );
-
-    const { isPublished, publicationDate } = channelListing;
-
+  const getItemSubtitle = () => {
     if (!isPublished) {
       return intl.formatMessage(messages.itemSubtitleHidden);
     }
 
     return intl.formatMessage(messages.itemSubtitlePublished, {
-      publicationDate: localizeDate(publicationDate),
+      publishedAt: localizeDate(publishedAt),
     });
   };
 
@@ -43,17 +39,15 @@ export const ChannelsListItem: React.FC<ChannelsListItemProps> = ({
       <DashboardCard.Content paddingY={6}>
         <Text
           as="p"
-          variant="bodyStrong"
-          size="small"
+          size={3}
+          fontWeight="bold"
           data-test-id={`channels-variant-availability-item-title-${id}`}
+          display="block"
         >
           {name}
         </Text>
-        <Text
-          size="small"
-          data-test-id={`channels-variant-availability-item-subtitle-${id}`}
-        >
-          {getItemSubtitle(id)}
+        <Text size={3} data-test-id={`channels-variant-availability-item-subtitle-${id}`}>
+          {getItemSubtitle()}
         </Text>
       </DashboardCard.Content>
     </React.Fragment>

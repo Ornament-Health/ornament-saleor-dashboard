@@ -1,8 +1,7 @@
-import { Typography } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { AddressType } from "../../customers/types";
-import Skeleton from "../Skeleton";
 
 interface AddressFormatterProps {
   address?: AddressType;
@@ -12,36 +11,43 @@ const AddressFormatter: React.FC<AddressFormatterProps> = ({ address }) => {
   if (!address) {
     return <Skeleton />;
   }
+
   return (
     <address
+      data-test-id="address"
       style={{
         fontStyle: "inherit",
       }}
     >
-      <Typography component="p">
+      <Text as="p" data-test-id="name">
         {address.firstName} {address.lastName}
-      </Typography>
-      <Typography component="p">{address.phone}</Typography>
+      </Text>
+      <Text as="p" data-test-id="phone">
+        {address.phone}
+      </Text>
       {address.companyName && (
-        <Typography component="p">{address.companyName}</Typography>
+        <Text as="p" data-test-id="company-name">
+          {address.companyName}
+        </Text>
       )}
-      <Typography component="p">
+      <Text as="p" data-test-id="addressLines">
         {address.streetAddress1}
         <br />
         {address.streetAddress2}
-      </Typography>
-      <Typography component="p">
+      </Text>
+      <Text as="p" data-test-id="postal-code-and-city">
         {" "}
         {address.postalCode} {address.city}
         {address.cityArea ? ", " + address.cityArea : ""}
-      </Typography>
-      <Typography component="p">
+      </Text>
+      <Text as="p" data-test-id="country-area-and-country">
         {address.countryArea
           ? address.countryArea + ", " + address.country.country
           : address.country.country}
-      </Typography>
+      </Text>
     </address>
   );
 };
+
 AddressFormatter.displayName = "AddressFormatter";
 export default AddressFormatter;

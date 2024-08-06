@@ -1,8 +1,7 @@
 // @ts-strict-ignore
-import { Typography } from "@material-ui/core";
 import { alpha } from "@material-ui/core/styles";
 import { ImageIcon, makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui-next";
+import { Text, vars } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -50,12 +49,6 @@ const useStyles = makeStyles(
       padding: theme.spacing(5, 0),
       textAlign: "center",
     },
-    uploadText: {
-      color: theme.typography.body1.color,
-      fontSize: 12,
-      fontWeight: 600,
-      textTransform: "uppercase",
-    },
   }),
   { name: "ImageUpload" },
 );
@@ -71,7 +64,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = props => {
     hideUploadIcon,
     onImageUpload,
   } = props;
-
   const classes = useStyles(props);
 
   return (
@@ -91,19 +83,15 @@ export const ImageUpload: React.FC<ImageUploadProps> = props => {
                   [iconContainerActiveClassName]: isDragActive,
                 })}
               >
-                <input
-                  {...getInputProps()}
-                  className={classes.fileField}
-                  accept="image/*"
-                />
+                <input {...getInputProps()} className={classes.fileField} accept="image/*" />
                 <ImageIcon className={classes.photosIcon} />
-                <Typography className={classes.uploadText}>
+                <Text display="block" fontWeight="bold" textTransform="uppercase" fontSize={3}>
                   <FormattedMessage
                     id="NxeDbG"
                     defaultMessage="Drop here to upload"
                     description="image upload"
                   />
-                </Typography>
+                </Text>
               </div>
             )}
           </div>

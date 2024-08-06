@@ -7,7 +7,9 @@ interface ShouldDisplayResult {
   authorized: boolean;
   charged: boolean;
   cancelled: boolean;
-  pending: boolean;
+  authorizedPending: boolean;
+  chargedPending: boolean;
+  cancelledPending: boolean;
 }
 
 export const getShouldDisplayAmounts = (
@@ -19,22 +21,20 @@ export const getShouldDisplayAmounts = (
       authorized: false,
       charged: false,
       cancelled: false,
-      pending: false,
+      authorizedPending: false,
+      chargedPending: false,
+      cancelledPending: false,
     };
   }
 
   const authorized = order.totalAuthorized?.amount ?? 0;
   const authorizePending = order.totalAuthorizePending?.amount ?? 0;
-
   const charged = order.totalCharged?.amount ?? 0;
   const chargePending = order.totalChargePending?.amount ?? 0;
-
   const cancelled = order.totalCanceled?.amount ?? 0;
   const cancelPending = order.totalCancelPending?.amount ?? 0;
-
   const total = order.total.gross?.amount ?? 0;
-  const anyPending =
-    authorizePending > 0 || chargePending > 0 || cancelPending > 0;
+  const anyPending = authorizePending > 0 || chargePending > 0 || cancelPending > 0;
 
   if (anyPending) {
     return {
@@ -42,7 +42,9 @@ export const getShouldDisplayAmounts = (
       authorized: !!authorized || !!authorizePending,
       charged: true,
       cancelled: true,
-      pending: true,
+      authorizedPending: authorizePending > 0,
+      chargedPending: chargePending > 0,
+      cancelledPending: cancelPending > 0,
     };
   }
 
@@ -52,7 +54,9 @@ export const getShouldDisplayAmounts = (
       authorized: true,
       charged: true,
       cancelled: !!cancelled,
-      pending: false,
+      authorizedPending: false,
+      chargedPending: false,
+      cancelledPending: false,
     };
   }
 
@@ -62,7 +66,9 @@ export const getShouldDisplayAmounts = (
       authorized: false,
       charged: true,
       cancelled: !!cancelled,
-      pending: false,
+      authorizedPending: false,
+      chargedPending: false,
+      cancelledPending: false,
     };
   }
 
@@ -72,7 +78,9 @@ export const getShouldDisplayAmounts = (
       authorized: true,
       charged: false,
       cancelled: !!cancelled,
-      pending: false,
+      authorizedPending: false,
+      chargedPending: false,
+      cancelledPending: false,
     };
   }
 
@@ -82,7 +90,9 @@ export const getShouldDisplayAmounts = (
       authorized: false,
       charged: false,
       cancelled: true,
-      pending: false,
+      authorizedPending: false,
+      chargedPending: false,
+      cancelledPending: false,
     };
   }
 
@@ -91,7 +101,9 @@ export const getShouldDisplayAmounts = (
     charged: false,
     authorized: false,
     cancelled: false,
-    pending: false,
+    authorizedPending: false,
+    chargedPending: false,
+    cancelledPending: false,
   };
 };
 

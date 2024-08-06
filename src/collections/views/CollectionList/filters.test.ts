@@ -1,10 +1,10 @@
 import { createFilterStructure } from "@dashboard/collections/components/CollectionListPage";
 import { CollectionListUrlFilters } from "@dashboard/collections/urls";
-import { MultiAutocompleteChoiceType } from "@dashboard/components/MultiAutocompleteSelectField";
 import { CollectionPublished } from "@dashboard/graphql";
 import { FilterOpts } from "@dashboard/types";
 import { getFilterQueryParams } from "@dashboard/utils/filters";
 import { stringifyQs } from "@dashboard/utils/urls";
+import { Option } from "@saleor/macaw-ui-next";
 import { getExistingKeys, setFilterOptsStatus } from "@test/filters";
 import { config } from "@test/intl";
 import { createIntl } from "react-intl";
@@ -18,7 +18,6 @@ describe("Filtering query params", () => {
 
     expect(getExistingKeys(filterVariables)).toHaveLength(0);
   });
-
   it("should not be empty object if params given", () => {
     const params: CollectionListUrlFilters = {
       status: CollectionPublished.PUBLISHED,
@@ -28,29 +27,23 @@ describe("Filtering query params", () => {
     expect(getExistingKeys(filterVariables)).toHaveLength(1);
   });
 });
-
 describe("Filtering URL params", () => {
   const intl = createIntl(config);
-
   const filters = createFilterStructure(intl, {
     status: {
       active: false,
       value: CollectionPublished.PUBLISHED,
     },
     channel: undefined as unknown as FilterOpts<string> & {
-      choices: MultiAutocompleteChoiceType[];
+      choices: Option[];
     },
   });
 
   it("should be empty if no active filters", () => {
-    const filterQueryParams = getFilterQueryParams(
-      filters,
-      getFilterQueryParam,
-    );
+    const filterQueryParams = getFilterQueryParams(filters, getFilterQueryParam);
 
     expect(getExistingKeys(filterQueryParams)).toHaveLength(0);
   });
-
   it("should not be empty if active filters are present", () => {
     const filters = createFilterStructure(intl, {
       status: {
@@ -58,10 +51,9 @@ describe("Filtering URL params", () => {
         value: CollectionPublished.PUBLISHED,
       },
       channel: undefined as unknown as FilterOpts<string> & {
-        choices: MultiAutocompleteChoiceType[];
+        choices: Option[];
       },
     });
-
     const filterQueryParams = getFilterQueryParams(
       setFilterOptsStatus(filters, true),
       getFilterQueryParam,

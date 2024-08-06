@@ -3,18 +3,18 @@ import { SearchVariables } from "./hooks/makeSearch";
 import { ListSettings, ListViews, Pagination } from "./types";
 
 export const getAppDefaultUri = () => "/";
-export const getAppMountUri = () =>
-  window?.__SALEOR_CONFIG__?.APP_MOUNT_URI || getAppDefaultUri();
+export const getAppMountUri = () => window?.__SALEOR_CONFIG__?.APP_MOUNT_URI || getAppDefaultUri();
 export const getApiUrl = () => window.__SALEOR_CONFIG__.API_URL;
 export const SW_INTERVAL = parseInt(process.env.SW_INTERVAL ?? "300", 10);
-export const IS_CLOUD_INSTANCE =
-  window.__SALEOR_CONFIG__.IS_CLOUD_INSTANCE === "true";
+export const IS_CLOUD_INSTANCE = window.__SALEOR_CONFIG__.IS_CLOUD_INSTANCE === "true";
 
 export const getAppsConfig = () => ({
-  marketplaceApiUri: window.__SALEOR_CONFIG__.APPS_MARKETPLACE_API_URI,
-  tunnelUrlKeywords: window.__SALEOR_CONFIG__.APPS_TUNNEL_URL_KEYWORDS?.split(
-    ";",
-  ) || [".ngrok.io", ".saleor.live", ".trycloudflare.com"],
+  marketplaceApiUri: window.__SALEOR_CONFIG__.APPS_MARKETPLACE_API_URL,
+  tunnelUrlKeywords: window.__SALEOR_CONFIG__.APPS_TUNNEL_URL_KEYWORDS?.split(";") || [
+    ".ngrok.io",
+    ".saleor.live",
+    ".trycloudflare.com",
+  ],
 });
 
 export const DEFAULT_INITIAL_SEARCH_DATA: SearchVariables = {
@@ -38,6 +38,7 @@ export type ProductListColumns =
   | "availability"
   | "price"
   | "date"
+  | "created"
   | "productCategory"
   | "productCollections";
 
@@ -68,7 +69,11 @@ export interface AppListViewSettings {
   [ListViews.ORDER_DRAFT_DETAILS_LIST]: ListSettings;
   [ListViews.PRODUCT_DETAILS]: ListSettings;
   [ListViews.VOUCHER_CODES]: ListSettings;
+  [ListViews.ORDER_REFUNDS]: ListSettings;
+  [ListViews.ORDER_TRANSACTION_REFUNDS]: ListSettings;
 }
+// TODO: replace with
+// type AppListViewSettings = Record<ListViews, ListSettings>;
 
 export const defaultListSettings: AppListViewSettings = {
   [ListViews.APPS_LIST]: {
@@ -112,14 +117,7 @@ export const defaultListSettings: AppListViewSettings = {
     rowNumber: PAGINATE_BY,
   },
   [ListViews.PRODUCT_LIST]: {
-    columns: [
-      "name",
-      "availability",
-      "description",
-      "price",
-      "productType",
-      "date",
-    ],
+    columns: ["name", "availability", "description", "price", "productType", "date", "created"],
     rowNumber: PAGINATE_BY,
   },
   [ListViews.SALES_LIST]: {
@@ -128,7 +126,7 @@ export const defaultListSettings: AppListViewSettings = {
   },
   [ListViews.DISCOUNTS_LIST]: {
     rowNumber: PAGINATE_BY,
-    columns: ["name", "startDate", "endDate"],
+    columns: ["name", "type", "startDate", "endDate"],
   },
   [ListViews.SHIPPING_METHODS_LIST]: {
     columns: ["name", "countries"],
@@ -162,15 +160,7 @@ export const defaultListSettings: AppListViewSettings = {
   },
   [ListViews.ORDER_DETAILS_LIST]: {
     rowNumber: PAGINATE_BY,
-    columns: [
-      "product",
-      "sku",
-      "variantName",
-      "quantity",
-      "price",
-      "total",
-      "metadata",
-    ],
+    columns: ["product", "sku", "variantName", "quantity", "price", "total", "isGift", "metadata"],
   },
   [ListViews.ORDER_DRAFT_DETAILS_LIST]: {
     rowNumber: PAGINATE_BY,
@@ -182,6 +172,7 @@ export const defaultListSettings: AppListViewSettings = {
       "quantity",
       "price",
       "total",
+      "isGift",
       "metadata",
     ],
   },
@@ -192,10 +183,17 @@ export const defaultListSettings: AppListViewSettings = {
   [ListViews.VOUCHER_CODES]: {
     rowNumber: PAGINATE_BY,
   },
+  [ListViews.ORDER_REFUNDS]: {
+    rowNumber: PAGINATE_BY,
+    columns: ["status", "amount", "reason", "date", "account"],
+  },
+  [ListViews.ORDER_TRANSACTION_REFUNDS]: {
+    rowNumber: PAGINATE_BY,
+    columns: ["product", "unitPrice", "qtyOrdered", "maxQty", "qtyToRefund", "reason"],
+  },
 };
 
-export const APP_VERSION =
-  process.env.CUSTOM_VERSION || `v${packageInfo.version}`;
+export const APP_VERSION = process.env.CUSTOM_VERSION || `v${packageInfo.version}`;
 
 export const DEMO_MODE = process.env.DEMO_MODE === "true";
 export const GTM_ID = process.env.GTM_ID;

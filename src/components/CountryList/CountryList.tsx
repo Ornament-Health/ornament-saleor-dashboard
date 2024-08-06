@@ -1,18 +1,18 @@
 // @ts-strict-ignore
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { CountryFragment } from "@dashboard/graphql";
-import { Card, TableBody, TableCell } from "@material-ui/core";
+import { TableBody, TableCell } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { DeleteIcon, IconButton, makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { getStringOrPlaceholder, maybe, renderCollection } from "../../misc";
+import { DashboardCard } from "../Card";
 
 export interface CountryListProps {
   countries: CountryFragment[];
@@ -71,18 +71,9 @@ const useStyles = makeStyles(
   }),
   { name: "CountryList" },
 );
-
 const CountryList: React.FC<CountryListProps> = props => {
-  const {
-    countries,
-    disabled,
-    emptyText,
-    title,
-    onCountryAssign,
-    onCountryUnassign,
-  } = props;
+  const { countries, disabled, emptyText, title, onCountryAssign, onCountryUnassign } = props;
   const classes = useStyles(props);
-
   const [isCollapsed, setCollapseStatus] = React.useState(true);
   const toggleCollapse = () => setCollapseStatus(!isCollapsed);
 
@@ -91,23 +82,15 @@ const CountryList: React.FC<CountryListProps> = props => {
   }
 
   return (
-    <Card>
-      <CardTitle
-        title={title}
-        toolbar={
-          <Button
-            disabled={disabled}
-            onClick={onCountryAssign}
-            data-test-id="assign-country"
-          >
-            <FormattedMessage
-              id="zZCCqz"
-              defaultMessage="Assign countries"
-              description="button"
-            />
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{title}</DashboardCard.Title>
+        <DashboardCard.Toolbar>
+          <Button disabled={disabled} onClick={onCountryAssign} data-test-id="assign-country">
+            <FormattedMessage id="zZCCqz" defaultMessage="Assign countries" description="button" />
           </Button>
-        }
-      />
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
       <ResponsiveTable>
         <TableBody>
           <TableRowLink className={classes.pointer} onClick={toggleCollapse}>
@@ -144,9 +127,7 @@ const CountryList: React.FC<CountryListProps> = props => {
                           {(countryIndex === 0 ||
                             countries[countryIndex].country[0] !==
                               countries[countryIndex - 1].country[0]) && (
-                            <span className={classes.indicator}>
-                              {country.country[0]}
-                            </span>
+                            <span className={classes.indicator}>{country.country[0]}</span>
                           )}
                           {country.country}
                         </>
@@ -154,9 +135,7 @@ const CountryList: React.FC<CountryListProps> = props => {
                       <Skeleton />,
                     )}
                   </TableCell>
-                  <TableCell
-                    className={clsx(classes.textRight, classes.iconCell)}
-                  >
+                  <TableCell className={clsx(classes.textRight, classes.iconCell)}>
                     <IconButton
                       data-test-id="delete-icon"
                       variant="secondary"
@@ -178,7 +157,8 @@ const CountryList: React.FC<CountryListProps> = props => {
             )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };
+
 export default CountryList;

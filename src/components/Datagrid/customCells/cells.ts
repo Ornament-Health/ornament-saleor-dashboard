@@ -5,25 +5,12 @@ import {
 } from "@dashboard/components/Datagrid/customCells/NumberCell";
 import { Locale } from "@dashboard/components/Locale";
 import { DotStatus } from "@dashboard/components/StatusDot/StatusDot";
-import {
-  CustomCell,
-  GridCell,
-  GridCellKind,
-  TextCell,
-} from "@glideapps/glide-data-grid";
+import { CustomCell, GridCell, GridCellKind, TextCell } from "@glideapps/glide-data-grid";
+import { Option } from "@saleor/macaw-ui-next";
 
-import {
-  DropdownCell,
-  DropdownCellContentProps,
-  DropdownChoice,
-} from "./DropdownCell";
+import { DropdownCell, DropdownCellProps } from "./DropdownCell";
 import { MoneyCell, MoneyDiscuntedCell } from "./Money";
-import {
-  hueToPillColorLight,
-  PillCell,
-  PillColor,
-  stringToHue,
-} from "./PillCell";
+import { hueToPillColorLight, PillCell, PillColor, stringToHue } from "./PillCell";
 import { StatusCell } from "./StatusCell";
 import { ThumbnailCell } from "./ThumbnailCell";
 
@@ -32,18 +19,20 @@ const common = {
   readonly: false,
 };
 
-export function textCell(value: string): GridCell {
+export function textCell(value: string, opts?: Partial<TextCell>): GridCell {
   return {
     ...common,
     data: value,
     displayData: value,
     kind: GridCellKind.Text,
+    ...opts,
   };
 }
 
 export function readonlyTextCell(
   value: string,
-  hasCursorPointer: boolean = true,
+  hasCursorPointer = true,
+  style: TextCell["style"] = "normal",
 ): TextCell {
   return {
     cursor: hasCursorPointer ? "pointer" : "default",
@@ -52,6 +41,7 @@ export function readonlyTextCell(
     data: value,
     displayData: value,
     kind: GridCellKind.Text,
+    style,
   };
 }
 
@@ -73,9 +63,10 @@ export function tagsCell(
   };
 }
 
-export function booleanCell(value: boolean): GridCell {
+export function booleanCell(value: boolean, options: Partial<GridCell> = {}): GridCell {
   return {
     ...common,
+    ...options,
     allowOverlay: false,
     kind: GridCellKind.Boolean,
     data: value,
@@ -99,6 +90,7 @@ export function numberCell(
 ): NumberCell {
   return {
     ...common,
+    cursor: options?.cursor,
     data: {
       kind: "number-cell",
       value,
@@ -155,13 +147,7 @@ interface MoneyDiscountedCellData {
 }
 
 export function moneyDiscountedCell(
-  {
-    value,
-    undiscounted,
-    currency,
-    locale,
-    lineItemId,
-  }: MoneyDiscountedCellData,
+  { value, undiscounted, currency, locale, lineItemId }: MoneyDiscountedCellData,
   opts?: Partial<GridCell>,
 ): MoneyDiscuntedCell {
   return {
@@ -181,12 +167,9 @@ export function moneyDiscountedCell(
 }
 
 export function dropdownCell(
-  value: DropdownChoice,
-  dataOpts: DropdownCellContentProps &
-    (
-      | { choices: DropdownChoice[] }
-      | { update: (text: string) => Promise<DropdownChoice[]> }
-    ),
+  value: Option,
+  dataOpts: Pick<DropdownCellProps, "allowCustomValues" | "emptyOption"> &
+    ({ choices: Option[] } | { update: (text: string) => Promise<Option[]> }),
   opts?: Partial<GridCell>,
 ): DropdownCell {
   return {
@@ -220,11 +203,7 @@ export function thumbnailCell(
   };
 }
 
-export function statusCell(
-  status: DotStatus,
-  value: string,
-  opts?: Partial<GridCell>,
-): StatusCell {
+export function statusCell(status: DotStatus, value: string, opts?: Partial<GridCell>): StatusCell {
   return {
     ...common,
     ...opts,
@@ -245,6 +224,7 @@ export function pillCell(
 ): PillCell {
   const pillColor = color;
   const fallbackColor = hueToPillColorLight(stringToHue(value));
+
   return {
     ...common,
     ...opts,

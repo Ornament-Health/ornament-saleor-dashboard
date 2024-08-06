@@ -27,18 +27,12 @@ import createFilterHandlers from "@dashboard/utils/handlers/filterHandlers";
 import createSortHandler from "@dashboard/utils/handlers/sortHandler";
 import { mapEdgesToItems, mapNodeToChoice } from "@dashboard/utils/maps";
 import { getSortParams } from "@dashboard/utils/sort";
-import { DialogContentText } from "@material-ui/core";
 import isEqual from "lodash/isEqual";
 import React, { useCallback } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import PageListPage from "../../components/PageListPage/PageListPage";
-import {
-  pageCreateUrl,
-  pageListUrl,
-  PageListUrlDialog,
-  PageListUrlQueryParams,
-} from "../../urls";
+import { pageCreateUrl, pageListUrl, PageListUrlDialog, PageListUrlQueryParams } from "../../urls";
 import { getFilterOpts, getFilterQueryParam, storageUtils } from "./filters";
 import { getFilterVariables, getSortQueryVariables } from "./sort";
 
@@ -50,9 +44,7 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
   const intl = useIntl();
-  const { updateListSettings, settings } = useListSettings(
-    ListViews.PAGES_LIST,
-  );
+  const { updateListSettings, settings } = useListSettings(ListViews.PAGES_LIST);
 
   usePaginationReset(pageListUrl, params, settings.rowNumber);
 
@@ -62,17 +54,14 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
     setClearDatagridRowSelectionCallback,
     setSelectedRowIds,
   } = useRowSelection(params);
-
-  const [changeFilters, resetFilters, handleSearchChange] =
-    createFilterHandlers({
-      cleanupFn: clearRowSelection,
-      createUrl: pageListUrl,
-      getFilterQueryParam,
-      navigate,
-      params,
-      keepActiveTab: true,
-    });
-
+  const [changeFilters, resetFilters, handleSearchChange] = createFilterHandlers({
+    cleanupFn: clearRowSelection,
+    createUrl: pageListUrl,
+    getFilterQueryParam,
+    navigate,
+    params,
+    keepActiveTab: true,
+  });
   const {
     selectedPreset,
     presets,
@@ -89,7 +78,6 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
     getUrl: pageListUrl,
     storageUtils,
   });
-
   const paginationState = createPaginationState(settings.rowNumber, params);
   const queryVariables = React.useMemo(
     () => ({
@@ -99,24 +87,20 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
     }),
     [params, settings.rowNumber],
   );
-  const { data, loading, refetch } = usePageListQuery({
+  const { data, refetch } = usePageListQuery({
     displayLoader: true,
     variables: queryVariables,
   });
-
   const pages = mapEdgesToItems(data?.pages);
-
   const paginationValues = usePaginator({
     pageInfo: data?.pages?.pageInfo,
     paginationState,
     queryString: params,
   });
-
   const [openModal, closeModal] = createDialogActionHandlers<
     PageListUrlDialog,
     PageListUrlQueryParams
   >(navigate, pageListUrl, params);
-
   const [bulkPageRemove, bulkPageRemoveOpts] = usePageBulkRemoveMutation({
     onCompleted: data => {
       if (data.pageBulkDelete?.errors.length === 0) {
@@ -134,7 +118,6 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
       }
     },
   });
-
   const [bulkPagePublish, bulkPagePublishOpts] = usePageBulkPublishMutation({
     onCompleted: data => {
       if (data.pageBulkPublish?.errors.length === 0) {
@@ -152,9 +135,7 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
       }
     },
   });
-
   const handleSort = createSortHandler(navigate, pageListUrl, params);
-
   const {
     loadMore: loadMoreDialogPageTypes,
     search: searchDialogPageTypes,
@@ -162,25 +143,19 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
   } = usePageTypeSearch({
     variables: DEFAULT_INITIAL_SEARCH_DATA,
   });
-
   const fetchMoreDialogPageTypes = {
     hasMore: searchDialogPageTypesOpts.data?.search?.pageInfo?.hasNextPage,
     loading: searchDialogPageTypesOpts.loading,
     onFetchMore: loadMoreDialogPageTypes,
   };
-
   const filterOpts = getFilterOpts({
     params,
     pageTypes: mapEdgesToItems(searchDialogPageTypesOpts?.data?.search),
     pageTypesProps: {
-      ...getSearchFetchMoreProps(
-        searchDialogPageTypesOpts,
-        loadMoreDialogPageTypes,
-      ),
+      ...getSearchFetchMoreProps(searchDialogPageTypesOpts, loadMoreDialogPageTypes),
       onSearchChange: searchDialogPageTypes,
     },
   });
-
   const handleSetSelectedPageIds = useCallback(
     (rows: number[], clearSelection: () => void) => {
       if (!pages) {
@@ -196,19 +171,14 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
 
       setClearDatagridRowSelectionCallback(clearSelection);
     },
-    [
-      pages,
-      selectedRowIds,
-      setClearDatagridRowSelectionCallback,
-      setSelectedRowIds,
-    ],
+    [pages, selectedRowIds, setClearDatagridRowSelectionCallback, setSelectedRowIds],
   );
 
   return (
     <PaginatorContext.Provider value={paginationValues}>
       <PageListPage
-        disabled={loading}
-        loading={loading}
+        disabled={!data}
+        loading={!data}
         settings={settings}
         pages={pages}
         onUpdateListSettings={updateListSettings}
@@ -254,17 +224,15 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
           description: "dialog header",
         })}
       >
-        <DialogContentText>
-          <FormattedMessage
-            id="WRPQMM"
-            defaultMessage="{counter,plural,one{Are you sure you want to publish this page?} other{Are you sure you want to publish {displayQuantity} pages?}}"
-            description="dialog content"
-            values={{
-              counter: selectedRowIds.length,
-              displayQuantity: <strong>{selectedRowIds.length}</strong>,
-            }}
-          />
-        </DialogContentText>
+        <FormattedMessage
+          id="WRPQMM"
+          defaultMessage="{counter,plural,one{Are you sure you want to publish this page?} other{Are you sure you want to publish {displayQuantity} pages?}}"
+          description="dialog content"
+          values={{
+            counter: selectedRowIds.length,
+            displayQuantity: <strong>{selectedRowIds.length}</strong>,
+          }}
+        />
       </ActionDialog>
       <ActionDialog
         open={params.action === "unpublish"}
@@ -325,9 +293,7 @@ export const PageList: React.FC<PageListProps> = ({ params }) => {
       <PageTypePickerDialog
         confirmButtonState="success"
         open={params.action === "create-page"}
-        pageTypes={mapNodeToChoice(
-          mapEdgesToItems(searchDialogPageTypesOpts?.data?.search),
-        )}
+        pageTypes={mapNodeToChoice(mapEdgesToItems(searchDialogPageTypesOpts?.data?.search))}
         fetchPageTypes={searchDialogPageTypes}
         fetchMorePageTypes={fetchMoreDialogPageTypes}
         onClose={closeModal}

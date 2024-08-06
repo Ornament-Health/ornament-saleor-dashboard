@@ -6,11 +6,7 @@ type ContentProps = PropsWithBox<{
   disableAutofocus?: boolean;
 }>;
 
-export const Content = ({
-  children,
-  disableAutofocus,
-  ...rest
-}: ContentProps) => {
+export const Content = ({ children, disableAutofocus, ...rest }: ContentProps) => {
   return (
     <Modal.Content disableAutofocus={disableAutofocus}>
       <Box
@@ -27,6 +23,8 @@ export const Content = ({
         padding={6}
         display="grid"
         gap={6}
+        __maxHeight="calc(100vh - 100px)"
+        overflowY="auto"
         {...rest}
       >
         {children}

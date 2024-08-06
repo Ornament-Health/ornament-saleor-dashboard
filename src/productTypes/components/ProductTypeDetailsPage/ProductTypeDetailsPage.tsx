@@ -7,7 +7,7 @@ import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata } from "@dashboard/components/Metadata/Metadata";
 import { MetadataFormData } from "@dashboard/components/Metadata/types";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import {
   ProductAttributeType,
   ProductTypeDetailsQuery,
@@ -21,12 +21,7 @@ import useStateFromProps from "@dashboard/hooks/useStateFromProps";
 import { maybe } from "@dashboard/misc";
 import { handleTaxClassChange } from "@dashboard/productTypes/handlers";
 import { productTypeListUrl } from "@dashboard/productTypes/urls";
-import {
-  FetchMoreProps,
-  ListActions,
-  ReorderEvent,
-  UserError,
-} from "@dashboard/types";
+import { FetchMoreProps, ListActions, ReorderEvent, UserError } from "@dashboard/types";
 import { mapMetadataItemToInput } from "@dashboard/utils/maps";
 import useMetadataChangeTrigger from "@dashboard/utils/metadata/useMetadataChangeTrigger";
 import { sprinkles } from "@saleor/macaw-ui-next";
@@ -98,21 +93,17 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
 }) => {
   const intl = useIntl();
   const navigate = useNavigator();
-
   const {
     isMetadataModified,
     isPrivateMetadataModified,
     makeChangeHandler: makeMetadataChangeHandler,
   } = useMetadataChangeTrigger();
-
   const [taxClassDisplayName, setTaxClassDisplayName] = useStateFromProps(
     productType?.taxClass?.name ?? "",
   );
   const formInitialData: ProductTypeForm = {
     hasVariants:
-      maybe(() => productType.hasVariants) !== undefined
-        ? productType.hasVariants
-        : false,
+      maybe(() => productType.hasVariants) !== undefined ? productType.hasVariants : false,
     isShippingRequired:
       maybe(() => productType.isShippingRequired) !== undefined
         ? productType.isShippingRequired
@@ -138,12 +129,9 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
         : [],
     weight: maybe(() => productType.weight.value),
   };
-
   const handleSubmit = (data: ProductTypeForm) => {
     const metadata = isMetadataModified ? data.metadata : undefined;
-    const privateMetadata = isPrivateMetadataModified
-      ? data.privateMetadata
-      : undefined;
+    const privateMetadata = isPrivateMetadataModified ? data.privateMetadata : undefined;
 
     return onSubmit({
       ...data,
@@ -153,12 +141,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
   };
 
   return (
-    <Form
-      initial={formInitialData}
-      onSubmit={handleSubmit}
-      confirmLeave
-      disabled={disabled}
-    >
+    <Form initial={formInitialData} onSubmit={handleSubmit} confirmLeave disabled={disabled}>
       {({ change, data, isSaveDisabled, submit }) => {
         const changeMetadata = makeMetadataChangeHandler(change);
 
@@ -180,12 +163,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                 taxClasses={taxClasses}
                 taxClassDisplayName={taxClassDisplayName}
                 onChange={event =>
-                  handleTaxClassChange(
-                    event,
-                    taxClasses,
-                    change,
-                    setTaxClassDisplayName,
-                  )
+                  handleTaxClassChange(event, taxClasses, change, setTaxClassDisplayName)
                 }
                 onFetchMore={onFetchMoreTaxClasses}
               />
@@ -220,9 +198,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                   <CardSpacer />
                   <ProductTypeVariantAttributes
                     testId="assign-variants-attributes"
-                    assignedVariantAttributes={
-                      productType?.assignedVariantAttributes
-                    }
+                    assignedVariantAttributes={productType?.assignedVariantAttributes}
                     disabled={disabled}
                     type={ProductAttributeType.VARIANT}
                     onAttributeAssign={onAttributeAdd}
@@ -247,18 +223,22 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                 onChange={change}
               />
             </DetailPageLayout.RightSidebar>
-            <Savebar
-              onCancel={() => navigate(productTypeListUrl())}
-              onDelete={onDelete}
-              onSubmit={submit}
-              disabled={isSaveDisabled}
-              state={saveButtonBarState}
-            />
+            <Savebar>
+              <Savebar.DeleteButton onClick={onDelete} />
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(productTypeListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={isSaveDisabled}
+              />
+            </Savebar>
           </DetailPageLayout>
         );
       }}
     </Form>
   );
 };
+
 ProductTypeDetailsPage.displayName = "ProductTypeDetailsPage";
 export default ProductTypeDetailsPage;

@@ -1,14 +1,9 @@
 // @ts-strict-ignore
 import {
-  getDefaultAttributeValues,
   getSelectedAttributeValues,
   mergeChoicesWithValues,
 } from "@dashboard/attributes/utils/data";
-import {
-  AttributeInput,
-  VariantAttributeScope,
-} from "@dashboard/components/Attributes";
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
+import { AttributeInput, VariantAttributeScope } from "@dashboard/components/Attributes";
 import {
   ProductDetailsVariantFragment,
   ProductFragment,
@@ -23,6 +18,7 @@ import {
 import { FormsetAtomicData } from "@dashboard/hooks/useFormset";
 import { maybe } from "@dashboard/misc";
 import { mapEdgesToItems, mapMetadataItemToInput } from "@dashboard/utils/maps";
+import { Option } from "@saleor/macaw-ui-next";
 import moment from "moment";
 
 import { ProductStockInput } from "../components/ProductStocks";
@@ -45,9 +41,7 @@ export interface ProductType {
   productAttributes: ProductTypeQuery["productType"]["productAttributes"];
 }
 
-export function getAttributeInputFromProduct(
-  product: ProductFragment,
-): AttributeInput[] {
+export function getAttributeInputFromProduct(product: ProductFragment): AttributeInput[] {
   return (
     product?.attributes?.map(attribute => ({
       data: {
@@ -69,6 +63,7 @@ export interface AttributeValuesMetadata {
   value: string;
   label: string;
 }
+
 const getReferenceAttributeValuesLabels = (
   attribute: ProductFragment["attributes"][0],
 ): AttributeValuesMetadata[] => {
@@ -79,9 +74,8 @@ const getReferenceAttributeValuesLabels = (
     };
   });
 };
-export function getAttributeInputFromProductType(
-  productType: ProductType,
-): AttributeInput[] {
+
+export function getAttributeInputFromProductType(productType: ProductType): AttributeInput[] {
   return productType.productAttributes.map(attribute => ({
     data: {
       entityType: attribute.entityType,
@@ -111,7 +105,7 @@ export function getAttributeInputFromAttributes(
     },
     id: attribute.id,
     label: attribute.name,
-    value: getDefaultAttributeValues(attribute),
+    value: [],
   }));
 }
 
@@ -135,9 +129,7 @@ export function getAttributeInputFromSelectedAttributes(
   }));
 }
 
-export function getAttributeInputFromVariant(
-  variant: ProductVariantFragment,
-): AttributeInput[] {
+export function getAttributeInputFromVariant(variant: ProductVariantFragment): AttributeInput[] {
   const selectionAttributeInput = getAttributeInputFromSelectedAttributes(
     variant?.selectionAttributes,
     VariantAttributeScope.VARIANT_SELECTION,
@@ -147,9 +139,7 @@ export function getAttributeInputFromVariant(
     VariantAttributeScope.NOT_VARIANT_SELECTION,
   );
 
-  return (
-    selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? []
-  );
+  return selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? [];
 }
 
 export function getVariantAttributeInputFromProduct(
@@ -159,20 +149,15 @@ export function getVariantAttributeInputFromProduct(
     product?.productType?.selectionVariantAttributes,
     VariantAttributeScope.VARIANT_SELECTION,
   );
-
   const nonSelectionAttributeInput = getAttributeInputFromAttributes(
     product?.productType?.nonSelectionVariantAttributes,
     VariantAttributeScope.NOT_VARIANT_SELECTION,
   );
 
-  return (
-    selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? []
-  );
+  return selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? [];
 }
 
-export function getStockInputFromVariant(
-  variant: ProductVariantFragment,
-): ProductStockInput[] {
+export function getStockInputFromVariant(variant: ProductVariantFragment): ProductStockInput[] {
   return (
     variant?.stocks.map(stock => ({
       data: {
@@ -198,7 +183,7 @@ export function getCollectionInput(
   );
 }
 
-export function getChoices(nodes: Node[]): SingleAutocompleteChoiceType[] {
+export function getChoices(nodes: Node[]): Option[] {
   return maybe(
     () =>
       nodes.map(node => ({
@@ -238,8 +223,8 @@ export function getProductUpdatePageFormData(
         product.productType.hasVariants
           ? undefined
           : variants && variants[0]
-          ? variants[0].sku
-          : undefined,
+            ? variants[0].sku
+            : undefined,
       "",
     ),
     slug: product?.slug || "",
@@ -253,9 +238,7 @@ export function getProductUpdatePageFormData(
   };
 }
 
-export function mapFormsetStockToStockInput(
-  stock: FormsetAtomicData<null, string>,
-): StockInput {
+export function mapFormsetStockToStockInput(stock: FormsetAtomicData<null, string>): StockInput {
   return {
     quantity: parseInt(stock.value, 10) || 0,
     warehouse: stock.id,
@@ -268,9 +251,7 @@ export const getPreorderEndDateFormData = (endDate?: string) =>
 export const getPreorderEndHourFormData = (endDate?: string) =>
   endDate ? moment(endDate).format("HH:mm") : "";
 
-export const getSelectedMedia = <
-  T extends Pick<ProductMediaFragment, "id" | "sortOrder">,
->(
+export const getSelectedMedia = <T extends Pick<ProductMediaFragment, "id" | "sortOrder">>(
   media: T[] = [],
   selectedMediaIds: string[],
 ) =>

@@ -1,12 +1,12 @@
-import {
-  AppDetailsUrlQueryParams,
-  AppInstallUrlQueryParams,
-} from "@dashboard/apps/urls";
+import { AppDetailsUrlQueryParams, AppInstallUrlQueryParams } from "@dashboard/apps/urls";
+import SectionRoute from "@dashboard/auth/components/SectionRoute";
+import { Route } from "@dashboard/components/Router";
+import { PermissionEnum } from "@dashboard/graphql";
 import { sectionNames } from "@dashboard/intl";
 import { parse as parseQs } from "qs";
 import React from "react";
 import { useIntl } from "react-intl";
-import { Route, RouteComponentProps, Switch } from "react-router-dom";
+import { RouteComponentProps, Switch } from "react-router-dom";
 import {
   AppInstallView,
   AppListView,
@@ -18,28 +18,21 @@ import {
 import { WindowTitle } from "../components/WindowTitle";
 import { AppListUrlQueryParams, AppPaths } from "./urls";
 
-const AppManageRoute: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match,
-}) => {
+const AppManageRoute: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const qs = parseQs(location.search.substr(1));
   const params: AppDetailsUrlQueryParams = qs;
 
-  return (
-    <AppManageView id={decodeURIComponent(match.params.id)} params={params} />
-  );
+  return <AppManageView id={decodeURIComponent(match.params.id)} params={params} />;
 };
-
-const AppViewRoute: React.FC<RouteComponentProps<{ id: string }>> = ({
-  match,
-}) => <AppView id={decodeURIComponent(match.params.id)} />;
-
+const AppViewRoute: React.FC<RouteComponentProps<{ id: string }>> = ({ match }) => (
+  <AppView id={decodeURIComponent(match.params.id)} />
+);
 const AppInstallRoute: React.FC<RouteComponentProps> = props => {
   const qs = parseQs(location.search.substr(1));
   const params: AppInstallUrlQueryParams = qs;
 
   return <AppInstallView params={params} {...props} />;
 };
-
 const AppListRoute: React.FC<RouteComponentProps> = () => {
   const qs = parseQs(location.search.substr(1));
   const params: AppListUrlQueryParams = qs;
@@ -55,18 +48,16 @@ export const AppsSectionRoot = () => {
       <WindowTitle title={intl.formatMessage(sectionNames.apps)} />
       <Switch>
         <Route exact path={AppPaths.appListPath} component={AppListRoute} />
-        <Route
+        <SectionRoute
           exact
+          permissions={[PermissionEnum.MANAGE_APPS]}
           path={AppPaths.appInstallPath}
           component={AppInstallRoute}
         />
-        <Route
+        <Route exact path={AppPaths.resolveAppDetailsPath(":id")} component={AppManageRoute} />
+        <SectionRoute
           exact
-          path={AppPaths.resolveAppDetailsPath(":id")}
-          component={AppManageRoute}
-        />
-        <Route
-          exact
+          permissions={[PermissionEnum.MANAGE_APPS]}
           path={AppPaths.resolveRequestPermissionsPath(":id")}
           component={AppPermissionRequestView}
         />

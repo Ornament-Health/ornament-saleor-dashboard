@@ -1,11 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { stringify } from "qs";
 import { useEffect, useState } from "react";
 import useRouter from "use-react-router";
 
 import { InitialAPIState } from "../API";
+import { InitialOrderAPIState } from "../API/initialState/orders/useInitialOrderState";
 import { FilterContainer, FilterElement } from "../FilterElement";
 import { FilterValueProvider } from "../FilterValueProvider";
 import { TokenArray } from "./TokenArray";
+import {
+  emptyFetchingParams,
+  emptyOrderFetchingParams,
+  FetchingParams,
+  OrderFetchingParams,
+} from "./TokenArray/fetchingParams";
 import { UrlEntry } from "./UrlToken";
 
 type Structure = Array<string | UrlEntry | Structure>;
@@ -25,17 +33,17 @@ const prepareStructure = (filterValue: FilterContainer): Structure =>
 
 export const useUrlValueProvider = (
   locationSearch: string,
-  initialState?: InitialAPIState,
+  type: "product" | "order" | "discount",
+  initialState?: InitialAPIState | InitialOrderAPIState,
 ): FilterValueProvider => {
   const router = useRouter();
   const params = new URLSearchParams(locationSearch);
-
   const [value, setValue] = useState<FilterContainer>([]);
-
   const activeTab = params.get("activeTab");
   const query = params.get("query");
   const before = params.get("before");
   const after = params.get("after");
+
   params.delete("asc");
   params.delete("sort");
   params.delete("activeTab");
@@ -44,10 +52,22 @@ export const useUrlValueProvider = (
   params.delete("after");
 
   const tokenizedUrl = new TokenArray(params.toString());
-  const fetchingParams = tokenizedUrl.getFetchingParams();
+  const paramsFromType = type === "product" ? emptyFetchingParams : emptyOrderFetchingParams;
+  const fetchingParams = tokenizedUrl.getFetchingParams(paramsFromType);
 
   useEffect(() => {
-    initialState?.fetchQueries(fetchingParams);
+    if (initialState) {
+      switch (type) {
+        case "product":
+          (initialState as InitialAPIState).fetchQueries(fetchingParams as FetchingParams);
+          break;
+        case "order":
+          (initialState as InitialOrderAPIState).fetchQueries(
+            fetchingParams as OrderFetchingParams,
+          );
+          break;
+      }
+    }
   }, [locationSearch]);
 
   useEffect(() => {

@@ -1,33 +1,19 @@
 import { AttributePageFormData } from "@dashboard/attributes/components/AttributePage";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
-import SingleSelectField from "@dashboard/components/SingleSelectField";
+import { Select } from "@dashboard/components/Select";
 import { MeasurementUnitsEnum } from "@dashboard/graphql";
 import { UseFormResult } from "@dashboard/hooks/useForm";
 import { commonMessages } from "@dashboard/intl";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Box, Option } from "@saleor/macaw-ui-next";
 import React, { useEffect, useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 
 import * as M from "./messages";
-import {
-  getUnitChoices,
-  unitMapping,
-  UnitSystem,
-  unitSystemChoices,
-  UnitType,
-  unitTypeChoices,
-} from "./utils";
+import { getUnitChoices, UnitSystem, unitSystemChoices, UnitType, unitTypeChoices } from "./utils";
 
 const useStyles = makeStyles(
   theme => ({
-    unitsRow: {
-      columnGap: theme.spacing(2),
-      display: "flex",
-      [theme.breakpoints.down("sm")]: {
-        flexFlow: "wrap",
-        rowGap: theme.spacing(3),
-      },
-    },
     hr: {
       border: "none",
       borderTop: `1px solid ${theme.palette.divider}`,
@@ -66,7 +52,6 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
   const [unitData, setUnitData] = useState<UnitData>({
     unit: data.unit ?? null,
   });
-
   const { unit, system, type } = unitData;
   const errorProps = {
     error: !!errors.unit,
@@ -74,11 +59,11 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
   };
   const [typeChoices, systemChoices, unitChoices] = useMemo(
     () => [
-      unitTypeChoices.map(choice => ({
+      unitTypeChoices.map<Option>(choice => ({
         ...choice,
         label: formatMessage(choice.label),
       })),
-      unitSystemChoices.map(choice => ({
+      unitSystemChoices.map<Option>(choice => ({
         ...choice,
         label: formatMessage(choice.label),
       })),
@@ -88,7 +73,6 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
   );
 
   useEffect(() => set({ unit }), [unit]);
-
   useEffect(() => {
     if (data.unit) {
       const selectInitialUnitData = () => {
@@ -97,14 +81,18 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
         Object.entries(unitChoices).some(([system, types]) => {
           const systemMatch = Object.entries(types).some(([type, units]) => {
             const unitMatch = units.some(({ value }) => value === data.unit);
+
             if (unitMatch) {
               initialData.type = type as UnitType;
             }
+
             return unitMatch;
           });
+
           if (systemMatch) {
             initialData.system = system as UnitSystem;
           }
+
           return systemMatch;
         });
 
@@ -114,11 +102,11 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
       setUnitData(selectInitialUnitData());
     }
   }, []);
-
   useEffect(() => {
     if (unit === undefined && !errors.unit) {
       setError("unit", formatMessage(commonMessages.requiredField));
     }
+
     if (errors.unit && (unit || unit === null)) {
       clearErrors("unit");
     }
@@ -132,60 +120,68 @@ export const NumericUnits: React.FC<NumericUnitsProps> = ({
         name="selectUnit"
         label={formatMessage(M.messages.selectUnit)}
         checked={data.unit !== null}
-        onChange={({ target }) =>
-          setUnitData({ unit: target.value ? undefined : null })
-        }
+        onChange={({ target }) => setUnitData({ unit: target.value ? undefined : null })}
         disabled={disabled}
       />
       {data.unit !== null && (
-        <div className={classes.unitsRow}>
-          <SingleSelectField
-            {...(!system && errorProps)}
-            testId="unit-system"
-            label={formatMessage(M.messages.unitSystem)}
-            choices={systemChoices}
-            onChange={({ target }: React.ChangeEvent<HTMLSelectElement>) =>
-              setUnitData(data => ({
-                ...data,
-                system: target.value as UnitSystem,
-              }))
-            }
-            value={system}
-            disabled={disabled}
-          />
-          <SingleSelectField
-            {...(system && !type && errorProps)}
-            testId="unit-of"
-            label={formatMessage(M.messages.unitOf)}
-            choices={typeChoices}
-            onChange={({ target }: React.ChangeEvent<HTMLSelectElement>) =>
-              setUnitData(data => ({
-                ...data,
-                type: target.value as UnitType,
-              }))
-            }
-            disabled={!system || disabled}
-            value={type}
-          />
-          <SingleSelectField
-            {...(type && !unit && errorProps)}
-            testId="unit"
-            label={formatMessage(M.messages.unit)}
-            choices={type && system ? unitChoices[system][type] : []}
-            onChange={({ target }: React.ChangeEvent<HTMLSelectElement>) =>
-              setUnitData(data => ({
-                ...data,
-                unit: target.value as MeasurementUnitsEnum,
-              }))
-            }
-            disabled={!type || disabled}
-            value={
-              type && system && unit && unitMapping[system][type].includes(unit)
-                ? unit
-                : undefined
-            }
-          />
-        </div>
+        <Box display="flex" gap={4} justifyContent="space-between">
+          <Box width="100%">
+            <Select
+              error={!system && errorProps.error}
+              helperText={!system && errorProps.hint}
+              data-test-id="unit-system"
+              disabled={disabled}
+              label={formatMessage(M.messages.unitSystem)}
+              name="system"
+              onChange={({ target }) => {
+                setUnitData(data => ({
+                  ...data,
+                  system: target.value as UnitSystem,
+                }));
+              }}
+              value={system ?? null}
+              options={systemChoices}
+            />
+          </Box>
+
+          <Box width="100%">
+            <Select
+              error={system && !type && errorProps.error}
+              helperText={system && !type && errorProps.hint}
+              data-test-id="unit-of"
+              disabled={!system || disabled}
+              label={formatMessage(M.messages.unitOf)}
+              name="type"
+              onChange={({ target }) => {
+                setUnitData(data => ({
+                  ...data,
+                  type: target.value as UnitType,
+                }));
+              }}
+              value={type ?? null}
+              options={typeChoices}
+            />
+          </Box>
+
+          <Box width="100%">
+            <Select
+              error={type && !unit && errorProps.error}
+              helperText={type && !unit && errorProps.hint}
+              data-test-id="unit"
+              disabled={!type || disabled}
+              label={formatMessage(M.messages.unit)}
+              name="type"
+              onChange={({ target }) =>
+                setUnitData(data => ({
+                  ...data,
+                  unit: target.value as MeasurementUnitsEnum,
+                }))
+              }
+              value={unit as string}
+              options={(type && system ? unitChoices?.[system]?.[type] ?? [] : []) as Option[]}
+            />
+          </Box>
+        </Box>
       )}
     </div>
   );

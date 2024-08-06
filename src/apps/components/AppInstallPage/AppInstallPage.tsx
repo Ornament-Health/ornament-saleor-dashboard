@@ -2,22 +2,15 @@ import plusIcon from "@assets/images/plus-icon.svg";
 import saleorLogoDarkMode from "@assets/images/sidebar-deafult-logo-darkMode.png";
 import saleorLogoLightMode from "@assets/images/sidebar-default-logo.png";
 import { AppAvatar } from "@dashboard/apps/components/AppAvatar/AppAvatar";
+import { DashboardCard } from "@dashboard/components/Card";
 import CardSpacer from "@dashboard/components/CardSpacer";
-import CardTitle from "@dashboard/components/CardTitle";
 import Hr from "@dashboard/components/Hr";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Skeleton from "@dashboard/components/Skeleton";
 import { AppFetchMutation, AppInstallMutation } from "@dashboard/graphql";
 import { SubmitPromise } from "@dashboard/hooks/useForm";
 import { buttonMessages } from "@dashboard/intl";
 import { useTheme } from "@dashboard/theme";
-import {
-  Card,
-  CardContent,
-  CircularProgress,
-  Typography,
-} from "@material-ui/core";
-import { Box, Button } from "@saleor/macaw-ui-next";
+import { Box, Button, Skeleton, Spinner, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -28,9 +21,7 @@ export interface AppInstallPageProps {
   data: NonNullable<AppFetchMutation["appFetchManifest"]>["manifest"];
   loading: boolean;
   navigateToAppsList: () => void;
-  onSubmit: () => SubmitPromise<
-    NonNullable<AppInstallMutation["appInstall"]>["errors"]
-  >;
+  onSubmit: () => SubmitPromise<NonNullable<AppInstallMutation["appInstall"]>["errors"]>;
 }
 
 export const AppInstallPage: React.FC<AppInstallPageProps> = ({
@@ -42,7 +33,6 @@ export const AppInstallPage: React.FC<AppInstallPageProps> = ({
   const intl = useIntl();
   const classes = useStyles();
   const { theme } = useTheme();
-
   const getSaleorLogoUrl = () => {
     switch (theme) {
       case "defaultLight":
@@ -53,27 +43,21 @@ export const AppInstallPage: React.FC<AppInstallPageProps> = ({
         throw new Error("Invalid theme mode, should not happen.");
     }
   };
-
   const name = data?.name || "";
 
   return (
     <DetailPageLayout gridTemplateColumns={1} withSavebar={false}>
       <DetailPageLayout.Content>
         <Box paddingY={6}>
-          <CardSpacer />
-          <Card>
-            <CardTitle
-              title={
-                loading ? (
-                  <Skeleton />
-                ) : (
-                  intl.formatMessage(messages.title, { name })
-                )
-              }
-            />
-            <CardContent className={classes.installCard}>
+          <DashboardCard>
+            <DashboardCard.Header>
+              <DashboardCard.Title data-test-id="app-installation-page-header">
+                {loading ? <Skeleton /> : intl.formatMessage(messages.title, { name })}
+              </DashboardCard.Title>
+            </DashboardCard.Header>
+            <DashboardCard.Content className={classes.installCard}>
               {loading ? (
-                <CircularProgress />
+                <Spinner />
               ) : (
                 <div className={classes.installAppContainer}>
                   <Box
@@ -99,62 +83,56 @@ export const AppInstallPage: React.FC<AppInstallPageProps> = ({
                   />
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </DashboardCard.Content>
+          </DashboardCard>
+
           <CardSpacer />
-          <Card>
-            {!loading && (
-              <CardTitle
-                title={intl.formatMessage(messages.permissionsTitle)}
-              />
-            )}
-            <CardContent>
+
+          <DashboardCard>
+            <DashboardCard.Header>
+              <DashboardCard.Title>
+                {loading ? <Skeleton /> : intl.formatMessage(messages.permissionsTitle)}
+              </DashboardCard.Title>
+            </DashboardCard.Header>
+            <DashboardCard.Content>
               {loading ? (
                 <Skeleton />
               ) : (
                 <>
-                  <Typography className={classes.installPermissionTitle}>
-                    <FormattedMessage
-                      {...messages.permissionsInstallDescription}
-                    />
-                  </Typography>
+                  <Text className={classes.installPermissionTitle}>
+                    <FormattedMessage {...messages.permissionsInstallDescription} />
+                  </Text>
+
                   {!!data?.permissions?.length && (
                     <ul className={classes.permissionsContainer}>
-                      {data?.permissions?.map(perm => (
-                        <li key={perm.code}>{perm.name}</li>
-                      ))}
+                      {data?.permissions?.map(perm => <li key={perm.code}>{perm.name}</li>)}
                     </ul>
                   )}
                   <Hr className={classes.installSpacer} />
 
-                  <Typography
-                    variant="body2"
-                    className={classes.installPrivacyText}
-                  >
+                  <Text className={classes.installPrivacyText}>
                     <FormattedMessage
                       {...messages.permissionsUninstallDescription}
                       values={{ name }}
                     />
                     {!!data?.dataPrivacyUrl && (
-                      <a
-                        href={data?.dataPrivacyUrl}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
+                      <a href={data?.dataPrivacyUrl} rel="noopener noreferrer" target="_blank">
                         <FormattedMessage {...messages.dataPrivacyLearnMore} />
                       </a>
                     )}
-                  </Typography>
+                  </Text>
                 </>
               )}
-            </CardContent>
-          </Card>
+            </DashboardCard.Content>
+          </DashboardCard>
+
           <CardSpacer />
+
           <Box display="flex" justifyContent="space-between" padding={6}>
             <Button variant="secondary" onClick={navigateToAppsList}>
               <FormattedMessage {...buttonMessages.cancel} />
             </Button>
-            <Button variant="primary" onClick={onSubmit}>
+            <Button variant="primary" onClick={onSubmit} data-test-id="install-app-button">
               <FormattedMessage {...messages.installButton} />
             </Button>
           </Box>

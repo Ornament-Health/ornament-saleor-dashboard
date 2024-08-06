@@ -1,13 +1,12 @@
 import CardTitle from "@dashboard/components/CardTitle";
 import ListItemLink from "@dashboard/components/ListItemLink";
-import Skeleton from "@dashboard/components/Skeleton";
 import { TaxCountryConfigurationFragment } from "@dashboard/graphql";
 import { taxesMessages } from "@dashboard/taxes/messages";
 import { taxCountriesListUrl } from "@dashboard/taxes/urls";
 import { isLastElement } from "@dashboard/taxes/utils/utils";
 import { Card, CardContent, Divider } from "@material-ui/core";
 import { List, ListHeader, ListItem, ListItemCell } from "@saleor/macaw-ui";
-import { Button, TrashBinIcon } from "@saleor/macaw-ui-next";
+import { Button, Skeleton, TrashBinIcon } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -35,11 +34,7 @@ export const TaxCountriesMenu: React.FC<TaxCountriesMenuProps> = ({
       <CardTitle
         title={intl.formatMessage(taxesMessages.countryList)}
         toolbar={
-          <Button
-            onClick={onCountryAdd}
-            variant="secondary"
-            data-test-id="add-country-button"
-          >
+          <Button onClick={onCountryAdd} variant="secondary" data-test-id="add-country-button">
             <FormattedMessage {...taxesMessages.addCountryLabel} />
           </Button>
         }

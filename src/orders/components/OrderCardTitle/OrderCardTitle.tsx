@@ -2,14 +2,14 @@ import DefaultCardTitle from "@dashboard/components/CardTitle";
 import HorizontalSpacer from "@dashboard/components/HorizontalSpacer";
 import { FulfillmentStatus } from "@dashboard/graphql";
 import { StatusType } from "@dashboard/types";
-import { Typography } from "@material-ui/core";
 import { CircleIndicator } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { orderTitleMessages } from "./messages";
 import { useStyles } from "./styles";
-import { getFulfillmentTotalQuantity, getOrderTitleMessage } from "./utils";
+import { getOrderTitleMessage } from "./utils";
 
 export type CardTitleStatus = FulfillmentStatus | "unfulfilled";
 
@@ -19,7 +19,6 @@ export type CardTitleLines = Array<{
 }>;
 
 interface OrderCardTitleProps {
-  lines?: CardTitleLines;
   fulfillmentOrder?: number;
   status: CardTitleStatus;
   toolbar?: React.ReactNode;
@@ -49,9 +48,7 @@ const selectStatus = (status: CardTitleStatus) => {
       return StatusType.ERROR;
   }
 };
-
 const OrderCardTitle: React.FC<OrderCardTitleProps> = ({
-  lines = [],
   status,
   warehouseName,
   withStatus = false,
@@ -60,10 +57,7 @@ const OrderCardTitle: React.FC<OrderCardTitleProps> = ({
 }) => {
   const intl = useIntl();
   const classes = useStyles({});
-
   const messageForStatus = getOrderTitleMessage(status);
-
-  const totalQuantity = getFulfillmentTotalQuantity(lines, status);
 
   return (
     <DefaultCardTitle
@@ -77,18 +71,16 @@ const OrderCardTitle: React.FC<OrderCardTitleProps> = ({
             </div>
           )}
           <HorizontalSpacer spacing={2} />
-          <Typography className={classes.cardHeader}>
-            {intl.formatMessage(messageForStatus)} ({totalQuantity})
-          </Typography>
+          <Text className={classes.cardHeader}>{intl.formatMessage(messageForStatus)}</Text>
           {!!warehouseName && (
-            <Typography className={classes.warehouseName} variant="caption">
+            <Text className={classes.warehouseName} size={2} fontWeight="light">
               <FormattedMessage
                 {...orderTitleMessages.fulfilledFrom}
                 values={{
                   warehouseName,
                 }}
               />
-            </Typography>
+            </Text>
           )}
         </div>
       }

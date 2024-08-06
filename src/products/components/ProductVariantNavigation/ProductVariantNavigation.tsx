@@ -1,29 +1,19 @@
 // @ts-strict-ignore
 import { DashboardCard } from "@dashboard/components/Card";
 import { Divider } from "@dashboard/components/Divider";
-import Skeleton from "@dashboard/components/Skeleton";
-import {
-  ProductVariantCreateDataQuery,
-  ProductVariantDetailsQuery,
-} from "@dashboard/graphql";
+import { ProductVariantCreateDataQuery, ProductVariantDetailsQuery } from "@dashboard/graphql";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { sectionNames } from "@dashboard/intl";
-import {
-  productVariantAddUrl,
-  productVariantEditUrl,
-} from "@dashboard/products/urls";
+import { productVariantAddUrl, productVariantEditUrl } from "@dashboard/products/urls";
 import { ReorderAction } from "@dashboard/types";
-import { Box, Button, GripIcon, Text } from "@saleor/macaw-ui-next";
+import { Box, Button, GripIcon, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Link } from "react-router-dom";
 
 import { renderCollection } from "../../../misc";
 import { ImagePlaceholder } from "./components/ImagePlaceholder";
-import {
-  SortableContainer,
-  SortableElement,
-} from "./components/SortableContainer";
+import { SortableContainer, SortableElement } from "./components/SortableContainer";
 import { messages } from "./messages";
 
 interface ProductVariantNavigationProps {
@@ -38,52 +28,32 @@ interface ProductVariantNavigationProps {
   onReorder: ReorderAction;
 }
 
-const ProductVariantNavigation: React.FC<
-  ProductVariantNavigationProps
-> = props => {
-  const {
-    current,
-    defaultVariantId,
-    productId,
-    isCreate,
-    variants,
-    onReorder,
-  } = props;
-
+const ProductVariantNavigation: React.FC<ProductVariantNavigationProps> = props => {
+  const { current, defaultVariantId, productId, isCreate, variants, onReorder } = props;
   const navigate = useNavigator();
   const intl = useIntl();
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage(sectionNames.variants)}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(sectionNames.variants)}</DashboardCard.Title>
+      </DashboardCard.Header>
       <SortableContainer onSortEnd={onReorder} data-test-id="variants-list">
         {variants?.length > 0 && <Divider />}
         {renderCollection(variants, (variant, variantIndex) => {
           const isDefault = variant && variant.id === defaultVariantId;
           const isActive = variant && variant.id === current;
-          const thumbnail = variant?.media?.filter(
-            mediaObj => mediaObj.type === "IMAGE",
-          )[0];
+          const thumbnail = variant?.media?.filter(mediaObj => mediaObj.type === "IMAGE")[0];
 
           return (
-            <Link
-              to={
-                variant
-                  ? productVariantEditUrl(productId, variant.id)
-                  : undefined
-              }
-            >
+            <Link to={variant ? productVariantEditUrl(productId, variant.id) : undefined}>
               <SortableElement
                 key={variant ? variant.id : "skeleton"}
                 index={variantIndex || 0}
                 display="block"
                 borderLeftStyle="solid"
                 __borderLeftWidth={2}
-                __borderColor={
-                  isActive ? "hsla(0, 0%, 0%, 0.6)" : "transparent"
-                }
+                __borderColor={isActive ? "hsla(0, 0%, 0%, 0.6)" : "transparent"}
               >
                 <Box
                   maxWidth="100%"
@@ -116,7 +86,7 @@ const ProductVariantNavigation: React.FC<
                       {variant ? variant.name || variant.sku : <Skeleton />}
                     </Text>
                     {isDefault && (
-                      <Text display="block" variant="caption" color="default2">
+                      <Text display="block" size={2} color="default2">
                         {intl.formatMessage(messages.defaultVariant)}
                       </Text>
                     )}
@@ -161,5 +131,6 @@ const ProductVariantNavigation: React.FC<
     </DashboardCard>
   );
 };
+
 ProductVariantNavigation.displayName = "ProductVariantNavigation";
 export default ProductVariantNavigation;

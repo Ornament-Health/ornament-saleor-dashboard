@@ -1,9 +1,9 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { MenuErrorFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getMenuErrorMessage from "@dashboard/utils/errors/menu";
-import { Card, CardContent, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -16,23 +16,20 @@ export interface MenuPropertiesProps {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const MenuProperties: React.FC<MenuPropertiesProps> = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}) => {
+const MenuProperties: React.FC<MenuPropertiesProps> = ({ data, disabled, errors, onChange }) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["name"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage(commonMessages.generalInformations)}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(commonMessages.generalInformations)}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <TextField
+          data-test-id="menu-name"
           disabled={disabled}
           error={!!formErrors.name}
           name={"name" as keyof MenuDetailsFormData}
@@ -45,9 +42,10 @@ const MenuProperties: React.FC<MenuPropertiesProps> = ({
           value={data.name}
           onChange={onChange}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 MenuProperties.displayName = "MenuProperties";
 export default MenuProperties;

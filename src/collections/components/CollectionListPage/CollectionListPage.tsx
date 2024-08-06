@@ -8,29 +8,23 @@ import {
 import { ListFilters } from "@dashboard/components/AppLayout/ListFilters";
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import { BulkDeleteButton } from "@dashboard/components/BulkDeleteButton";
+import { DashboardCard } from "@dashboard/components/Card";
 import { getByName } from "@dashboard/components/Filter/utils";
 import { FilterPresetsSelect } from "@dashboard/components/FilterPresetsSelect";
 import { ListPageLayout } from "@dashboard/components/Layouts";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { sectionNames } from "@dashboard/intl";
 import { FilterPageProps, PageListProps, SortPage } from "@dashboard/types";
-import { Card } from "@material-ui/core";
 import { Box, Button, ChevronRightIcon } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { CollectionListDatagrid } from "../CollectionListDatagrid";
-import {
-  CollectionFilterKeys,
-  CollectionListFilterOpts,
-  createFilterStructure,
-} from "./filters";
+import { CollectionFilterKeys, CollectionListFilterOpts, createFilterStructure } from "./filters";
+
 export interface CollectionListPageProps
   extends PageListProps,
-    Omit<
-      FilterPageProps<CollectionFilterKeys, CollectionListFilterOpts>,
-      "onTabDelete"
-    >,
+    Omit<FilterPageProps<CollectionFilterKeys, CollectionListFilterOpts>, "onTabDelete">,
     SortPage<CollectionListUrlSortField> {
   onTabUpdate: (tabName: string) => void;
   selectedChannelId: string;
@@ -68,7 +62,6 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
   const navigate = useNavigator();
   const filterStructure = createFilterStructure(intl, filterOpts);
   const [isFilterPresetOpen, setFilterPresetOpen] = useState(false);
-
   const filterDependency = filterStructure.find(getByName("channel"));
 
   return (
@@ -78,12 +71,7 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
         isAlignToRight={false}
         title={intl.formatMessage(sectionNames.collections)}
       >
-        <Box
-          __flex={1}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <Box __flex={1} display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex">
             <Box marginX={3} display="flex" alignItems="center">
               <ChevronRightIcon />
@@ -124,7 +112,7 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
         </Box>
       </TopNav>
 
-      <Card>
+      <DashboardCard>
         <ListFilters
           currencySymbol={currencySymbol}
           initialSearch={initialSearch}
@@ -140,10 +128,7 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
             <Box display="flex" gap={4}>
               {selectedCollectionIds.length > 0 && (
                 <BulkDeleteButton onClick={onCollectionsDelete}>
-                  <FormattedMessage
-                    defaultMessage="Delete collections"
-                    id="FTYkgw"
-                  />
+                  <FormattedMessage defaultMessage="Delete collections" id="FTYkgw" />
                 </BulkDeleteButton>
               )}
             </Box>
@@ -161,9 +146,10 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
           rowAnchor={collectionUrl}
           {...listProps}
         />
-      </Card>
+      </DashboardCard>
     </ListPageLayout>
   );
 };
+
 CollectionListPage.displayName = "CollectionListPage";
 export default CollectionListPage;

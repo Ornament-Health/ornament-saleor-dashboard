@@ -6,7 +6,7 @@ import CompanyAddressInput from "@dashboard/components/CompanyAddressInput";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { AddressTypeInput } from "@dashboard/customers/types";
 import {
   CountryWithCodeFragment,
@@ -53,22 +53,17 @@ const WarehouseDetailsPage: React.FC<WarehouseDetailsPageProps> = ({
 }) => {
   const intl = useIntl();
   const navigate = useNavigator();
-
   const [displayCountry, setDisplayCountry] = useStateFromProps(
     warehouse?.address?.country.country || "",
   );
-
-  const { errors: validationErrors, submit: handleSubmit } =
-    useAddressValidation(onSubmit);
-
+  const { errors: validationErrors, submit: handleSubmit } = useAddressValidation(onSubmit);
   const initialForm: WarehouseDetailsPageFormData = {
     city: warehouse?.address.city ?? "",
     companyName: warehouse?.address.companyName ?? "",
     country: warehouse?.address.country.code ?? "",
     isPrivate: !!warehouse?.isPrivate,
     clickAndCollectOption:
-      warehouse?.clickAndCollectOption ||
-      WarehouseClickAndCollectOptionEnum.DISABLED,
+      warehouse?.clickAndCollectOption || WarehouseClickAndCollectOptionEnum.DISABLED,
     countryArea: warehouse?.address.countryArea ?? "",
     name: warehouse?.name ?? "",
     phone: warehouse?.address.phone ?? "",
@@ -78,12 +73,7 @@ const WarehouseDetailsPage: React.FC<WarehouseDetailsPageProps> = ({
   };
 
   return (
-    <Form
-      confirmLeave
-      initial={initialForm}
-      onSubmit={handleSubmit}
-      disabled={disabled}
-    >
+    <Form confirmLeave initial={initialForm} onSubmit={handleSubmit} disabled={disabled}>
       {({ change, data, isSaveDisabled, submit, set }) => {
         const countryChoices = mapCountriesToChoices(countries);
         const countrySelect = createSingleAutocompleteSelectHandler(
@@ -97,12 +87,7 @@ const WarehouseDetailsPage: React.FC<WarehouseDetailsPageProps> = ({
           <DetailPageLayout>
             <TopNav href={warehouseListUrl()} title={warehouse?.name} />
             <DetailPageLayout.Content>
-              <WarehouseInfo
-                data={data}
-                disabled={disabled}
-                errors={errors}
-                onChange={change}
-              />
+              <WarehouseInfo data={data} disabled={disabled} errors={errors} onChange={change} />
               <CardSpacer />
               <CompanyAddressInput
                 countries={countryChoices}
@@ -128,13 +113,16 @@ const WarehouseDetailsPage: React.FC<WarehouseDetailsPageProps> = ({
                 setData={set}
               />
             </DetailPageLayout.RightSidebar>
-            <Savebar
-              disabled={!!isSaveDisabled}
-              onCancel={() => navigate(warehouseListUrl())}
-              onDelete={onDelete}
-              onSubmit={submit}
-              state={saveButtonBarState}
-            />
+            <Savebar>
+              <Savebar.DeleteButton onClick={onDelete} />
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(warehouseListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={!!isSaveDisabled}
+              />
+            </Savebar>
           </DetailPageLayout>
         );
       }}

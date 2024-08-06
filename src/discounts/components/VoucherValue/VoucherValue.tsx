@@ -1,10 +1,9 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import { FormSpacer } from "@dashboard/components/FormSpacer";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableHead from "@dashboard/components/TableHead";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { ChannelInput } from "@dashboard/discounts/handlers";
@@ -13,14 +12,8 @@ import { DiscountErrorFragment } from "@dashboard/graphql";
 import { renderCollection } from "@dashboard/misc";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getDiscountErrorMessage from "@dashboard/utils/errors/discounts";
-import {
-  Card,
-  CardContent,
-  TableBody,
-  TableCell,
-  Typography,
-} from "@material-ui/core";
-import { Input, Text } from "@saleor/macaw-ui-next";
+import { TableBody, TableCell } from "@material-ui/core";
+import { Input, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -43,15 +36,11 @@ export enum VoucherType {
 }
 
 const numberOfColumns = 2;
-
 const VoucherValue: React.FC<VoucherValueProps> = props => {
   const { data, disabled, errors, variant, onChange, onChannelChange } = props;
-
   const classes = useStyles(props);
   const intl = useIntl();
-
   const formErrors = getFormErrors(["discountValue", "type"], errors);
-
   const translatedVoucherTypes = translateVoucherTypes(intl);
   const voucherTypeChoices = Object.values(VoucherType).map(type => ({
     label: translatedVoucherTypes[type],
@@ -59,15 +48,17 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
   }));
 
   return (
-    <Card data-test-id="value-section">
-      <CardTitle
-        title={intl.formatMessage({
-          id: "/oaqFS",
-          defaultMessage: "Value",
-          description: "section header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard data-test-id="value-section">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "/oaqFS",
+            defaultMessage: "Value",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <div className={classes.tableContainer}>
           <ResponsiveTable className={classes.table}>
             <TableHead colSpan={numberOfColumns} disabled={disabled} items={[]}>
@@ -82,11 +73,7 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
               </TableCell>
               <TableCell className={classes.colType}>
                 <span>
-                  <FormattedMessage
-                    id="1shOIS"
-                    defaultMessage="Price"
-                    description="column title"
-                  />
+                  <FormattedMessage id="1shOIS" defaultMessage="Price" description="column title" />
                 </span>
               </TableCell>
             </TableHead>
@@ -94,9 +81,8 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
               {renderCollection(
                 data.channelListings,
                 (listing, index) => {
-                  const error = formErrors.discountValue?.channels?.find(
-                    id => id === listing.id,
-                  );
+                  const error = formErrors.discountValue?.channels?.find(id => id === listing.id);
+
                   return (
                     <TableRowLink
                       key={listing?.id || `skeleton-${index}`}
@@ -112,20 +98,14 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
                             disabled={disabled}
                             error={!!error?.length}
                             endAdornment={
-                              <Text variant="caption">
-                                {data.discountType ===
-                                DiscountTypeEnum.VALUE_FIXED
+                              <Text size={2}>
+                                {data.discountType === DiscountTypeEnum.VALUE_FIXED
                                   ? listing.currency
                                   : "%"}
                               </Text>
                             }
                             helperText={
-                              error
-                                ? getDiscountErrorMessage(
-                                    formErrors.discountValue,
-                                    intl,
-                                  )
-                                : ""
+                              error ? getDiscountErrorMessage(formErrors.discountValue, intl) : ""
                             }
                             name={"value"}
                             onChange={e =>
@@ -150,10 +130,7 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
                 () => (
                   <TableRowLink>
                     <TableCell colSpan={numberOfColumns}>
-                      <FormattedMessage
-                        id="/glQgs"
-                        defaultMessage="No channels found"
-                      />
+                      <FormattedMessage id="/glQgs" defaultMessage="No channels found" />
                     </TableCell>
                   </TableRowLink>
                 ),
@@ -190,20 +167,21 @@ const VoucherValue: React.FC<VoucherValueProps> = props => {
                 defaultMessage="Apply only to a single cheapest eligible product"
                 description="voucher application, switch button"
               />
-              <Typography variant="caption">
+              <Text size={2} fontWeight="light" display="block" color="default2">
                 <FormattedMessage
                   id="ObRk1O"
                   defaultMessage="If this option is disabled, discount will be counted for every eligible product"
                 />
-              </Typography>
+              </Text>
             </>
           }
           checked={data.applyOncePerOrder}
           onChange={onChange}
           disabled={disabled}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 export default VoucherValue;

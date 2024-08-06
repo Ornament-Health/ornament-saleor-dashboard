@@ -1,6 +1,5 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { sectionNames } from "@dashboard/intl";
-import { Card } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -8,16 +7,16 @@ import PluginDetailsChannelsCardContent, {
   PluginDetailsChannelsCardProps,
 } from "./PluginDetailsChannelsCardContent";
 
-const PluginDetailsChannelsCard: React.FC<
-  PluginDetailsChannelsCardProps
-> = props => {
+const PluginDetailsChannelsCard: React.FC<PluginDetailsChannelsCardProps> = props => {
   const intl = useIntl();
 
   return (
-    <Card>
-      <CardTitle title={intl.formatMessage(sectionNames.channels)} />
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(sectionNames.channels)}</DashboardCard.Title>
+      </DashboardCard.Header>
       <PluginDetailsChannelsCardContent {...props} />
-    </Card>
+    </DashboardCard>
   );
 };
 

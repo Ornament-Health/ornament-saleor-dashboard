@@ -1,19 +1,13 @@
 // @ts-strict-ignore
 import { FetchResult } from "@apollo/client";
+import { Channel, isAvailableInChannel } from "@dashboard/channels/utils";
 import BackButton from "@dashboard/components/BackButton";
 import Checkbox from "@dashboard/components/Checkbox";
-import {
-  ConfirmButton,
-  ConfirmButtonTransitionState,
-} from "@dashboard/components/ConfirmButton";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
-import {
-  SearchProductsQuery,
-  ShippingPriceExcludeProductMutation,
-} from "@dashboard/graphql";
+import { SearchProductsQuery, ShippingPriceExcludeProductMutation } from "@dashboard/graphql";
 import useSearchQuery from "@dashboard/hooks/useSearchQuery";
 import { renderCollection } from "@dashboard/misc";
 import { FetchMoreProps, RelayToFlat } from "@dashboard/types";
@@ -28,6 +22,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -70,59 +65,48 @@ export interface ShippingMethodProductsAddDialogProps extends FetchMoreProps {
   products: RelayToFlat<SearchProductsQuery["search"]>;
   onClose: () => void;
   onFetch: (query: string) => void;
-  onSubmit: (
-    ids: string[],
-  ) => Promise<FetchResult<ShippingPriceExcludeProductMutation>>;
+  onSubmit: (ids: string[]) => Promise<FetchResult<ShippingPriceExcludeProductMutation>>;
+  availableChannels: Channel[];
 }
 
 const handleProductAssign = (
   product: RelayToFlat<SearchProductsQuery["search"]>[0],
   isSelected: boolean,
   selectedProducts: RelayToFlat<SearchProductsQuery["search"]>,
-  setSelectedProducts: (
-    data: RelayToFlat<SearchProductsQuery["search"]>,
-  ) => void,
+  setSelectedProducts: (data: RelayToFlat<SearchProductsQuery["search"]>) => void,
 ) => {
   if (isSelected) {
     setSelectedProducts(
-      selectedProducts.filter(
-        selectedProduct => selectedProduct.id !== product.id,
-      ),
+      selectedProducts.filter(selectedProduct => selectedProduct.id !== product.id),
     );
   } else {
     setSelectedProducts([...selectedProducts, product]);
   }
 };
-
-const ShippingMethodProductsAddDialog: React.FC<
-  ShippingMethodProductsAddDialogProps
-> = props => {
-  const {
-    confirmButtonState,
-    open,
-    loading,
-    hasMore,
-    products,
-    onFetch,
-    onFetchMore,
-    onClose,
-    onSubmit,
-  } = props;
-
-  const classes = useStyles(props);
+const ShippingMethodProductsAddDialog: React.FC<ShippingMethodProductsAddDialogProps> = ({
+  confirmButtonState,
+  open,
+  loading,
+  hasMore,
+  products,
+  onFetch,
+  onFetchMore,
+  onClose,
+  onSubmit,
+  availableChannels,
+}) => {
+  const classes = useStyles();
   const intl = useIntl();
   const [query, onQueryChange, resetQuery] = useSearchQuery(onFetch);
   const [selectedProducts, setSelectedProducts] = React.useState<
     RelayToFlat<SearchProductsQuery["search"]>
   >([]);
-
   const handleSubmit = () => {
     onSubmit(selectedProducts.map(product => product.id)).then(() => {
       setSelectedProducts([]);
       resetQuery();
     });
   };
-
   const handleClose = () => {
     onClose();
     setSelectedProducts([]);
@@ -139,8 +123,9 @@ const ShippingMethodProductsAddDialog: React.FC<
         />
       </DialogTitle>
       <DialogContent>
-        <div className={classes.searchBar}>
+        <div data-test-id="assign-products-dialog-content" className={classes.searchBar}>
           <TextField
+            data-test-id="search-bar"
             name="query"
             value={query}
             onChange={onQueryChange}
@@ -173,26 +158,29 @@ const ShippingMethodProductsAddDialog: React.FC<
             height={450}
           >
             <ResponsiveTable key="table">
-              <TableBody>
+              <TableBody data-test-id="assign-product-list">
                 {renderCollection(
                   products,
                   (product, productIndex) => {
                     const isSelected = selectedProducts.some(
                       selectedProduct => selectedProduct.id === product.id,
                     );
+
+                    const isProductAvailable = isAvailableInChannel({
+                      availableChannels,
+                      channelListings: product?.channelListings ?? [],
+                    });
+
+                    const isProductDisabled = loading || !isProductAvailable;
+
                     return (
-                      <React.Fragment
-                        key={product ? product.id : `skeleton-${productIndex}`}
-                      >
-                        <TableRowLink>
-                          <TableCell
-                            padding="checkbox"
-                            className={classes.productCheckboxCell}
-                          >
+                      <React.Fragment key={product ? product.id : `skeleton-${productIndex}`}>
+                        <TableRowLink data-test-id="product-row">
+                          <TableCell padding="checkbox" className={classes.productCheckboxCell}>
                             {product && (
                               <Checkbox
                                 checked={isSelected}
-                                disabled={loading}
+                                disabled={isProductDisabled}
                                 onChange={() =>
                                   handleProductAssign(
                                     product,
@@ -207,9 +195,20 @@ const ShippingMethodProductsAddDialog: React.FC<
                           <TableCellAvatar
                             className={classes.avatar}
                             thumbnail={product?.thumbnail?.url}
+                            style={{
+                              opacity: isProductDisabled ? 0.5 : 1,
+                            }}
                           />
                           <TableCell className={classes.colName} colSpan={2}>
                             {product?.name || <Skeleton />}
+                            {!isProductAvailable && (
+                              <Text display="block" size={1} color="default2">
+                                {intl.formatMessage({
+                                  defaultMessage: "Product is not available in selected channels",
+                                  id: "jmZSK1",
+                                })}
+                              </Text>
+                            )}
                           </TableCell>
                         </TableRowLink>
                       </React.Fragment>
@@ -250,5 +249,6 @@ const ShippingMethodProductsAddDialog: React.FC<
     </Dialog>
   );
 };
+
 ShippingMethodProductsAddDialog.displayName = "ShippingMethodProductsAddDialog";
 export default ShippingMethodProductsAddDialog;

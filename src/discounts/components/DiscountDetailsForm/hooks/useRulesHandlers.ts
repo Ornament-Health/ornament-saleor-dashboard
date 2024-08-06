@@ -1,4 +1,5 @@
-import { Rule } from "@dashboard/discounts/models";
+import { mapAPIRuleToForm, Rule } from "@dashboard/discounts/models";
+import { sortRules } from "@dashboard/discounts/utils";
 import {
   PromotionDetailsFragment,
   PromotionRuleCreateErrorFragment,
@@ -12,29 +13,35 @@ import { getCurrentConditionsValuesLabels } from "../utils";
 interface UseRulesHandlersProps {
   data: PromotionDetailsFragment | undefined | null;
   ruleConditionsOptionsDetailsMap: Record<string, string>;
-  onRuleUpdateSubmit: (
-    data: Rule,
-  ) => Promise<Array<CommonError<PromotionRuleUpdateErrorFragment>>>;
-  onRuleCreateSubmit: (
-    data: Rule,
-  ) => Promise<Array<CommonError<PromotionRuleCreateErrorFragment>>>;
+  giftsOptionsDetailsMap: Record<string, string>;
+  onRuleUpdateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleUpdateErrorFragment>>>;
+  onRuleCreateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleCreateErrorFragment>>>;
   onRuleDeleteSubmit: (id: string) => void;
 }
 
 export const useRulesHandlers = ({
   data,
   ruleConditionsOptionsDetailsMap,
+  giftsOptionsDetailsMap,
   onRuleUpdateSubmit,
   onRuleCreateSubmit,
   onRuleDeleteSubmit,
 }: UseRulesHandlersProps) => {
   const [rulesErrors, setRulesErrors] = useState<Array<CommonError<any>>>([]);
-  const [labelsMap, setLabelMap] = useState<Record<string, string>>({});
-
-  const rules = data?.rules?.map(rule => Rule.fromAPI(rule, labelsMap)) ?? [];
+  const [conditionValuesLabelMap, setConditionValuesLabelMap] = useState<Record<string, string>>(
+    {},
+  );
+  const rules = sortRules(
+    data?.rules?.map(rule =>
+      mapAPIRuleToForm(data?.type, rule, {
+        conditionsValues: conditionValuesLabelMap,
+        gifts: giftsOptionsDetailsMap,
+      }),
+    ) ?? [],
+  );
 
   useEffect(() => {
-    setLabelMap(labels => {
+    setConditionValuesLabelMap(labels => {
       return {
         ...ruleConditionsOptionsDetailsMap,
         ...labels,
@@ -43,40 +50,39 @@ export const useRulesHandlers = ({
   }, [ruleConditionsOptionsDetailsMap]);
 
   const updateLabels = (rule: Rule) => {
-    setLabelMap(labels => ({
+    setConditionValuesLabelMap(labels => ({
       ...labels,
       ...getCurrentConditionsValuesLabels([rule]),
     }));
   };
-
   const onRuleSubmit = async (rule: Rule, ruleEditIndex: number | null) => {
     let errors: Array<
-      CommonError<
-        PromotionRuleUpdateErrorFragment | PromotionRuleCreateErrorFragment
-      >
+      CommonError<PromotionRuleUpdateErrorFragment | PromotionRuleCreateErrorFragment>
     > = [];
-    const ruleObj = Rule.fromFormValues(rule);
+
+    updateLabels(rule);
+
     if (ruleEditIndex !== null) {
-      updateLabels(rule);
-      errors = await onRuleUpdateSubmit(ruleObj);
+      errors = await onRuleUpdateSubmit(rule);
 
       if (errors.length > 0) {
         setRulesErrors(errors);
       }
     } else {
-      errors = await onRuleCreateSubmit(ruleObj);
+      errors = await onRuleCreateSubmit(rule);
+
       if (errors.length > 0) {
         setRulesErrors(errors);
       }
     }
   };
-
   const onDeleteRule = async (ruleDeleteIndex: number) => {
     if (ruleDeleteIndex === null) {
       return;
     }
 
     const ruleId = rules[ruleDeleteIndex].id;
+
     if (!ruleId) {
       return;
     }
