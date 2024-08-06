@@ -1,6 +1,5 @@
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
-import VerticalSpacer from "@dashboard/components/VerticalSpacer";
 import TimePeriodField from "@dashboard/giftCards/components/TimePeriodField";
 import {
   GiftCardBulkCreateFormErrors,
@@ -11,7 +10,8 @@ import { getExpiryPeriodTerminationDate } from "@dashboard/giftCards/GiftCardCre
 import { getGiftCardErrorMessage } from "@dashboard/giftCards/GiftCardUpdate/messages";
 import useCurrentDate from "@dashboard/hooks/useCurrentDate";
 import { FormChange } from "@dashboard/hooks/useForm";
-import { TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, MessageDescriptor, useIntl } from "react-intl";
 
@@ -39,33 +39,21 @@ interface GiftCardCreateExpirySelectProps {
   change: FormChange;
   data: Pick<
     GiftCardCreateCommonFormData,
-    | "expirySelected"
-    | "expiryPeriodType"
-    | "expiryPeriodAmount"
-    | "expiryType"
-    | "expiryDate"
+    "expirySelected" | "expiryPeriodType" | "expiryPeriodAmount" | "expiryType" | "expiryDate"
   >;
 }
 
 const GiftCardCreateExpirySelect: React.FC<GiftCardCreateExpirySelectProps> = ({
   errors,
   change,
-  data: {
-    expirySelected,
-    expiryPeriodType,
-    expiryPeriodAmount,
-    expiryType,
-    expiryDate,
-  },
+  data: { expirySelected, expiryPeriodType, expiryPeriodAmount, expiryType, expiryDate },
 }) => {
   const intl = useIntl();
   const classes = useStyles({});
-
   const translatedOptions = options.map(({ label, value }) => ({
     value,
     label: intl.formatMessage(label),
   }));
-
   const currentDate = useCurrentDate();
 
   return (
@@ -79,7 +67,6 @@ const GiftCardCreateExpirySelect: React.FC<GiftCardCreateExpirySelectProps> = ({
       />
       {expirySelected && (
         <>
-          <VerticalSpacer spacing={2} />
           <RadioGroupField
             innerContainerClassName={classes.radioGroupContainer}
             choices={translatedOptions}
@@ -88,7 +75,6 @@ const GiftCardCreateExpirySelect: React.FC<GiftCardCreateExpirySelectProps> = ({
             value={expiryType}
             variant="inline"
           />
-          <VerticalSpacer spacing={2} />
 
           {expiryType === "EXPIRY_DATE" && (
             <TextField
@@ -107,7 +93,7 @@ const GiftCardCreateExpirySelect: React.FC<GiftCardCreateExpirySelectProps> = ({
           )}
 
           {expiryType === "EXPIRY_PERIOD" && (
-            <div className={classes.periodField}>
+            <div data-test-id="gift-card-expire-data-fields" className={classes.periodField}>
               <TimePeriodField
                 isError={!!errors?.expiryDate}
                 helperText={getGiftCardErrorMessage(errors?.expiryDate, intl)}
@@ -118,20 +104,19 @@ const GiftCardCreateExpirySelect: React.FC<GiftCardCreateExpirySelectProps> = ({
                 typeFieldName={"expiryPeriodType"}
               />
               <div>
-                <Typography variant="caption">
+                <Text size={2} fontWeight="light">
                   <FormattedMessage {...messages.expiryOnLabel} />
-                </Typography>
-                <Typography>
+                </Text>
+                <Text>
                   {getExpiryPeriodTerminationDate(
                     currentDate,
                     expiryPeriodType,
                     expiryPeriodAmount,
                   )?.format("ll")}
-                </Typography>
+                </Text>
               </div>
             </div>
           )}
-          <VerticalSpacer spacing={2} />
         </>
       )}
     </>

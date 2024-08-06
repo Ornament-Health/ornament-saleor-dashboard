@@ -1,10 +1,9 @@
 // @ts-strict-ignore
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ChannelsAvailabilityDropdown } from "@dashboard/components/ChannelsAvailabilityDropdown";
 import Checkbox from "@dashboard/components/Checkbox";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import { TableButtonWrapper } from "@dashboard/components/TableButtonWrapper/TableButtonWrapper";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import { AVATAR_MARGIN } from "@dashboard/components/TableCellAvatar/Avatar";
@@ -14,8 +13,9 @@ import TableRowLink from "@dashboard/components/TableRowLink";
 import { CollectionDetailsQuery } from "@dashboard/graphql";
 import { productUrl } from "@dashboard/products/urls";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
-import { Card, TableBody, TableCell, TableFooter } from "@material-ui/core";
+import { TableBody, TableCell, TableFooter } from "@material-ui/core";
 import { DeleteIcon, IconButton, makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -69,18 +69,16 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
     toggleAll,
     toolbar,
   } = props;
-
   const classes = useStyles(props);
   const intl = useIntl();
-
   const products = mapEdgesToItems(collection?.products);
   const numberOfColumns = products?.length === 0 ? 4 : 5;
 
   return (
-    <Card>
-      <CardTitle
-        title={
-          !!collection ? (
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {collection ? (
             intl.formatMessage(
               {
                 id: "/dnWE8",
@@ -93,23 +91,14 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
             )
           ) : (
             <Skeleton />
-          )
-        }
-        toolbar={
-          <Button
-            data-test-id="add-product"
-            disabled={disabled}
-            variant="tertiary"
-            onClick={onAdd}
-          >
-            <FormattedMessage
-              id="scHVdW"
-              defaultMessage="Assign product"
-              description="button"
-            />
+          )}
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
+          <Button data-test-id="add-product" disabled={disabled} variant="tertiary" onClick={onAdd}>
+            <FormattedMessage id="scHVdW" defaultMessage="Assign product" description="button" />
           </Button>
-        }
-      />
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
       <ResponsiveTable className={classes.table}>
         <TableHead
           colSpan={numberOfColumns}
@@ -121,19 +110,11 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
         >
           <TableCell className={classes.colName}>
             <span className={classes.colNameLabel}>
-              <FormattedMessage
-                id="6AMFki"
-                defaultMessage="Name"
-                description="product name"
-              />
+              <FormattedMessage id="6AMFki" defaultMessage="Name" description="product name" />
             </span>
           </TableCell>
           <TableCell className={classes.colType}>
-            <FormattedMessage
-              id="k+HcTv"
-              defaultMessage="Type"
-              description="product type"
-            />
+            <FormattedMessage id="k+HcTv" defaultMessage="Type" description="product type" />
           </TableCell>
           <TableCell className={classes.colPublished}>
             <FormattedMessage
@@ -179,18 +160,13 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
                     {maybe<React.ReactNode>(() => product.name, <Skeleton />)}
                   </TableCellAvatar>
                   <TableCell className={classes.colType}>
-                    {maybe<React.ReactNode>(
-                      () => product.productType.name,
-                      <Skeleton />,
-                    )}
+                    {maybe<React.ReactNode>(() => product.productType.name, <Skeleton />)}
                   </TableCell>
                   <TableCell className={classes.colType}>
                     {product && !product?.channelListings?.length ? (
                       "-"
                     ) : product?.channelListings !== undefined ? (
-                      <ChannelsAvailabilityDropdown
-                        channels={product?.channelListings}
-                      />
+                      <ChannelsAvailabilityDropdown channels={product?.channelListings} />
                     ) : (
                       <Skeleton />
                     )}
@@ -213,17 +189,14 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
             () => (
               <TableRowLink>
                 <TableCell colSpan={numberOfColumns}>
-                  <FormattedMessage
-                    id="Q1Uzbb"
-                    defaultMessage="No products found"
-                  />
+                  <FormattedMessage id="Q1Uzbb" defaultMessage="No products found" />
                 </TableCell>
               </TableRowLink>
             ),
           )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };
 

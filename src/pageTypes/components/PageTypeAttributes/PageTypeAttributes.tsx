@@ -1,22 +1,19 @@
 // @ts-strict-ignore
 import { attributeUrl } from "@dashboard/attributes/urls";
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Checkbox from "@dashboard/components/Checkbox";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
-import {
-  SortableTableBody,
-  SortableTableRow,
-} from "@dashboard/components/SortableTable";
+import { SortableTableBody, SortableTableRow } from "@dashboard/components/SortableTable";
 import { TableButtonWrapper } from "@dashboard/components/TableButtonWrapper/TableButtonWrapper";
 import TableHead from "@dashboard/components/TableHead";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { AttributeFragment, AttributeTypeEnum } from "@dashboard/graphql";
 import { renderCollection } from "@dashboard/misc";
 import { ListActions, ReorderAction } from "@dashboard/types";
-import { Card, CardContent, TableCell } from "@material-ui/core";
+import { TableCell } from "@material-ui/core";
 import { DeleteIcon, IconButton, makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -55,7 +52,6 @@ interface PageTypeAttributesProps extends ListActions {
 }
 
 const numberOfColumns = 5;
-
 const PageTypeAttributes: React.FC<PageTypeAttributesProps> = props => {
   const {
     attributes,
@@ -71,32 +67,29 @@ const PageTypeAttributes: React.FC<PageTypeAttributesProps> = props => {
     onAttributeUnassign,
   } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
 
   return (
-    <Card data-test-id="page-attributes">
-      <CardTitle
-        title={intl.formatMessage({
-          id: "iQxjow",
-          defaultMessage: "Content Attributes",
-          description: "section header",
-        })}
-        toolbar={
+    <DashboardCard data-test-id="page-attributes">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "iQxjow",
+            defaultMessage: "Content Attributes",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
           <Button
             variant="tertiary"
             onClick={() => onAttributeAssign(AttributeTypeEnum[type])}
             data-test-id="assign-attributes"
           >
-            <FormattedMessage
-              id="uxPpRx"
-              defaultMessage="Assign attribute"
-              description="button"
-            />
+            <FormattedMessage id="uxPpRx" defaultMessage="Assign attribute" description="button" />
           </Button>
-        }
-      />
-      <CardContent>
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <ResponsiveTable>
           <colgroup>
             <col className={classes.colGrab} />
@@ -137,7 +130,7 @@ const PageTypeAttributes: React.FC<PageTypeAttributesProps> = props => {
                 return (
                   <SortableTableRow
                     selected={isSelected}
-                    className={!!attribute ? classes.link : undefined}
+                    className={attribute ? classes.link : undefined}
                     hover={!!attribute}
                     href={attribute ? attributeUrl(attribute.id) : undefined}
                     key={attribute?.id}
@@ -174,19 +167,17 @@ const PageTypeAttributes: React.FC<PageTypeAttributesProps> = props => {
               () => (
                 <TableRowLink>
                   <TableCell colSpan={numberOfColumns}>
-                    <FormattedMessage
-                      id="ztQgD8"
-                      defaultMessage="No attributes found"
-                    />
+                    <FormattedMessage id="ztQgD8" defaultMessage="No attributes found" />
                   </TableCell>
                 </TableRowLink>
               ),
             )}
           </SortableTableBody>
         </ResponsiveTable>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 PageTypeAttributes.displayName = "PageTypeAttributes";
 export default PageTypeAttributes;

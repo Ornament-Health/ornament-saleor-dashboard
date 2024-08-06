@@ -1,8 +1,5 @@
 import { FetchResult } from "@apollo/client";
-import {
-  AttributeInput,
-  AttributeInputData,
-} from "@dashboard/components/Attributes";
+import { AttributeInput, AttributeInputData } from "@dashboard/components/Attributes";
 import {
   AttributeEntityTypeEnum,
   AttributeInputTypeEnum,
@@ -45,21 +42,16 @@ export function createAttributeMultiChangeHandler(
   triggerChange: () => void,
 ): FormsetChange<string> {
   return (attributeId: string, value: string | string[]) => {
-    const attribute = attributes.find(
-      attribute => attribute.id === attributeId,
-    );
+    const attribute = attributes.find(attribute => attribute.id === attributeId);
 
     if (Array.isArray(value)) {
       triggerChange();
       changeAttributeData(attributeId, value);
+
       return;
     }
 
-    const newAttributeValues = toggle(
-      value,
-      attribute?.value ?? [],
-      (a, b) => a === b,
-    );
+    const newAttributeValues = toggle(value, attribute?.value ?? [], (a, b) => a === b);
 
     triggerChange();
     changeAttributeData(attributeId, newAttributeValues);
@@ -98,25 +90,19 @@ export function createFetchReferencesHandler(
   fetchReferenceProducts?: (data: string) => void,
 ) {
   return (value: string) => {
-    const attribute = attributes?.find(
-      attribute => attribute.id === assignReferencesAttributeId,
-    );
+    const attribute = attributes?.find(attribute => attribute.id === assignReferencesAttributeId);
 
     if (!attribute) {
       return;
     }
 
-    if (
-      attribute.data.entityType === AttributeEntityTypeEnum.PAGE &&
-      fetchReferencePages
-    ) {
+    if (attribute.data.entityType === AttributeEntityTypeEnum.PAGE && fetchReferencePages) {
       fetchReferencePages(value);
     } else if (
       attribute.data?.entityType &&
-      [
-        AttributeEntityTypeEnum.PRODUCT,
-        AttributeEntityTypeEnum.PRODUCT_VARIANT,
-      ].includes(attribute.data.entityType) &&
+      [AttributeEntityTypeEnum.PRODUCT, AttributeEntityTypeEnum.PRODUCT_VARIANT].includes(
+        attribute.data.entityType,
+      ) &&
       fetchReferenceProducts
     ) {
       fetchReferenceProducts(value);
@@ -130,9 +116,7 @@ export function createFetchMoreReferencesHandler(
   fetchMoreReferencePages?: FetchMoreProps,
   fetchMoreReferenceProducts?: FetchMoreProps,
 ) {
-  const attribute = attributes?.find(
-    attribute => attribute.id === assignReferencesAttributeId,
-  );
+  const attribute = attributes?.find(attribute => attribute.id === assignReferencesAttributeId);
 
   if (!attribute) {
     return;
@@ -142,10 +126,9 @@ export function createFetchMoreReferencesHandler(
     return fetchMoreReferencePages;
   } else if (
     attribute.data?.entityType &&
-    [
-      AttributeEntityTypeEnum.PRODUCT,
-      AttributeEntityTypeEnum.PRODUCT_VARIANT,
-    ].includes(attribute.data.entityType)
+    [AttributeEntityTypeEnum.PRODUCT, AttributeEntityTypeEnum.PRODUCT_VARIANT].includes(
+      attribute.data.entityType,
+    )
   ) {
     return fetchMoreReferenceProducts;
   }
@@ -188,10 +171,7 @@ export function createAttributeValueReorderHandler(
   return (attributeId: string, reorder: ReorderEvent) => {
     triggerChange();
 
-    const attribute = attributes.find(
-      attribute => attribute.id === attributeId,
-    );
-
+    const attribute = attributes.find(attribute => attribute.id === attributeId);
     const reorderedValues = move(
       attribute?.value?.[reorder.oldIndex] ?? "",
       attribute?.value ?? [],
@@ -203,10 +183,7 @@ export function createAttributeValueReorderHandler(
   };
 }
 
-function getFileInput(
-  attribute: AttributeInput,
-  updatedFileAttributes: AttributeValueInput[],
-) {
+function getFileInput(attribute: AttributeInput, updatedFileAttributes: AttributeValueInput[]) {
   const updatedFileAttribute = updatedFileAttributes.find(
     attributeWithNewFile => attribute.id === attributeWithNewFile.id,
   );
@@ -218,6 +195,7 @@ function getFileInput(
       contentType: updatedFileAttribute.contentType,
     };
   }
+
   return {
     file: attribute.data.selectedValues?.[0]?.file?.url,
     contentType: attribute.data.selectedValues?.[0]?.file?.contentType,
@@ -228,16 +206,15 @@ function getFileInput(
 function getBooleanInput(attribute: AttributeInput) {
   return {
     id: attribute.id,
-    boolean: JSON.parse(attribute.value[0] ?? "false"),
+    boolean: attribute.value[0] ? JSON.parse(attribute.value[0]) : null,
   };
 }
 
 function getAttributesMap(attributes: AttributeInput[] | null) {
   if (attributes && attributes?.length !== 0) {
-    return new Map(
-      attributes.map(attribute => [attribute.id, attribute.value]),
-    );
+    return new Map(attributes.map(attribute => [attribute.id, attribute.value]));
   }
+
   return new Map();
 }
 
@@ -256,40 +233,51 @@ export const prepareAttributesInput = ({
 
   return attributes.reduce((attrInput: AttributeValueInput[], attr) => {
     const prevAttrValue = prevAttributesMap.get(attr.id);
-    if (isEqual(attr.value, prevAttrValue)) {
+
+    if (isEqual(attr.value, prevAttrValue) && !attr.data.isRequired) {
       return attrInput;
     }
 
     const inputType = attr.data.inputType;
+
     if (inputType === AttributeInputTypeEnum.FILE) {
       const fileInput = getFileInput(attr, updatedFileAttributes);
-      if (fileInput.file) {
+
+      if (fileInput.file || attr.data.isRequired) {
         attrInput.push(fileInput);
       }
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.BOOLEAN) {
       const booleanInput = getBooleanInput(attr);
+
       // previous comparison doesn't work because value was string
-      if (isEqual([booleanInput.boolean], prevAttrValue)) {
+      if (isEqual([booleanInput.boolean], prevAttrValue) && !attr.data.isRequired) {
         return attrInput;
       }
 
       attrInput.push(booleanInput);
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.PLAIN_TEXT) {
       attrInput.push({
         id: attr.id,
         plainText: attr.value[0],
       });
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.RICH_TEXT) {
       attrInput.push({
         id: attr.id,
         richText: attr.value[0],
       });
+
       return attrInput;
     }
 
@@ -298,22 +286,28 @@ export const prepareAttributesInput = ({
         id: attr.id,
         references: attr.value,
       });
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.DATE) {
       attrInput.push({
         id: attr.id,
         date: attr.value[0],
       });
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.DATE_TIME) {
       attrInput.push({
         id: attr.id,
         dateTime: attr.value[0],
       });
+
       return attrInput;
     }
+
     if (inputType === AttributeInputTypeEnum.SWATCH) {
       attrInput.push({
         id: attr.id,
@@ -321,6 +315,18 @@ export const prepareAttributesInput = ({
           value: attr.value[0] ?? "",
         },
       });
+
+      return attrInput;
+    }
+
+    if (inputType === AttributeInputTypeEnum.NUMERIC) {
+      const isEmpty = attr.value[0] === undefined || attr.value[0] === null;
+
+      attrInput.push({
+        id: attr.id,
+        values: isEmpty ? [] : attr.value,
+      });
+
       return attrInput;
     }
 
@@ -335,16 +341,13 @@ export const prepareAttributesInput = ({
 
 export const handleUploadMultipleFiles = async (
   attributesWithNewFileValue: FormsetData<null, File>,
-  uploadFile: (
-    variables: FileUploadMutationVariables,
-  ) => Promise<FetchResult<FileUploadMutation>>,
+  uploadFile: (variables: FileUploadMutationVariables) => Promise<FetchResult<FileUploadMutation>>,
 ) =>
   Promise.all(
-    getFileValuesToUploadFromAttributes(attributesWithNewFileValue).map(
-      fileAttribute =>
-        uploadFile({
-          file: fileAttribute.value,
-        }),
+    getFileValuesToUploadFromAttributes(attributesWithNewFileValue).map(fileAttribute =>
+      uploadFile({
+        file: fileAttribute.value,
+      }),
     ),
   );
 
@@ -353,9 +356,7 @@ export const handleDeleteMultipleAttributeValues = async (
   attributes: Array<
     | PageSelectedAttributeFragment
     | ProductFragment["attributes"][0]
-    | NonNullable<
-        ProductVariantDetailsQuery["productVariant"]
-      >["nonSelectionAttributes"][0]
+    | NonNullable<ProductVariantDetailsQuery["productVariant"]>["nonSelectionAttributes"][0]
   >,
   deleteAttributeValue: (
     variables: AttributeValueDeleteMutationVariables,
@@ -363,10 +364,7 @@ export const handleDeleteMultipleAttributeValues = async (
 ) =>
   Promise.all(
     attributes.map(existingAttribute => {
-      const fileValueUnused = isFileValueUnused(
-        attributesWithNewFileValue,
-        existingAttribute,
-      );
+      const fileValueUnused = isFileValueUnused(attributesWithNewFileValue, existingAttribute);
 
       if (fileValueUnused) {
         return deleteAttributeValue({
@@ -374,6 +372,7 @@ export const handleDeleteMultipleAttributeValues = async (
           firstValues: 20,
         });
       }
+
       return undefined;
     }),
   );

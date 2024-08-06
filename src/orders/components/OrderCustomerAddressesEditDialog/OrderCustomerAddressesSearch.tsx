@@ -1,22 +1,12 @@
 // @ts-strict-ignore
-import {
-  ConfirmButton,
-  ConfirmButtonTransitionState,
-} from "@dashboard/components/ConfirmButton";
-import VerticalSpacer from "@dashboard/components/VerticalSpacer";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
+import { DashboardModal } from "@dashboard/components/Modal";
 import CustomerAddressChoiceCard from "@dashboard/customers/components/CustomerAddressChoiceCard";
 import { AddressFragment, AddressTypeEnum } from "@dashboard/graphql";
 import { FormChange } from "@dashboard/hooks/useForm";
 import { buttonMessages } from "@dashboard/intl";
 import { getById } from "@dashboard/misc";
-import {
-  Checkbox,
-  DialogActions,
-  DialogContent,
-  FormControlLabel,
-  InputAdornment,
-  TextField,
-} from "@material-ui/core";
+import { Checkbox, FormControlLabel, InputAdornment, TextField } from "@material-ui/core";
 import { Button, SearchIcon } from "@saleor/macaw-ui";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -38,9 +28,7 @@ export interface OrderCustomerAddressesSearchProps {
   exitSearch: () => any;
 }
 
-const OrderCustomerAddressesSearch: React.FC<
-  OrderCustomerAddressesSearchProps
-> = props => {
+const OrderCustomerAddressesSearch: React.FC<OrderCustomerAddressesSearchProps> = props => {
   const {
     type,
     cloneAddress,
@@ -53,33 +41,25 @@ const OrderCustomerAddressesSearch: React.FC<
     onChangeCustomerBillingAddress,
     exitSearch,
   } = props;
-
   const intl = useIntl();
   const classes = useStyles(props);
-
-  const initialAddress = customerAddresses.find(
-    getById(selectedCustomerAddressId),
-  );
-
+  const initialAddress = customerAddresses.find(getById(selectedCustomerAddressId));
   const [query, setQuery] = React.useState("");
-  const [temporarySelectedAddress, setTemporarySelectedAddress] =
-    React.useState(initialAddress);
-
+  const [temporarySelectedAddress, setTemporarySelectedAddress] = React.useState(initialAddress);
   const handleSelect = () => {
     if (type === AddressTypeEnum.SHIPPING) {
       onChangeCustomerShippingAddress(temporarySelectedAddress);
     } else {
       onChangeCustomerBillingAddress(temporarySelectedAddress);
     }
+
     if (openFromCustomerChange) {
       exitSearch();
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
-
   const filteredCustomerAddresses = customerAddresses.filter(address => {
     const parsedAddress = stringifyAddress(address);
 
@@ -88,64 +68,63 @@ const OrderCustomerAddressesSearch: React.FC<
 
   return (
     <>
-      <DialogContent className={classes.dialogContent}>
-        {intl.formatMessage(messages.searchInfo)}
-        <VerticalSpacer spacing={2} />
-        <TextField
-          value={query}
-          variant="outlined"
-          onChange={handleChange}
-          placeholder={"Search addresses"}
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          inputProps={{ className: classes.searchInput }}
+      {intl.formatMessage(messages.searchInfo)}
+
+      <TextField
+        value={query}
+        variant="outlined"
+        onChange={handleChange}
+        placeholder={"Search addresses"}
+        fullWidth
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        inputProps={{ className: classes.searchInput }}
+      />
+
+      <div className={classes.scrollableWrapper}>
+        {filteredCustomerAddresses.length === 0
+          ? intl.formatMessage(messages.noResultsFound)
+          : filteredCustomerAddresses?.map(address => (
+              <React.Fragment key={address.id}>
+                <CustomerAddressChoiceCard
+                  selected={address.id === temporarySelectedAddress.id}
+                  onSelect={() => setTemporarySelectedAddress(address)}
+                  address={address}
+                />
+              </React.Fragment>
+            ))}
+      </div>
+
+      {!openFromCustomerChange && filteredCustomerAddresses.length !== 0 && (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={cloneAddress}
+              name="cloneAddress"
+              onChange={() =>
+                formChange({
+                  target: {
+                    name: "cloneAddress",
+                    value: !cloneAddress,
+                  },
+                })
+              }
+            />
+          }
+          label={intl.formatMessage(
+            type === AddressTypeEnum.SHIPPING
+              ? messages.billingSameAsShipping
+              : messages.shippingSameAsBilling,
+          )}
         />
-        <VerticalSpacer spacing={2} />
-        <div className={classes.scrollableWrapper}>
-          {filteredCustomerAddresses.length === 0
-            ? intl.formatMessage(messages.noResultsFound)
-            : filteredCustomerAddresses?.map(address => (
-                <React.Fragment key={address.id}>
-                  <CustomerAddressChoiceCard
-                    selected={address.id === temporarySelectedAddress.id}
-                    onSelect={() => setTemporarySelectedAddress(address)}
-                    address={address}
-                  />
-                  <VerticalSpacer spacing={2} />
-                </React.Fragment>
-              ))}
-        </div>
-        {!openFromCustomerChange && filteredCustomerAddresses.length !== 0 && (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={cloneAddress}
-                name="cloneAddress"
-                onChange={() =>
-                  formChange({
-                    target: {
-                      name: "cloneAddress",
-                      value: !cloneAddress,
-                    },
-                  })
-                }
-              />
-            }
-            label={intl.formatMessage(
-              type === AddressTypeEnum.SHIPPING
-                ? messages.billingSameAsShipping
-                : messages.shippingSameAsBilling,
-            )}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
+      )}
+
+      <DashboardModal.Actions>
         <Button onClick={exitSearch} variant="secondary">
           <FormattedMessage {...buttonMessages.cancel} />
         </Button>
@@ -157,7 +136,7 @@ const OrderCustomerAddressesSearch: React.FC<
         >
           <FormattedMessage {...buttonMessages.select} />
         </ConfirmButton>
-      </DialogActions>
+      </DashboardModal.Actions>
     </>
   );
 };

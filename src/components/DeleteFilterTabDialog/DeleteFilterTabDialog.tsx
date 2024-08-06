@@ -1,6 +1,5 @@
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { buttonMessages } from "@dashboard/intl";
-import { DialogContentText } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -37,17 +36,16 @@ const DeleteFilterTabDialog: React.FC<DeleteFilterTabDialogProps> = ({
       })}
       variant="delete"
     >
-      <DialogContentText>
-        <FormattedMessage
-          id="U5CH0u"
-          defaultMessage="Are you sure you want to delete {name} preset?"
-          values={{
-            name: <strong>{tabName}</strong>,
-          }}
-        />
-      </DialogContentText>
+      <FormattedMessage
+        id="U5CH0u"
+        defaultMessage="Are you sure you want to delete {name} preset?"
+        values={{
+          name: <strong>{tabName}</strong>,
+        }}
+      />
     </ActionDialog>
   );
 };
+
 DeleteFilterTabDialog.displayName = "DeleteFilterTabDialog";
 export default DeleteFilterTabDialog;

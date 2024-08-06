@@ -23,7 +23,6 @@ export const AppPermissionsDialogConfirmation = ({
   const isPermissionsAdded = addedPermissions.length > 0;
   const isPermissionsRemoved = removedPermissions.length > 0;
   const intl = useIntl();
-
   const { mapCodesToNames } = useGetAvailableAppPermissions();
 
   return (
@@ -33,7 +32,7 @@ export const AppPermissionsDialogConfirmation = ({
       </Text>
       {isPermissionsRemoved && (
         <Box marginBottom={4}>
-          <Text variant={"bodyStrong"}>
+          <Text size={4} fontWeight="bold">
             {intl.formatMessage(messages.removePermissions)}
           </Text>
           {mapCodesToNames(removedPermissions).map(perm => (
@@ -45,7 +44,7 @@ export const AppPermissionsDialogConfirmation = ({
       )}
       {isPermissionsAdded && (
         <Box>
-          <Text variant={"bodyStrong"}>
+          <Text size={4} fontWeight="bold">
             {intl.formatMessage(messages.addPermissions)}
           </Text>
           {mapCodesToNames(addedPermissions).map(perm => (

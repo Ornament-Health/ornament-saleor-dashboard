@@ -11,12 +11,7 @@ interface ContentProps {
   isEnabled: boolean;
 }
 
-export const Content = ({
-  flagName,
-  flagSlug,
-  component,
-  isEnabled,
-}: ContentProps) => {
+export const Content = ({ flagName, flagSlug, component, isEnabled }: ContentProps) => {
   const TabComponent = component;
 
   return (
@@ -31,10 +26,12 @@ export const Content = ({
       padding={3}
     >
       <Box display="flex" justifyContent="space-between">
-        <Text variant="heading">{flagName}</Text>
+        <Text size={5} fontWeight="bold">
+          {flagName}
+        </Text>
         <ToggleButton isEnabled={isEnabled} flagSlug={flagSlug} />
       </Box>
-      <Box fontSize="bodyMedium" paddingBottom={12}>
+      <Box size={4} paddingBottom={12}>
         <TabComponent />
       </Box>
     </Box>

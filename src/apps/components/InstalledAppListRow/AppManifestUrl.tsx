@@ -9,9 +9,7 @@ interface AppManifestUrlProps {
   manifestUrl: string;
 }
 
-export const AppManifestUrl: React.FC<AppManifestUrlProps> = ({
-  manifestUrl,
-}) => {
+export const AppManifestUrl: React.FC<AppManifestUrlProps> = ({ manifestUrl }) => {
   const [copied, setCopied] = useState(false);
 
   return (
@@ -32,7 +30,7 @@ export const AppManifestUrl: React.FC<AppManifestUrlProps> = ({
       <Tooltip>
         <Tooltip.Trigger>
           <Box __maxWidth="300px" className="ellipsis">
-            <Text variant="caption" color="default2">
+            <Text size={2} color="default2">
               {new URL(manifestUrl).host}
             </Text>
           </Box>

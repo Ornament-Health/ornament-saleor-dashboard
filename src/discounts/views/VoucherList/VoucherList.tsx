@@ -4,10 +4,7 @@ import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import DeleteFilterTabDialog from "@dashboard/components/DeleteFilterTabDialog";
 import SaveFilterTabDialog from "@dashboard/components/SaveFilterTabDialog";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
-import {
-  useVoucherBulkDeleteMutation,
-  useVoucherListQuery,
-} from "@dashboard/graphql";
+import { useVoucherBulkDeleteMutation, useVoucherListQuery } from "@dashboard/graphql";
 import { useFilterPresets } from "@dashboard/hooks/useFilterPresets";
 import useListSettings from "@dashboard/hooks/useListSettings";
 import useNavigator from "@dashboard/hooks/useNavigator";
@@ -25,23 +22,13 @@ import createFilterHandlers from "@dashboard/utils/handlers/filterHandlers";
 import createSortHandler from "@dashboard/utils/handlers/sortHandler";
 import { mapEdgesToItems, mapNodeToChoice } from "@dashboard/utils/maps";
 import { getSortParams } from "@dashboard/utils/sort";
-import { DialogContentText } from "@material-ui/core";
 import isEqual from "lodash/isEqual";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import VoucherListPage from "../../components/VoucherListPage";
-import {
-  voucherListUrl,
-  VoucherListUrlDialog,
-  VoucherListUrlQueryParams,
-} from "../../urls";
-import {
-  getFilterOpts,
-  getFilterQueryParam,
-  getFilterVariables,
-  storageUtils,
-} from "./filters";
+import { voucherListUrl, VoucherListUrlDialog, VoucherListUrlQueryParams } from "../../urls";
+import { getFilterOpts, getFilterQueryParam, getFilterVariables, storageUtils } from "./filters";
 import { canBeSorted, DEFAULT_SORT_KEY, getSortQueryVariables } from "./sort";
 
 interface VoucherListProps {
@@ -51,28 +38,20 @@ interface VoucherListProps {
 export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
-
-  const { updateListSettings, settings } = useListSettings(
-    ListViews.VOUCHER_LIST,
-  );
+  const { updateListSettings, settings } = useListSettings(ListViews.VOUCHER_LIST);
 
   usePaginationReset(voucherListUrl, params, settings.rowNumber);
 
   const intl = useIntl();
-
   const { availableChannels } = useAppChannel(false);
-  const selectedChannel = availableChannels.find(
-    channel => channel.slug === params.channel,
-  );
+  const selectedChannel = availableChannels.find(channel => channel.slug === params.channel);
   const channelOpts = availableChannels
     ? mapNodeToChoice(availableChannels, channel => channel.slug)
     : null;
-
   const [openModal, closeModal] = createDialogActionHandlers<
     VoucherListUrlDialog,
     VoucherListUrlQueryParams
   >(navigate, voucherListUrl, params);
-
   const paginationState = createPaginationState(settings.rowNumber, params);
   const queryVariables = React.useMemo(
     () => ({
@@ -83,18 +62,16 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     }),
     [params, settings.rowNumber],
   );
-  const { data, loading, refetch } = useVoucherListQuery({
+  const { data, refetch } = useVoucherListQuery({
     displayLoader: true,
     variables: queryVariables,
   });
-
   const {
     clearRowSelection,
     selectedRowIds,
     setSelectedRowIds,
     setClearDatagridRowSelectionCallback,
   } = useRowSelection(params);
-
   const {
     hasPresetsChanged,
     onPresetChange,
@@ -111,16 +88,14 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     storageUtils,
     reset: clearRowSelection,
   });
-
-  const [changeFilters, resetFilters, handleSearchChange] =
-    createFilterHandlers({
-      cleanupFn: clearRowSelection,
-      createUrl: voucherListUrl,
-      getFilterQueryParam,
-      navigate,
-      params,
-      keepActiveTab: true,
-    });
+  const [changeFilters, resetFilters, handleSearchChange] = createFilterHandlers({
+    cleanupFn: clearRowSelection,
+    createUrl: voucherListUrl,
+    getFilterQueryParam,
+    navigate,
+    params,
+    keepActiveTab: true,
+  });
 
   useEffect(() => {
     if (!canBeSorted(params.sort, !!selectedChannel)) {
@@ -138,22 +113,19 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     paginationState,
     queryString: params,
   });
-
-  const [voucherBulkDelete, voucherBulkDeleteOpts] =
-    useVoucherBulkDeleteMutation({
-      onCompleted: data => {
-        if (data.voucherBulkDelete.errors.length === 0) {
-          notify({
-            status: "success",
-            text: intl.formatMessage(commonMessages.savedChanges),
-          });
-          clearRowSelection();
-          closeModal();
-          refetch();
-        }
-      },
-    });
-
+  const [voucherBulkDelete, voucherBulkDeleteOpts] = useVoucherBulkDeleteMutation({
+    onCompleted: data => {
+      if (data.voucherBulkDelete.errors.length === 0) {
+        notify({
+          status: "success",
+          text: intl.formatMessage(commonMessages.savedChanges),
+        });
+        clearRowSelection();
+        closeModal();
+        refetch();
+      }
+    },
+  });
   const onVoucherBulkDelete = async () => {
     await voucherBulkDelete({
       variables: {
@@ -162,11 +134,8 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     });
     clearRowSelection();
   };
-
   const handleSort = createSortHandler(navigate, voucherListUrl, params);
-
   const vouchers = mapEdgesToItems(data?.vouchers) ?? [];
-
   const handleSelectVouchersIds = useCallback(
     (rows: number[], clearSelection: () => void) => {
       if (!vouchers) {
@@ -182,12 +151,7 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
 
       setClearDatagridRowSelectionCallback(clearSelection);
     },
-    [
-      vouchers,
-      selectedRowIds,
-      setClearDatagridRowSelectionCallback,
-      setSelectedRowIds,
-    ],
+    [vouchers, selectedRowIds, setClearDatagridRowSelectionCallback, setSelectedRowIds],
   );
 
   return (
@@ -215,7 +179,7 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
         filterPresets={presets.map(tab => tab.name)}
         settings={settings}
         vouchers={vouchers}
-        disabled={loading}
+        disabled={!data}
         onUpdateListSettings={updateListSettings}
         onSort={handleSort}
         sort={getSortParams(params)}
@@ -233,17 +197,15 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
         })}
         variant="delete"
       >
-        <DialogContentText>
-          <FormattedMessage
-            id="O9QPe1"
-            defaultMessage="{counter,plural,one{Are you sure you want to delete this voucher?} other{Are you sure you want to delete {displayQuantity} vouchers?}}"
-            description="dialog content"
-            values={{
-              counter: selectedRowIds.length,
-              displayQuantity: <strong>{selectedRowIds.length}</strong>,
-            }}
-          />
-        </DialogContentText>
+        <FormattedMessage
+          id="O9QPe1"
+          defaultMessage="{counter,plural,one{Are you sure you want to delete this voucher?} other{Are you sure you want to delete {displayQuantity} vouchers?}}"
+          description="dialog content"
+          values={{
+            counter: selectedRowIds.length,
+            displayQuantity: <strong>{selectedRowIds.length}</strong>,
+          }}
+        />
       </ActionDialog>
       <SaveFilterTabDialog
         open={params.action === "save-search"}

@@ -22,10 +22,7 @@ export const MetadataCard: React.FC<MetadataCardProps> = ({
   readonly = false,
 }) => {
   const intl = useIntl();
-  const [expanded, setExpanded] = useState(
-    readonly ? "metadata-accordion" : undefined,
-  );
-
+  const [expanded, setExpanded] = useState(readonly ? "metadata-accordion" : undefined);
   const title = isPrivate
     ? {
         id: "ETHnjq",
@@ -39,23 +36,18 @@ export const MetadataCard: React.FC<MetadataCardProps> = ({
       };
 
   return (
-    <DashboardCard
-      paddingTop={6}
-      data-test-id="metadata-editor"
-      data-test-is-private={isPrivate}
-    >
+    <DashboardCard paddingTop={6} data-test-id="metadata-editor" data-test-is-private={isPrivate}>
       <DashboardCard.Content>
         <Accordion value={expanded} onValueChange={setExpanded}>
-          <Accordion.Item
-            data-test-id="metadata-item"
-            value="metadata-accordion"
-          >
+          <Accordion.Item data-test-id="metadata-item" value="metadata-accordion">
             <Accordion.Trigger>
               <Box display="flex" flexDirection="column" gap={2}>
-                <Text variant="heading">{intl.formatMessage(title)}</Text>
+                <Text size={5} fontWeight="bold">
+                  {intl.formatMessage(title)}
+                </Text>
 
                 {data?.length > 0 && (
-                  <Text variant="caption" color="default2">
+                  <Text size={2} color="default2">
                     <FormattedMessage
                       id="2+v1wX"
                       defaultMessage="{number,plural,one{{number} string} other{{number} strings}}"
@@ -68,7 +60,7 @@ export const MetadataCard: React.FC<MetadataCardProps> = ({
                 )}
 
                 {data?.length === 0 && (
-                  <Text variant="caption" color="default2">
+                  <Text size={2} color="default2">
                     <FormattedMessage
                       id="kAPaN6"
                       defaultMessage="Empty"
@@ -85,11 +77,7 @@ export const MetadataCard: React.FC<MetadataCardProps> = ({
                 <Skeleton />
               ) : (
                 <>
-                  <MetadataCardTable
-                    readonly={readonly}
-                    data={data}
-                    onChange={onChange}
-                  />
+                  <MetadataCardTable readonly={readonly} data={data} onChange={onChange} />
 
                   {!readonly && (
                     <Button

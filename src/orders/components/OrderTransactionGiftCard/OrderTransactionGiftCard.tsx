@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import Skeleton from "@dashboard/components/Skeleton";
+
 import {
   OrderDetailsFragment,
   OrderGiftCardFragment,
@@ -7,6 +7,7 @@ import {
 } from "@dashboard/graphql";
 import { FakeTransaction, TransactionFakeEvent } from "@dashboard/orders/types";
 import { prepareMoney } from "@dashboard/orders/utils/data";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -19,10 +20,7 @@ interface OrderTransactionGiftCardProps {
   giftCard: OrderGiftCardFragment;
 }
 
-const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({
-  order,
-  giftCard,
-}) => {
+const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({ order, giftCard }) => {
   const intl = useIntl();
 
   if (!giftCard || !order) {
@@ -37,7 +35,6 @@ const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({
   }
 
   const currency = usedInOrderEvents[0].balance.currentBalance.currency;
-
   const fakeEvents = usedInOrderEvents.map<TransactionFakeEvent>(event => ({
     message: intl.formatMessage(transactionGiftCardMessages.usedInOrder),
     id: event.id,
@@ -45,9 +42,7 @@ const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({
     type: TransactionEventTypeEnum.CHARGE_SUCCESS,
     createdAt: event.date,
     amount: {
-      amount:
-        event.balance.oldCurrentBalance.amount -
-        event.balance.currentBalance.amount,
+      amount: event.balance.oldCurrentBalance.amount - event.balance.currentBalance.amount,
       currency: event.balance.currentBalance.currency,
       __typename: "Money",
     },
@@ -59,7 +54,6 @@ const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({
     externalUrl: null,
     __typename: "TransactionFakeEvent",
   }));
-
   const fakeTransaction: FakeTransaction = {
     id: giftCard.id,
     name: intl.formatMessage(transactionGiftCardMessages.giftCard, {
@@ -69,6 +63,7 @@ const OrderTransactionGiftCard: React.FC<OrderTransactionGiftCardProps> = ({
     pspReference: giftCard.last4CodeChars,
     externalUrl: null,
     chargedAmount: prepareMoney(amount, currency),
+    createdAt: fakeEvents[0].createdAt,
     // Fake amounts
     authorizedAmount: prepareMoney(0, currency),
     authorizePendingAmount: prepareMoney(0, currency),

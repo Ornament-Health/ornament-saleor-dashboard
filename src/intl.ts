@@ -120,8 +120,7 @@ export const commonMessages = defineMessages({
   },
   sessionExpired: {
     id: "Fvvgoi",
-    defaultMessage:
-      "Your session has expired. Please log in again to continue.",
+    defaultMessage: "Your session has expired. Please log in again to continue.",
   },
   somethingWentWrong: {
     id: "LVa5ew",
@@ -411,6 +410,14 @@ export const buttonMessages = defineMessages({
     id: "rbrahO",
     defaultMessage: "Close",
   },
+  proceed: {
+    id: "VNX4fn",
+    defaultMessage: "Proceed",
+  },
+  noPermission: {
+    id: "ORQvOg",
+    defaultMessage: "You don't have permission to perform this action",
+  },
 });
 
 export const sectionNames = defineMessages({
@@ -695,7 +702,5 @@ export const paymentStatusMessages = defineMessages({
 });
 
 export function translateBoolean(value: boolean, intl: IntlShape): string {
-  return value
-    ? intl.formatMessage(commonMessages.yes)
-    : intl.formatMessage(commonMessages.no);
+  return value ? intl.formatMessage(commonMessages.yes) : intl.formatMessage(commonMessages.no);
 }

@@ -2,28 +2,21 @@
 import { useUser } from "@dashboard/auth";
 import { Button } from "@dashboard/components/Button";
 import { getUserInitials } from "@dashboard/misc";
-import { CardContent, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui-next";
+import { sprinkles, vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
+import { DashboardCard } from "../Card";
 import { UserAvatar } from "../UserAvatar";
 
 const useStyles = makeStyles(
   theme => ({
-    avatar: {
-      left: -19,
-      position: "absolute",
-      top: 20,
-    },
     button: {
       padding: `7px`,
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
-    },
-    cardActionsExpanded: {
-      maxHeight: theme.spacing(6),
     },
     input: {
       "& > div": {
@@ -38,7 +31,6 @@ const useStyles = makeStyles(
     },
     noteRoot: {
       marginBottom: theme.spacing(3),
-      // position: "absolute",
       top: 0,
       left: -19,
       right: 0,
@@ -73,7 +65,6 @@ interface TimelineAddNoteProps {
 
 export const Timeline: React.FC<TimelineProps> = props => {
   const { children } = props;
-
   const classes = useStyles(props);
 
   return <div className={classes.root}>{children}</div>;
@@ -83,9 +74,7 @@ export const TimelineAddNote: React.FC<TimelineAddNoteProps> = props => {
   const { message, onChange, onSubmit, reset, disabled } = props;
   const classes = useStyles(props);
   const { user } = useUser();
-
   const intl = useIntl();
-
   const submit = e => {
     reset();
     onSubmit(e);
@@ -93,11 +82,15 @@ export const TimelineAddNote: React.FC<TimelineAddNoteProps> = props => {
 
   return (
     <div className={classes.noteRoot}>
-      <CardContent className={classes.noteTitle}>
+      <DashboardCard.Content paddingX={0}>
         <UserAvatar
           url={user?.avatar?.url}
           initials={getUserInitials(user)}
-          className={classes.avatar}
+          className={sprinkles({
+            position: "absolute",
+            top: 0,
+          })}
+          style={{ left: -19 }}
         />
         <TextField
           disabled={disabled}
@@ -113,11 +106,7 @@ export const TimelineAddNote: React.FC<TimelineAddNoteProps> = props => {
           multiline
           InputProps={{
             endAdornment: (
-              <Button
-                className={classes.button}
-                disabled={disabled}
-                onClick={e => submit(e)}
-              >
+              <Button className={classes.button} disabled={disabled} onClick={e => submit(e)}>
                 <FormattedMessage
                   id="v/1VA6"
                   defaultMessage="Send"
@@ -128,7 +117,7 @@ export const TimelineAddNote: React.FC<TimelineAddNoteProps> = props => {
           }}
           variant="outlined"
         />
-      </CardContent>
+      </DashboardCard.Content>
     </div>
   );
 };

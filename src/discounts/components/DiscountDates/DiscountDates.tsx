@@ -1,10 +1,7 @@
 import { DashboardCard } from "@dashboard/components/Card";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
-import {
-  CommonError,
-  getCommonFormFieldErrorMessage,
-} from "@dashboard/utils/errors/common";
+import { CommonError, getCommonFormFieldErrorMessage } from "@dashboard/utils/errors/common";
 import { Box, Checkbox, Input, Text } from "@saleor/macaw-ui-next";
 import React, { ChangeEvent } from "react";
 import { FieldError } from "react-hook-form";
@@ -36,18 +33,19 @@ const DiscountDates = <ErrorCode,>({
   onBlur,
 }: DiscountDatesProps<ErrorCode>) => {
   const intl = useIntl();
-
   const apiErrors = getFormErrors(["startDate", "endDate"], errors);
 
   return (
     <DashboardCard data-test-id="active-dates-section">
-      <DashboardCard.Title>
-        <FormattedMessage
-          id="zKOGkU"
-          defaultMessage="Active Dates"
-          description="time during discount is active, header"
-        />
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          <FormattedMessage
+            id="zKOGkU"
+            defaultMessage="Active Dates"
+            description="time during discount is active, header"
+          />
+        </DashboardCard.Title>
+      </DashboardCard.Header>
 
       <DashboardCard.Content>
         <Box display="flex" gap={4}>
@@ -71,10 +69,7 @@ const DiscountDates = <ErrorCode,>({
             data-test-id="start-hour-input"
             disabled={disabled}
             error={!!apiErrors.startDate}
-            helperText={getCommonFormFieldErrorMessage(
-              apiErrors.startDate,
-              intl,
-            )}
+            helperText={getCommonFormFieldErrorMessage(apiErrors.startDate, intl)}
             name="startTime"
             onChange={onChange}
             onBlur={onBlur}
@@ -114,10 +109,7 @@ const DiscountDates = <ErrorCode,>({
               data-test-id="end-date-input"
               disabled={disabled}
               error={!!apiErrors.endDate}
-              helperText={getCommonFormFieldErrorMessage(
-                apiErrors.endDate,
-                intl,
-              )}
+              helperText={getCommonFormFieldErrorMessage(apiErrors.endDate, intl)}
               name="endDate"
               onChange={onChange}
               onBlur={onBlur}
@@ -130,10 +122,7 @@ const DiscountDates = <ErrorCode,>({
               data-test-id="end-hour-input"
               disabled={disabled}
               error={!!apiErrors.endDate}
-              helperText={getCommonFormFieldErrorMessage(
-                apiErrors.endDate,
-                intl,
-              )}
+              helperText={getCommonFormFieldErrorMessage(apiErrors.endDate, intl)}
               name="endTime"
               onChange={onChange}
               onBlur={onBlur}
@@ -148,4 +137,5 @@ const DiscountDates = <ErrorCode,>({
     </DashboardCard>
   );
 };
+
 export default DiscountDates;

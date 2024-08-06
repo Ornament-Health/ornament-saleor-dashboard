@@ -1,12 +1,10 @@
 // @ts-strict-ignore
-import {
-  ChannelUsabilityDataQuery,
-  OrderDetailsFragment,
-} from "@dashboard/graphql";
+import { ChannelUsabilityDataQuery, OrderDetailsFragment } from "@dashboard/graphql";
 import { Alert, AlertProps } from "@saleor/macaw-ui";
+import { Box } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
-import { MessageDescriptor, useIntl } from "react-intl";
+import { FormattedMessage, MessageDescriptor, useIntl } from "react-intl";
 
 import OrderAlerts from "../OrderAlerts";
 import { alertMessages } from "./messages";
@@ -18,7 +16,6 @@ const getAlerts = (
 ) => {
   const canDetermineShippingMethods =
     order?.shippingAddress?.country.code && !!order?.lines?.length;
-
   const isChannelInactive = order && !order.channel.isActive;
   const noProductsInChannel = channelUsabilityData?.products.totalCount === 0;
   const noShippingMethodsInChannel =
@@ -29,9 +26,11 @@ const getAlerts = (
   if (isChannelInactive) {
     alerts = [...alerts, alertMessages.inactiveChannel];
   }
+
   if (noProductsInChannel) {
     alerts = [...alerts, alertMessages.noProductsInChannel];
   }
+
   if (noShippingMethodsInChannel) {
     alerts = [...alerts, alertMessages.noShippingMethodsInChannel];
   }
@@ -48,7 +47,6 @@ const OrderDraftAlert: React.FC<OrderDraftAlertProps> = props => {
   const { order, channelUsabilityData, ...alertProps } = props;
   const classes = useAlertStyles();
   const intl = useIntl();
-
   const alerts = getAlerts(order, channelUsabilityData);
 
   if (!alerts.length) {
@@ -65,6 +63,18 @@ const OrderDraftAlert: React.FC<OrderDraftAlertProps> = props => {
       <OrderAlerts
         alerts={alerts}
         alertsHeader={intl.formatMessage(alertMessages.manyAlerts)}
+        values={{
+          country: order.shippingAddress.country.country,
+          configLink: (
+            <Box as="a" textDecoration="underline" href="/shipping" color="accent1" target="_blank">
+              <FormattedMessage
+                defaultMessage="shipping zones configuration"
+                id="T3cLGs"
+                description="alert link message"
+              />
+            </Box>
+          ),
+        }}
       />
     </Alert>
   );

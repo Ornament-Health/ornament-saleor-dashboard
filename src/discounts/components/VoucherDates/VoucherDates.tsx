@@ -1,11 +1,11 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
 import Grid from "@dashboard/components/Grid";
 import { DiscountErrorFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getDiscountErrorMessage from "@dashboard/utils/errors/discounts";
-import { Card, CardContent, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -18,26 +18,22 @@ interface VoucherDatesProps {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const VoucherDates = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}: VoucherDatesProps) => {
+const VoucherDates = ({ data, disabled, errors, onChange }: VoucherDatesProps) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["startDate", "endDate"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "YjcN9w",
-          defaultMessage: "Active Dates",
-          description: "time during voucher is active, header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "YjcN9w",
+            defaultMessage: "Active Dates",
+            description: "time during voucher is active, header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <Grid variant="uniform">
           <TextField
             disabled={disabled}
@@ -110,8 +106,9 @@ const VoucherDates = ({
             />
           </Grid>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 export default VoucherDates;

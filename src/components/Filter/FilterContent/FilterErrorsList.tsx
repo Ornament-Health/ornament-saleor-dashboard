@@ -1,8 +1,8 @@
 // @ts-strict-ignore
 import InlineAlert from "@dashboard/components/Alert/InlineAlert";
 import errorTracker from "@dashboard/services/errorTracking";
-import { Typography } from "@material-ui/core";
 import { alpha, makeStyles } from "@material-ui/core/styles";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -48,16 +48,15 @@ const FilterErrorsList: React.FC<FilterErrorsListProps> = ({
 }) => {
   const classes = useStyles({});
   const intl = useIntl();
-
   const getErrorMessage = (code: string) => {
     try {
-      return intl.formatMessage(
-        errorMessages?.[code] || validationMessages[code],
-        { dependencies: dependencies?.join() },
-      );
+      return intl.formatMessage(errorMessages?.[code] || validationMessages[code], {
+        dependencies: dependencies?.join(),
+      });
     } catch (e) {
       errorTracker.captureException(e as Error);
       console.warn("Translation missing for filter error code: ", code);
+
       return intl.formatMessage(validationMessages.UNKNOWN_ERROR);
     }
   };
@@ -73,9 +72,7 @@ const FilterErrorsList: React.FC<FilterErrorsListProps> = ({
           {errors.map(code => (
             <div className={classes.itemContainer} key={code}>
               <div className={classes.dot} />
-              <Typography className={classes.listItemTitle}>
-                {getErrorMessage(code)}
-              </Typography>
+              <Text className={classes.listItemTitle}>{getErrorMessage(code)}</Text>
             </div>
           ))}
         </InlineAlert>

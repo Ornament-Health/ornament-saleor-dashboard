@@ -1,5 +1,4 @@
-import Skeleton from "@dashboard/components/Skeleton";
-import { Box, BoxProps, Text } from "@saleor/macaw-ui-next";
+import { Box, BoxProps, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -10,13 +9,8 @@ type AboutCardProps = {
   loading: boolean;
 } & BoxProps;
 
-export const AboutCard: React.FC<AboutCardProps> = ({
-  aboutApp,
-  loading,
-  ...boxProps
-}) => {
+export const AboutCard: React.FC<AboutCardProps> = ({ aboutApp, loading, ...boxProps }) => {
   const intl = useIntl();
-
   const renderContent = () => {
     if (loading) {
       return <Skeleton />;
@@ -35,7 +29,7 @@ export const AboutCard: React.FC<AboutCardProps> = ({
 
   return (
     <Box {...boxProps}>
-      <Text variant={"heading"} as={"h2"} marginBottom={4}>
+      <Text size={5} fontWeight="bold" as={"h2"} marginBottom={4}>
         {intl.formatMessage(messages.aboutAppTitle)}
       </Text>
       <Box>{renderContent()}</Box>

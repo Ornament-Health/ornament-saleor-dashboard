@@ -17,17 +17,16 @@ export const useStyles = makeStyles(
     taxStrategySection: {
       display: "flex",
       alignItems: "center",
+      // width: "100%",
       gap: theme.spacing(2),
       "&>:first-child": {
         paddingTop: "2rem",
       },
     },
-    singleSelectField: {
-      width: "275px",
-    },
     singleSelectWrapper: {
       display: "flex",
       flexDirection: "column",
+      flex: 1,
     },
     hint: {
       marginLeft: 0,

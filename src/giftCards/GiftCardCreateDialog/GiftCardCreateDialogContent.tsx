@@ -1,49 +1,33 @@
 // @ts-strict-ignore
-import {
-  GiftCardCreateInput,
-  useChannelCurrenciesQuery,
-  useGiftCardCreateMutation,
-} from "@dashboard/graphql";
+import { DASHBOARD_MODAL_WIDTH, DashboardModal } from "@dashboard/components/Modal";
+import { GiftCardCreateInput, useGiftCardCreateMutation } from "@dashboard/graphql";
 import useCurrentDate from "@dashboard/hooks/useCurrentDate";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import { DialogProps } from "@dashboard/types";
-import { DialogTitle } from "@material-ui/core";
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
 
-import ContentWithProgress from "./ContentWithProgress";
 import GiftCardCreateDialogCodeContent from "./GiftCardCreateDialogCodeContent";
-import GiftCardCreateDialogForm, {
-  GiftCardCreateFormData,
-} from "./GiftCardCreateDialogForm";
+import GiftCardCreateDialogForm, { GiftCardCreateFormData } from "./GiftCardCreateDialogForm";
 import { giftCardCreateMessages as messages } from "./messages";
 import { GiftCardCreateFormCustomer } from "./types";
-import {
-  getGiftCardCreateOnCompletedMessage,
-  getGiftCardExpiryInputData,
-} from "./utils";
+import { getGiftCardCreateOnCompletedMessage, getGiftCardExpiryInputData } from "./utils";
 
-interface GiftCardCreateDialogContentProps
-  extends Pick<DialogProps, "onClose"> {
+interface GiftCardCreateDialogContentProps extends Pick<DialogProps, "onClose"> {
   refetchQueries: string[];
   initialCustomer?: GiftCardCreateFormCustomer | null;
 }
 
-const GiftCardCreateDialogContent: React.FC<
-  GiftCardCreateDialogContentProps
-> = ({ onClose, refetchQueries, initialCustomer }) => {
+const GiftCardCreateDialogContent: React.FC<GiftCardCreateDialogContentProps> = ({
+  onClose,
+  refetchQueries,
+  initialCustomer,
+}) => {
   const intl = useIntl();
   const notify = useNotifier();
-
-  const { loading: loadingChannelCurrencies } = useChannelCurrenciesQuery({});
-
   const [cardCode, setCardCode] = useState(null);
-
   const currentDate = useCurrentDate();
-
-  const getParsedSubmitInputData = (
-    formData: GiftCardCreateFormData,
-  ): GiftCardCreateInput => {
+  const getParsedSubmitInputData = (formData: GiftCardCreateFormData): GiftCardCreateInput => {
     const {
       balanceAmount,
       balanceCurrency,
@@ -57,7 +41,7 @@ const GiftCardCreateDialogContent: React.FC<
 
     return {
       note: note || null,
-      addTags: tags || null,
+      addTags: tags?.map(tag => tag.value) || null,
       userEmail: (sendToCustomerSelected && selectedCustomer.email) || null,
       channel: (sendToCustomerSelected && channelSlug) || null,
       balance: {
@@ -68,7 +52,6 @@ const GiftCardCreateDialogContent: React.FC<
       isActive: !requiresActivation,
     };
   };
-
   const [createGiftCard, createGiftCardOpts] = useGiftCardCreateMutation({
     onCompleted: data => {
       const errors = data?.giftCardCreate?.errors;
@@ -81,7 +64,6 @@ const GiftCardCreateDialogContent: React.FC<
     },
     refetchQueries,
   });
-
   const handleSubmit = (data: GiftCardCreateFormData) => {
     createGiftCard({
       variables: {
@@ -89,34 +71,29 @@ const GiftCardCreateDialogContent: React.FC<
       },
     });
   };
-
   const handleClose = () => {
     onClose();
   };
 
   return (
-    <>
-      <DialogTitle disableTypography>
-        {intl.formatMessage(messages.title)}
-      </DialogTitle>
-      <ContentWithProgress>
-        {!loadingChannelCurrencies &&
-          (cardCode ? (
-            <GiftCardCreateDialogCodeContent
-              cardCode={cardCode}
-              onClose={handleClose}
-            />
-          ) : (
-            <GiftCardCreateDialogForm
-              opts={createGiftCardOpts}
-              onClose={handleClose}
-              apiErrors={createGiftCardOpts?.data?.giftCardCreate?.errors}
-              onSubmit={handleSubmit}
-              initialCustomer={initialCustomer}
-            />
-          ))}
-      </ContentWithProgress>
-    </>
+    <DashboardModal.Content
+      __maxWidth={DASHBOARD_MODAL_WIDTH}
+      width="100%"
+      data-test-id="gift-card-dialog"
+    >
+      <DashboardModal.Title>{intl.formatMessage(messages.title)}</DashboardModal.Title>
+      {cardCode ? (
+        <GiftCardCreateDialogCodeContent cardCode={cardCode} onClose={handleClose} />
+      ) : (
+        <GiftCardCreateDialogForm
+          opts={createGiftCardOpts}
+          onClose={handleClose}
+          apiErrors={createGiftCardOpts?.data?.giftCardCreate?.errors}
+          onSubmit={handleSubmit}
+          initialCustomer={initialCustomer}
+        />
+      )}
+    </DashboardModal.Content>
   );
 };
 

@@ -1,10 +1,6 @@
 // @ts-strict-ignore
 import { MarkAsPaidStrategyEnum } from "@dashboard/graphql";
-import {
-  order as orderFixture,
-  payments,
-  shop,
-} from "@dashboard/orders/fixtures";
+import { order as orderFixture, payments, shop } from "@dashboard/orders/fixtures";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
@@ -20,7 +16,6 @@ jest.mock("react-intl", () => ({
   defineMessages: jest.fn(x => x),
   FormattedMessage: jest.fn(({ defaultMessage }) => defaultMessage),
 }));
-
 jest.mock("@saleor/macaw-ui", () => ({
   useTheme: jest.fn(() => () => ({})),
   useStyles: jest.fn(() => () => ({})),
@@ -29,8 +24,8 @@ jest.mock("@saleor/macaw-ui", () => ({
   Button: jest.fn(() => <></>),
   ResponsiveTable: jest.fn(() => <></>),
 }));
-
 jest.mock("@saleor/macaw-ui-next", () => ({
+  ...(jest.requireActual("@saleor/macaw-ui-next") as object),
   useTheme: jest.fn(() => () => ({})),
   Divider: jest.fn(() => <></>),
   vars: {
@@ -47,11 +42,12 @@ jest.mock("@saleor/macaw-ui-next", () => ({
     },
   },
 }));
-
 jest.mock("react-router-dom", () => ({
   Link: jest.fn(({ to, ...props }) => <a href={to} {...props} />),
 }));
-
+jest.mock("@dashboard/featureFlags", () => ({
+  useFlag: jest.fn(() => ({ enabled: false })),
+}));
 describe("OrderPaymentOrTransaction", () => {
   const order = orderFixture(undefined);
   const sharedProps = {
@@ -63,6 +59,7 @@ describe("OrderPaymentOrTransaction", () => {
     onPaymentCapture: () => undefined,
     onTransactionAction: () => undefined,
     onPaymentVoid: () => undefined,
+    onRefundAdd: () => undefined,
   } as OrderPaymentOrTransactionProps;
 
   it("renders OrderPayment when transactions are disabled in channel", () => {
@@ -83,10 +80,8 @@ describe("OrderPaymentOrTransaction", () => {
         }}
       />,
     );
-
     expect(screen.queryByTestId("OrderPayment")).toBeInTheDocument();
   });
-
   it("renders OrderPayment when payments are used in order", () => {
     render(
       <OrderPaymentOrTransaction
@@ -98,10 +93,8 @@ describe("OrderPaymentOrTransaction", () => {
         }}
       />,
     );
-
     expect(screen.queryByTestId("OrderPayment")).toBeInTheDocument();
   });
-
   it("renders OrderTransaction when transactions are enabled in channel", () => {
     render(
       <OrderPaymentOrTransaction
@@ -112,13 +105,10 @@ describe("OrderPaymentOrTransaction", () => {
         }}
       />,
     );
-
     expect(screen.queryByTestId("OrderSummaryCard")).toBeInTheDocument();
   });
-
   it("renders OrderTransaction when transactions are used in order", () => {
     render(<OrderPaymentOrTransaction {...sharedProps} />);
-
     expect(screen.queryByTestId("OrderSummaryCard")).toBeInTheDocument();
   });
 });

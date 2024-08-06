@@ -1,13 +1,10 @@
 import { appInstallationStatusMessages } from "@dashboard/apps/messages";
 import { AppInstallationFragment } from "@dashboard/graphql";
 import { buttonMessages } from "@dashboard/intl";
-import { Typography } from "@material-ui/core";
 import { Button, Indicator, TooltipMountWrapper } from "@saleor/macaw-ui";
-import { Tooltip } from "@saleor/macaw-ui-next";
+import { sprinkles, Text, Tooltip } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-
-import { useActionsStyles } from "./styles";
 
 interface InstallErrorActionProps {
   appInstallation?: AppInstallationFragment;
@@ -20,16 +17,22 @@ const InstallErrorAction = ({
   retryInstall,
   removeInstall,
 }: InstallErrorActionProps) => {
-  const classes = useActionsStyles();
-
   if (!retryInstall && !removeInstall) {
     return null;
   }
 
   return (
     <>
-      <Typography
-        className={classes.cardActionsIssueText}
+      <Text
+        className={sprinkles({
+          width: "100%",
+          color: "critical1",
+          whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          gap: 2,
+        })}
         data-test-id="app-installation-failed"
       >
         <FormattedMessage {...appInstallationStatusMessages.failed} />
@@ -44,13 +47,9 @@ const InstallErrorAction = ({
             {appInstallation?.message}
           </Tooltip.Content>
         </Tooltip>
-      </Typography>
+      </Text>
       {retryInstall && (
-        <Button
-          variant="secondary"
-          onClick={retryInstall}
-          data-test-id="app-retry-install-button"
-        >
+        <Button variant="secondary" onClick={retryInstall} data-test-id="app-retry-install-button">
           <FormattedMessage {...buttonMessages.retry} />
         </Button>
       )}
@@ -66,5 +65,6 @@ const InstallErrorAction = ({
     </>
   );
 };
+
 InstallErrorAction.displayName = "InstallErrorAction";
 export default InstallErrorAction;

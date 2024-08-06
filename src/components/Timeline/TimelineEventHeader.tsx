@@ -19,11 +19,8 @@ export interface TimelineEventHeaderProps {
   children?: ReactNode;
 }
 
-export const TimelineEventHeader: React.FC<
-  TimelineEventHeaderProps
-> = props => {
-  const { title, date, titleElements, secondaryTitle, hasPlainDate, children } =
-    props;
+export const TimelineEventHeader: React.FC<TimelineEventHeaderProps> = props => {
+  const { title, date, titleElements, secondaryTitle, hasPlainDate, children } = props;
   const navigate = useNavigator();
 
   return (
@@ -35,17 +32,12 @@ export const TimelineEventHeader: React.FC<
       width="100%"
     >
       {title && (
-        <Text variant="caption" size="large" wordBreak="break-all">
+        <Text size={3} wordBreak="break-all">
           {title}
         </Text>
       )}
       {titleElements && (
-        <Box
-          display="flex"
-          alignItems="center"
-          flexDirection="row"
-          flexWrap="wrap"
-        >
+        <Box display="flex" alignItems="center" flexDirection="row" flexWrap="wrap">
           {titleElements.filter(Boolean).map(({ text, link }) => {
             if (link) {
               return (
@@ -62,12 +54,7 @@ export const TimelineEventHeader: React.FC<
             }
 
             return (
-              <Text
-                variant="caption"
-                size="large"
-                marginRight={0.5}
-                key={`timeline-event-${text}`}
-              >
+              <Text size={3} marginRight={0.5} key={`timeline-event-${text}`}>
                 {text}
               </Text>
             );
@@ -76,12 +63,7 @@ export const TimelineEventHeader: React.FC<
       )}
       <Box display="flex" alignItems="center" gap={5} marginLeft="auto">
         {children}
-        <Text
-          variant="caption"
-          size="large"
-          color="default2"
-          whiteSpace="nowrap"
-        >
+        <Text size={3} color="default2" whiteSpace="nowrap">
           <DateTime date={date} plain={hasPlainDate} />
         </Text>
       </Box>

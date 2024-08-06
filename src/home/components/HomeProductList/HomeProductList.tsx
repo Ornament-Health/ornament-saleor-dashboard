@@ -14,10 +14,7 @@ interface HomeProductListProps {
   topProducts: HomeData<ProductTopToday>;
 }
 
-export const HomeProductList = ({
-  topProducts,
-  testId,
-}: HomeProductListProps) => {
+export const HomeProductList = ({ topProducts, testId }: HomeProductListProps) => {
   const intl = useIntl();
   const title = intl.formatMessage({
     id: "e08xWz",
@@ -28,14 +25,11 @@ export const HomeProductList = ({
   if (topProducts.hasError) {
     return (
       <Box data-test-id={testId}>
-        <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
+        <Text size={5} fontWeight="bold" display="block" paddingTop={7} marginBottom={2}>
           {title}
         </Text>
         <Text color="default2">
-          <FormattedMessage
-            id="/Fa+RP"
-            defaultMessage="Couldn't load top products"
-          />
+          <FormattedMessage id="/Fa+RP" defaultMessage="Couldn't load top products" />
         </Text>
       </Box>
     );
@@ -44,7 +38,7 @@ export const HomeProductList = ({
   if (topProducts.loading) {
     return (
       <Box data-test-id={testId}>
-        <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
+        <Text size={5} fontWeight="bold" display="block" paddingTop={7} marginBottom={2}>
           {title}
         </Text>
         <Box display="flex" flexDirection="column">
@@ -58,7 +52,7 @@ export const HomeProductList = ({
 
   return (
     <Box data-test-id={testId}>
-      <Text variant="heading" display="block" paddingTop={7} marginBottom={2}>
+      <Text size={5} fontWeight="bold" display="block" paddingTop={7} marginBottom={2}>
         {title}
       </Text>
       <Box>
@@ -67,11 +61,7 @@ export const HomeProductList = ({
           variant => (
             <HomeProductListItem
               key={variant ? variant.id : "skeleton"}
-              linkUrl={
-                variant
-                  ? productVariantEditUrl(variant.product.id, variant.id)
-                  : ""
-              }
+              linkUrl={variant ? productVariantEditUrl(variant.product.id, variant.id) : ""}
             >
               {variant ? (
                 <>
@@ -91,13 +81,13 @@ export const HomeProductList = ({
                     />
 
                     <Box display="flex" flexDirection="column">
-                      <Text size="small">{variant.product.name}</Text>
+                      <Text size={3}>{variant.product.name}</Text>
 
-                      <Text size="small" color="default2">
+                      <Text size={3} color="default2">
                         {generateAttributesInfo(variant)}
                       </Text>
 
-                      <Text size="small" color="default2">
+                      <Text size={3} color="default2">
                         <FormattedMessage
                           id="nII/qB"
                           defaultMessage="{amount, plural,one {One ordered}other {{amount} ordered}}"
@@ -111,11 +101,7 @@ export const HomeProductList = ({
                   </Box>
 
                   <Text textAlign="right">
-                    {variant.revenue ? (
-                      <Money money={variant.revenue.gross} />
-                    ) : (
-                      "-"
-                    )}
+                    {variant.revenue ? <Money money={variant.revenue.gross} /> : "-"}
                   </Text>
                 </>
               ) : (
@@ -124,17 +110,9 @@ export const HomeProductList = ({
             </HomeProductListItem>
           ),
           () => (
-            <Box
-              borderColor="default1"
-              borderWidth={1}
-              paddingY={5}
-              borderBottomStyle="solid"
-            >
-              <Text size="small">
-                <FormattedMessage
-                  id="Q1Uzbb"
-                  defaultMessage="No products found"
-                />
+            <Box borderColor="default1" borderWidth={1} paddingY={5} borderBottomStyle="solid">
+              <Text size={3}>
+                <FormattedMessage id="Q1Uzbb" defaultMessage="No products found" />
               </Text>
             </Box>
           ),
@@ -149,14 +127,8 @@ export default HomeProductList;
 
 function ProductListSkeleton() {
   return (
-    <Box
-      borderColor="default1"
-      borderWidth={1}
-      borderBottomStyle="solid"
-      paddingX={3}
-      paddingY={6}
-    >
-      <Skeleton />
+    <Box borderColor="default1" borderWidth={1} borderBottomStyle="solid" paddingX={3} paddingY={6}>
+      <Skeleton height={3} />
     </Box>
   );
 }

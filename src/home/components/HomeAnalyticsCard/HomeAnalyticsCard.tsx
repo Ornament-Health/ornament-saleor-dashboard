@@ -8,11 +8,7 @@ interface HomeAnalyticsCardProps {
   children?: React.ReactNode;
 }
 
-export const HomeAnalyticsCard = ({
-  children,
-  title,
-  testId,
-}: HomeAnalyticsCardProps) => (
+export const HomeAnalyticsCard = ({ children, title, testId }: HomeAnalyticsCardProps) => (
   <Box
     borderWidth={1}
     borderStyle="solid"
@@ -25,14 +21,12 @@ export const HomeAnalyticsCard = ({
     data-test-id={testId}
   >
     <Box display="flex" flexDirection="column" gap={0.5}>
-      <Text size="large" variant="body">
-        {title}
-      </Text>
-      <Text size="medium" variant="caption" color="default1">
+      <Text size={5}>{title}</Text>
+      <Text size={2} color="default1">
         <FormattedMessage id="zWgbGg" defaultMessage="Today" />
       </Text>
     </Box>
-    <Text as="h4" variant="heading">
+    <Text as="h4" size={5} fontWeight="bold">
       {children}
     </Text>
   </Box>

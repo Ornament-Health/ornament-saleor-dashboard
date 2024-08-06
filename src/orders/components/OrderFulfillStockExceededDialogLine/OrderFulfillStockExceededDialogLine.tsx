@@ -1,17 +1,15 @@
 // @ts-strict-ignore
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
-import {
-  FulfillmentFragment,
-  OrderFulfillLineFragment,
-} from "@dashboard/graphql";
+import { FulfillmentFragment, OrderFulfillLineFragment } from "@dashboard/graphql";
 import {
   getAttributesCaption,
   getFulfillmentFormsetQuantity,
   getOrderLineAvailableQuantity,
   OrderFulfillStockFormsetData,
 } from "@dashboard/orders/utils/data";
-import { TableCell, Typography } from "@material-ui/core";
+import { TableCell } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { useStyles } from "../OrderFulfillStockExceededDialog/styles";
@@ -26,7 +24,6 @@ const OrderFulfillStockExceededDialogLine: React.FC<
   OrderFulfillStockExceededDialogLineProps
 > = props => {
   const { line: genericLine, warehouseId, formsetData } = props;
-
   const classes = useStyles(props);
 
   if (!genericLine) {
@@ -34,22 +31,16 @@ const OrderFulfillStockExceededDialogLine: React.FC<
   }
 
   const line = "orderLine" in genericLine ? genericLine.orderLine : genericLine;
-
-  const stock = line?.variant?.stocks.find(
-    stock => stock.warehouse.id === warehouseId,
-  );
+  const stock = line?.variant?.stocks.find(stock => stock.warehouse.id === warehouseId);
 
   return (
     <TableRowLink key={line?.id}>
-      <TableCellAvatar
-        className={classes.colName}
-        thumbnail={line?.thumbnail?.url}
-      >
+      <TableCellAvatar className={classes.colName} thumbnail={line?.thumbnail?.url}>
         {line?.productName}
         {line.variant && "attributes" in line.variant && (
-          <Typography color="textSecondary" variant="caption">
+          <Text color="default2" size={2} fontWeight="light">
             {getAttributesCaption(line.variant?.attributes)}
-          </Typography>
+          </Text>
         )}
       </TableCellAvatar>
       <TableCell className={classes.colQuantity}>
@@ -62,6 +53,5 @@ const OrderFulfillStockExceededDialogLine: React.FC<
   );
 };
 
-OrderFulfillStockExceededDialogLine.displayName =
-  "OrderFulfillStockExceededDialogLine";
+OrderFulfillStockExceededDialogLine.displayName = "OrderFulfillStockExceededDialogLine";
 export default OrderFulfillStockExceededDialogLine;

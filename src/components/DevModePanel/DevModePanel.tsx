@@ -7,31 +7,20 @@ import { createFetch } from "@saleor/sdk";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import GraphiQL from "../GraphiQLPlain";
+import PlainGraphiQL from "../GraphiQLPlain";
 import { useDevModeContext } from "./hooks";
 import { messages } from "./messages";
 
 const authorizedFetch = createFetch();
 
-interface DevModePanelProps {
-  isDevModeVisible: boolean;
-  setDevModeVisibility: (value: boolean) => void;
-}
-
-export const DevModePanel: React.FC<DevModePanelProps> = ({
-  isDevModeVisible,
-  setDevModeVisibility,
-}) => {
-  const fetcher = createGraphiQLFetcher({
-    url: process.env.API_URI,
-    fetch: authorizedFetch,
-  });
-
+export const DevModePanel: React.FC = () => {
   const intl = useIntl();
   const { rootStyle } = useDashboardTheme();
-
-  const { devModeContent, variables } = useDevModeContext();
-
+  const { isDevModeVisible, variables, devModeContent, setDevModeVisibility } = useDevModeContext();
+  const fetcher = createGraphiQLFetcher({
+    url: process.env.API_URL,
+    fetch: authorizedFetch,
+  });
   const overwriteCodeMirrorCSSVariables = {
     __html: `
       .graphiql-container, .CodeMirror-info, .CodeMirror-lint-tooltip, reach-portal{
@@ -57,11 +46,7 @@ export const DevModePanel: React.FC<DevModePanelProps> = ({
         {intl.formatMessage(messages.title)}
       </DialogHeader>
       <DialogContent style={{ padding: 0, margin: 1, overflowY: "auto" }}>
-        <GraphiQL
-          query={devModeContent}
-          variables={variables}
-          fetcher={fetcher}
-        />
+        <PlainGraphiQL query={devModeContent} variables={variables} fetcher={fetcher} />
       </DialogContent>
     </Dialog>
   );

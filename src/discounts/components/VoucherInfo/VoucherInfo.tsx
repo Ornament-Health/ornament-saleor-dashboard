@@ -16,21 +16,17 @@ interface VoucherInfoProps {
   onChange: (event: any) => void;
 }
 
-const VoucherInfo = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}: VoucherInfoProps) => {
+const VoucherInfo = ({ data, disabled, errors, onChange }: VoucherInfoProps) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["name"], errors);
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage(commonMessages.generalInformations)}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(commonMessages.generalInformations)}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <Input
           size="small"
@@ -50,4 +46,5 @@ const VoucherInfo = ({
     </DashboardCard>
   );
 };
+
 export default VoucherInfo;

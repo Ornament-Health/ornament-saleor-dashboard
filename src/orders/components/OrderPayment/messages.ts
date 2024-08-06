@@ -55,16 +55,6 @@ export const orderPaymentMessages = defineMessages({
     defaultMessage: "Discount",
     description: "order discount",
   },
-  staffAdded: {
-    id: "QJG+d/",
-    defaultMessage: "Staff added",
-    description: "staff added type order discount",
-  },
-  voucher: {
-    id: "sEjRyz",
-    defaultMessage: "Voucher",
-    description: "voucher type order discount",
-  },
   total: {
     id: "zb4eBO",
     defaultMessage: "Total",
@@ -88,11 +78,6 @@ export const orderPaymentMessages = defineMessages({
   outstanding: {
     id: "5te3Tp",
     defaultMessage: "Outstanding Balance",
-    description: "order payment",
-  },
-  paidWithGiftCard: {
-    id: "yivxZJ",
-    defaultMessage: "Paid with Gift Card: ({link})",
     description: "order payment",
   },
   includedInSubtotal: {

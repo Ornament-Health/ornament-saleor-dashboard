@@ -1,16 +1,10 @@
 // @ts-strict-ignore
 import { IFilter } from "@dashboard/components/Filter";
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
 import { AttributeInputTypeEnum, StockAvailability } from "@dashboard/graphql";
 import { commonMessages, sectionNames } from "@dashboard/intl";
 import { parseBoolean } from "@dashboard/misc";
 import { ProductListUrlFiltersAsDictWithMultipleValues } from "@dashboard/products/urls";
-import {
-  AutocompleteFilterOpts,
-  FilterOpts,
-  KeyValue,
-  MinMax,
-} from "@dashboard/types";
+import { AutocompleteFilterOpts, FilterOpts, KeyValue, MinMax } from "@dashboard/types";
 import {
   createAutocompleteField,
   createBooleanField,
@@ -21,6 +15,7 @@ import {
   createOptionsField,
   createPriceField,
 } from "@dashboard/utils/filters/fields";
+import { Option } from "@saleor/macaw-ui-next";
 import { defineMessages, IntlShape } from "react-intl";
 
 export const ProductFilterKeys = {
@@ -34,8 +29,7 @@ export const ProductFilterKeys = {
   channel: "channel",
   productKind: "productKind",
 } as const;
-export type ProductFilterKeys =
-  (typeof ProductFilterKeys)[keyof typeof ProductFilterKeys];
+export type ProductFilterKeys = (typeof ProductFilterKeys)[keyof typeof ProductFilterKeys];
 
 export type AttributeFilterOpts = FilterOpts<string[]> & {
   id: string;
@@ -53,8 +47,8 @@ export interface ProductListFilterOpts {
   price: FilterOpts<MinMax>;
   productType: FilterOpts<string[]> & AutocompleteFilterOpts;
   stockStatus: FilterOpts<StockAvailability>;
-  channel: FilterOpts<string> & { choices: SingleAutocompleteChoiceType[] };
-  productKind: FilterOpts<string> & { choices: SingleAutocompleteChoiceType[] };
+  channel: FilterOpts<string> & { choices: Option[] };
+  productKind: FilterOpts<string> & { choices: Option[] };
 }
 
 const messages = defineMessages({
@@ -107,30 +101,18 @@ const messages = defineMessages({
     description: "product is visible",
   },
 });
-
-const filterByType =
-  (type: AttributeInputTypeEnum) => (attribute: AttributeFilterOpts) =>
-    attribute.inputType === type;
+const filterByType = (type: AttributeInputTypeEnum) => (attribute: AttributeFilterOpts) =>
+  attribute.inputType === type;
 
 export function createFilterStructure(
   intl: IntlShape,
   opts: ProductListFilterOpts,
 ): IFilter<string> {
   const attributes = opts.attributes;
-
-  const booleanAttributes = attributes.filter(
-    filterByType(AttributeInputTypeEnum.BOOLEAN),
-  );
-  const dateAttributes = attributes.filter(
-    filterByType(AttributeInputTypeEnum.DATE),
-  );
-  const dateTimeAttributes = attributes.filter(
-    filterByType(AttributeInputTypeEnum.DATE_TIME),
-  );
-  const numericAttributes = attributes.filter(
-    filterByType(AttributeInputTypeEnum.NUMERIC),
-  );
-
+  const booleanAttributes = attributes.filter(filterByType(AttributeInputTypeEnum.BOOLEAN));
+  const dateAttributes = attributes.filter(filterByType(AttributeInputTypeEnum.DATE));
+  const dateTimeAttributes = attributes.filter(filterByType(AttributeInputTypeEnum.DATE_TIME));
+  const numericAttributes = attributes.filter(filterByType(AttributeInputTypeEnum.NUMERIC));
   const defaultAttributes = opts.attributes.filter(
     ({ inputType }) =>
       ![

@@ -1,16 +1,15 @@
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
+import { DashboardCard } from "@dashboard/components/Card";
 import CardSpacer from "@dashboard/components/CardSpacer";
-import CardTitle from "@dashboard/components/CardTitle";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import Hr from "@dashboard/components/Hr";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Skeleton from "@dashboard/components/Skeleton";
 import {
   CreateManualTransactionRefundMutationVariables,
   OrderDetailsFragment,
 } from "@dashboard/graphql";
 import { orderUrl } from "@dashboard/orders/urls";
-import { Card, CardContent } from "@material-ui/core";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -25,9 +24,7 @@ import { useStyles } from "./styles";
 export interface OrderSendRefundPageProps {
   order: OrderDetailsFragment;
   loading: boolean;
-  onAddManualRefund: (
-    args: CreateManualTransactionRefundMutationVariables,
-  ) => void;
+  onAddManualRefund: (args: CreateManualTransactionRefundMutationVariables) => void;
   addManualRefundState: ConfirmButtonTransitionState;
   addManualRefundError: string | undefined;
 }
@@ -40,7 +37,6 @@ const OrderSendRefundPage: React.FC<OrderSendRefundPageProps> = ({
   addManualRefundError,
 }) => {
   const classes = useStyles();
-
   const currency = order?.totalBalance?.currency || "";
   const transactions = order?.transactions ?? [];
 
@@ -53,9 +49,9 @@ const OrderSendRefundPage: React.FC<OrderSendRefundPageProps> = ({
       <DetailPageLayout.Content>
         {loading && transactions.length === 0 && (
           <>
-            <Card>
-              <CardContent className={classes.cardLoading} />
-            </Card>
+            <DashboardCard>
+              <DashboardCard.Content height={24} />
+            </DashboardCard>
             <CardSpacer />
           </>
         )}
@@ -83,42 +79,32 @@ const OrderSendRefundPage: React.FC<OrderSendRefundPageProps> = ({
         />
       </DetailPageLayout.Content>
       <DetailPageLayout.RightSidebar>
-        <Card>
-          <CardTitle
-            title={<FormattedMessage {...refundPageMessages.refundBalance} />}
-          />
-          <CardContent>
+        <DashboardCard>
+          <DashboardCard.Header>
+            <DashboardCard.Title>
+              <FormattedMessage {...refundPageMessages.refundBalance} />
+            </DashboardCard.Title>
+          </DashboardCard.Header>
+          <DashboardCard.Content>
             <ul className={classes.dataList}>
-              <DataLine
-                label={
-                  <FormattedMessage {...refundPageMessages.totalCaptured} />
-                }
-              >
+              <DataLine label={<FormattedMessage {...refundPageMessages.totalCaptured} />}>
                 <DataLineMoney money={order?.totalCharged} />
               </DataLine>
-              <DataLine
-                label={
-                  <FormattedMessage {...refundPageMessages.grantedRefund} />
-                }
-              >
+              <DataLine label={<FormattedMessage {...refundPageMessages.grantedRefund} />}>
                 <DataLineMoney money={order?.totalGrantedRefund} />
               </DataLine>
-              <DataLine
-                label={
-                  <FormattedMessage {...refundPageMessages.pendingRefunds} />
-                }
-              >
+              <DataLine label={<FormattedMessage {...refundPageMessages.pendingRefunds} />}>
                 <DataLineMoney money={order?.totalRefundPending} />
               </DataLine>
             </ul>
-          </CardContent>
+          </DashboardCard.Content>
           <Hr />
-          <CardTitle
-            title={
+          <DashboardCard.Header>
+            <DashboardCard.Title>
               <FormattedMessage {...refundPageMessages.balanceAfterRequests} />
-            }
-          />
-          <CardContent>
+            </DashboardCard.Title>
+          </DashboardCard.Header>
+          <DashboardCard.Content>
             {loading && <Skeleton />}
             <ul className={classes.dataList}>
               {order?.transactions.map(transaction => (
@@ -126,14 +112,12 @@ const OrderSendRefundPage: React.FC<OrderSendRefundPageProps> = ({
                   <DataLineMoney money={transaction.refundedAmount} />
                 </DataLine>
               ))}
-              <DataLine
-                label={<FormattedMessage {...refundPageMessages.result} />}
-              >
+              <DataLine label={<FormattedMessage {...refundPageMessages.result} />}>
                 <DataLineSettled unsettledMoney={order?.totalRemainingGrant} />
               </DataLine>
             </ul>
-          </CardContent>
-        </Card>
+          </DashboardCard.Content>
+        </DashboardCard>
       </DetailPageLayout.RightSidebar>
     </DetailPageLayout>
   );

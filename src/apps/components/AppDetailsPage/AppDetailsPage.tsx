@@ -45,14 +45,11 @@ export const AppDetailsPage: React.FC<AppDetailsPageProps> = ({
         onAppDeleteOpen={onAppDeleteOpen}
       />
       <Box
+        data-test-id="app-details-section"
         display="grid"
         gridTemplateColumns={{ desktop: 2, tablet: 2, mobile: 1 }}
       >
-        <Box
-          borderColor="default1"
-          borderRightStyle={"solid"}
-          borderRightWidth={1}
-        >
+        <Box borderColor="default1" borderRightStyle={"solid"} borderRightWidth={1}>
           <AboutCard
             padding={6}
             borderBottomStyle="solid"

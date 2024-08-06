@@ -33,27 +33,26 @@ export const ChannelPermission = ({
 
   return (
     <Box height="100%">
-      <Text as="p" size="large" marginBottom={5}>
+      <Text as="p" size={5} marginBottom={5}>
         {intl.formatMessage(messages.title)}
       </Text>
 
       <Box height="100%">
         {description && (
-          <Text as="p" variant="body" size="small" marginBottom={5}>
+          <Text as="p" size={3} marginBottom={5}>
             {description}
           </Text>
         )}
 
         <Box __width="fit-content">
           <Checkbox
+            data-test-id="all-channel-permissions-checkbox"
             disabled={disabled || disabledSelectAllChannels}
             checked={hasAllChannels}
             onCheckedChange={onHasAllChannelsChange}
             tabIndex={-1}
           >
-            <Text variant="body">
-              {intl.formatMessage(messages.allowAllChannels)}
-            </Text>
+            <Text>{intl.formatMessage(messages.allowAllChannels)}</Text>
           </Checkbox>
         </Box>
 
@@ -65,9 +64,7 @@ export const ChannelPermission = ({
               disabled={disabled}
               options={channelsChoices}
               label={intl.formatMessage(messages.selectChannels)}
-              value={channelsChoices.filter(channel =>
-                selectedChannels.includes(channel.value),
-              )}
+              value={channelsChoices.filter(channel => selectedChannels.includes(channel.value))}
               placeholder={intl.formatMessage(messages.searchChannels)}
               onChange={values => {
                 onChannelChange({

@@ -2,13 +2,7 @@
 import { StatusDot } from "@dashboard/components/StatusDot/StatusDot";
 import { ProductListQuery } from "@dashboard/graphql";
 import { RelayToFlat } from "@dashboard/types";
-import {
-  Box,
-  ProductsIcons,
-  sprinkles,
-  Text,
-  vars,
-} from "@saleor/macaw-ui-next";
+import { Box, ProductsIcons, sprinkles, Text, vars } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import { getTileStatus } from "./utils";
@@ -24,10 +18,7 @@ const commonThumbnailProps = {
   aspectRatio: "1 / 1",
 } as const;
 
-export const ProductTile: React.FC<ProductTileProps> = ({
-  product,
-  onClick,
-}) => (
+export const ProductTile: React.FC<ProductTileProps> = ({ product, onClick }) => (
   <Box
     display="flex"
     flexDirection="column"
@@ -69,8 +60,7 @@ export const ProductTile: React.FC<ProductTileProps> = ({
       <Text
         ellipsis
         color="default2"
-        variant="caption"
-        size="small"
+        size={1}
         alignItems="center"
         className={sprinkles({ paddingY: 0.5 })}
       >
@@ -78,7 +68,7 @@ export const ProductTile: React.FC<ProductTileProps> = ({
       </Text>
     </Box>
     <Box display="flex" justifyContent="space-between" marginTop={0.5}>
-      <Text ellipsis color="default1" variant="bodyEmp" size="small">
+      <Text ellipsis color="default1" size={3} fontWeight="medium">
         {product.name}
       </Text>
     </Box>

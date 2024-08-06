@@ -6,15 +6,14 @@ import Grid from "@dashboard/components/Grid";
 import Hr from "@dashboard/components/Hr";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata, MetadataFormData } from "@dashboard/components/Metadata";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { PageErrorFragment } from "@dashboard/graphql";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { commonMessages } from "@dashboard/intl";
 import { pageTypeListUrl } from "@dashboard/pageTypes/urls";
 import useMetadataChangeTrigger from "@dashboard/utils/metadata/useMetadataChangeTrigger";
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { sprinkles } from "@saleor/macaw-ui-next";
+import { sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -36,7 +35,6 @@ const formInitialData: PageTypeForm = {
   name: "",
   privateMetadata: [],
 };
-
 const useStyles = makeStyles(
   theme => ({
     hr: {
@@ -48,23 +46,15 @@ const useStyles = makeStyles(
     name: "PageTypeCreatePage",
   },
 );
-
 const PageTypeCreatePage: React.FC<PageTypeCreatePageProps> = props => {
   const { disabled, errors, saveButtonBarState, onSubmit } = props;
   const classes = useStyles(props);
   const intl = useIntl();
   const navigate = useNavigator();
-
-  const { makeChangeHandler: makeMetadataChangeHandler } =
-    useMetadataChangeTrigger();
+  const { makeChangeHandler: makeMetadataChangeHandler } = useMetadataChangeTrigger();
 
   return (
-    <Form
-      confirmLeave
-      initial={formInitialData}
-      onSubmit={onSubmit}
-      disabled={disabled}
-    >
+    <Form confirmLeave initial={formInitialData} onSubmit={onSubmit} disabled={disabled}>
       {({ change, data, submit, isSaveDisabled }) => {
         const changeMetadata = makeMetadataChangeHandler(change);
 
@@ -88,15 +78,13 @@ const PageTypeCreatePage: React.FC<PageTypeCreatePageProps> = props => {
                 })}
               >
                 <div>
-                  <Typography>
-                    {intl.formatMessage(commonMessages.generalInformations)}
-                  </Typography>
-                  <Typography variant="body2">
+                  <Text>{intl.formatMessage(commonMessages.generalInformations)}</Text>
+                  <Text size={3} fontWeight="regular">
                     <FormattedMessage
                       id="kZfIl/"
                       defaultMessage="These are general information about this Content Type."
                     />
-                  </Typography>
+                  </Text>
                 </div>
                 <PageTypeDetails
                   data={data}
@@ -106,28 +94,32 @@ const PageTypeCreatePage: React.FC<PageTypeCreatePageProps> = props => {
                 />
                 <Hr className={classes.hr} />
                 <div>
-                  <Typography>
+                  <Text>
                     <FormattedMessage
                       id="OVOU1z"
                       defaultMessage="Metadata"
                       description="section header"
                     />
-                  </Typography>
+                  </Text>
                 </div>
                 <Metadata data={data} onChange={changeMetadata} />
               </Grid>
             </DetailPageLayout.Content>
-            <Savebar
-              onCancel={() => navigate(pageTypeListUrl())}
-              onSubmit={submit}
-              disabled={isSaveDisabled}
-              state={saveButtonBarState}
-            />
+            <Savebar>
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(pageTypeListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={isSaveDisabled}
+              />
+            </Savebar>
           </DetailPageLayout>
         );
       }}
     </Form>
   );
 };
+
 PageTypeCreatePage.displayName = "PageTypeCreatePage";
 export default PageTypeCreatePage;

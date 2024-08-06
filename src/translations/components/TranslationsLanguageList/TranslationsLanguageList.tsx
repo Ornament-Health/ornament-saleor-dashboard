@@ -1,12 +1,12 @@
 // @ts-strict-ignore
+import { DashboardCard } from "@dashboard/components/Card";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { LanguageFragment } from "@dashboard/graphql";
 import { languageEntitiesUrl } from "@dashboard/translations/urls";
-import { Card, CardContent, TableBody, TableCell } from "@material-ui/core";
+import { TableBody, TableCell } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui-next";
+import { Skeleton, vars } from "@saleor/macaw-ui-next";
 import { clsx } from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -36,17 +36,13 @@ const useStyles = makeStyles(
   },
   { name: "TranslationsLanguageList" },
 );
-
-const TranslationsLanguageList: React.FC<
-  TranslationsLanguageListProps
-> = props => {
+const TranslationsLanguageList: React.FC<TranslationsLanguageListProps> = props => {
   const { languages } = props;
-
   const classes = useStyles(props);
 
   return (
-    <Card>
-      <CardContent className={classes.cardContent}>
+    <DashboardCard>
+      <DashboardCard.Content className={classes.cardContent}>
         <ResponsiveTable>
           <TableBody data-test-id="translation-list-view">
             {renderCollection(
@@ -66,29 +62,24 @@ const TranslationsLanguageList: React.FC<
                   href={language && languageEntitiesUrl(language.code, {})}
                 >
                   <TableCell className={classes.capitalize}>
-                    {maybe<React.ReactNode>(
-                      () => language.language,
-                      <Skeleton />,
-                    )}
+                    {maybe<React.ReactNode>(() => language.language, <Skeleton />)}
                   </TableCell>
                 </TableRowLink>
               ),
               () => (
                 <TableRowLink>
                   <TableCell colSpan={1}>
-                    <FormattedMessage
-                      id="ptPPVk"
-                      defaultMessage="No languages found"
-                    />
+                    <FormattedMessage id="ptPPVk" defaultMessage="No languages found" />
                   </TableCell>
                 </TableRowLink>
               ),
             )}
           </TableBody>
         </ResponsiveTable>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 TranslationsLanguageList.displayName = "TranslationsLanguageList";
 export default TranslationsLanguageList;

@@ -1,9 +1,10 @@
+import { Route } from "@dashboard/components/Router";
 import { sectionNames } from "@dashboard/intl";
 import { asSortParams } from "@dashboard/utils/sort";
 import { parse as parseQs } from "qs";
 import React from "react";
 import { useIntl } from "react-intl";
-import { Route, RouteComponentProps, Switch } from "react-router-dom";
+import { RouteComponentProps, Switch } from "react-router-dom";
 
 import { WindowTitle } from "../components/WindowTitle";
 import {
@@ -18,10 +19,7 @@ import StaffListComponent from "./views/StaffList";
 
 const StaffList: React.FC<RouteComponentProps<{}>> = ({ location }) => {
   const qs = parseQs(location.search.substr(1)) as any;
-  const params: StaffListUrlQueryParams = asSortParams(
-    qs,
-    StaffListUrlSortField,
-  );
+  const params: StaffListUrlQueryParams = asSortParams(qs, StaffListUrlSortField);
 
   return <StaffListComponent params={params} />;
 };
@@ -29,20 +27,13 @@ const StaffList: React.FC<RouteComponentProps<{}>> = ({ location }) => {
 interface StaffDetailsRouteProps {
   id: string;
 }
-const StaffDetails: React.FC<RouteComponentProps<StaffDetailsRouteProps>> = ({
-  match,
-}) => {
+
+const StaffDetails: React.FC<RouteComponentProps<StaffDetailsRouteProps>> = ({ match }) => {
   const qs = parseQs(location.search.substr(1));
   const params: StaffMemberDetailsUrlQueryParams = qs;
 
-  return (
-    <StaffDetailsComponent
-      id={decodeURIComponent(match.params.id)}
-      params={params}
-    />
-  );
+  return <StaffDetailsComponent id={decodeURIComponent(match.params.id)} params={params} />;
 };
-
 const Component = () => {
   const intl = useIntl();
 

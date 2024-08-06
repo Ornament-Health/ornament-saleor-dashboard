@@ -2,9 +2,13 @@ import { defineMessages } from "react-intl";
 
 export const orderPaymentMessages = defineMessages({
   paymentTitle: {
-    id: "H52OCA",
-    defaultMessage: "Payment",
+    id: "1N8lSy",
+    defaultMessage: "Payments summary",
     description: "Order summary payment header",
+  },
+  paymentSubtitle: {
+    id: "iOOPMd",
+    defaultMessage: "A summary of all payments from registered transactions",
   },
   refundsTitle: {
     id: "E9Dz18",
@@ -34,20 +38,17 @@ export const orderPaymentMessages = defineMessages({
   grantedRefund: {
     defaultMessage: "Granted",
     id: "NPIBGp",
-    description:
-      "heading, sum of all granted refunds from transactions in order",
+    description: "heading, sum of all granted refunds from transactions in order",
   },
   pendingRefund: {
     defaultMessage: "Pending",
     id: "IfiR4M",
-    description:
-      "heading, sum of all pending refunds from transactions in order",
+    description: "heading, sum of all pending refunds from transactions in order",
   },
   refunded: {
     id: "hoii+4",
     defaultMessage: "Refunded",
-    description:
-      "heading, sum of all completed refunds from transactions in order",
+    description: "heading, sum of all completed refunds from transactions in order",
   },
   refundsExplanation: {
     id: "16sza6",

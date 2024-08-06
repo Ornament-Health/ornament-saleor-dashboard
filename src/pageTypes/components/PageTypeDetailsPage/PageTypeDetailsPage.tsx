@@ -7,22 +7,16 @@ import Hr from "@dashboard/components/Hr";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata } from "@dashboard/components/Metadata";
 import { MetadataFormData } from "@dashboard/components/Metadata/types";
-import Savebar from "@dashboard/components/Savebar";
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
-import {
-  AttributeTypeEnum,
-  PageErrorFragment,
-  PageTypeDetailsFragment,
-} from "@dashboard/graphql";
+import { Savebar } from "@dashboard/components/Savebar";
+import { AttributeTypeEnum, PageErrorFragment, PageTypeDetailsFragment } from "@dashboard/graphql";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { commonMessages } from "@dashboard/intl";
 import { pageTypeListUrl } from "@dashboard/pageTypes/urls";
 import { ListActions, ReorderEvent } from "@dashboard/types";
 import { mapMetadataItemToInput } from "@dashboard/utils/maps";
 import useMetadataChangeTrigger from "@dashboard/utils/metadata/useMetadataChangeTrigger";
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { Box, sprinkles } from "@saleor/macaw-ui-next";
+import { Box, Option, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -31,7 +25,7 @@ import PageTypeDetails from "../PageTypeDetails/PageTypeDetails";
 
 export interface PageTypeForm extends MetadataFormData {
   name: string;
-  attributes: SingleAutocompleteChoiceType[];
+  attributes: Option[];
 }
 
 export interface PageTypeDetailsPageProps {
@@ -59,7 +53,6 @@ const useStyles = makeStyles(
     name: "PageTypeDetailsPage",
   },
 );
-
 const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
   const {
     disabled,
@@ -77,13 +70,11 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
   const classes = useStyles(props);
   const intl = useIntl();
   const navigate = useNavigator();
-
   const {
     isMetadataModified,
     isPrivateMetadataModified,
     makeChangeHandler: makeMetadataChangeHandler,
   } = useMetadataChangeTrigger();
-
   const formInitialData: PageTypeForm = {
     attributes:
       pageType?.attributes?.map(attribute => ({
@@ -94,12 +85,9 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
     name: pageType?.name || "",
     privateMetadata: pageType?.privateMetadata?.map(mapMetadataItemToInput),
   };
-
   const handleSubmit = (data: PageTypeForm) => {
     const metadata = isMetadataModified ? data.metadata : undefined;
-    const privateMetadata = isPrivateMetadataModified
-      ? data.privateMetadata
-      : undefined;
+    const privateMetadata = isPrivateMetadataModified ? data.privateMetadata : undefined;
 
     onSubmit({
       ...data,
@@ -109,12 +97,7 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
   };
 
   return (
-    <Form
-      confirmLeave
-      initial={formInitialData}
-      onSubmit={handleSubmit}
-      disabled={disabled}
-    >
+    <Form confirmLeave initial={formInitialData} onSubmit={handleSubmit} disabled={disabled}>
       {({ change, data, isSaveDisabled, submit }) => {
         const changeMetadata = makeMetadataChangeHandler(change);
 
@@ -131,15 +114,13 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
                 })}
               >
                 <Box paddingTop={6}>
-                  <Typography>
-                    {intl.formatMessage(commonMessages.generalInformations)}
-                  </Typography>
-                  <Typography variant="body2">
+                  <Text>{intl.formatMessage(commonMessages.generalInformations)}</Text>
+                  <Text size={3} fontWeight="regular" display="block">
                     <FormattedMessage
                       id="kZfIl/"
                       defaultMessage="These are general information about this Content Type."
                     />
-                  </Typography>
+                  </Text>
                 </Box>
                 <PageTypeDetails
                   data={data}
@@ -149,19 +130,19 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
                 />
                 <Hr className={classes.hr} />
                 <div>
-                  <Typography>
+                  <Text>
                     <FormattedMessage
                       id="iQxjow"
                       defaultMessage="Content Attributes"
                       description="section header"
                     />
-                  </Typography>
-                  <Typography variant="body2">
+                  </Text>
+                  <Text size={3} fontWeight="regular" display="block">
                     <FormattedMessage
                       id="lct0qd"
                       defaultMessage="This list shows all attributes that will be assigned to pages that have this page type assigned."
                     />
-                  </Typography>
+                  </Text>
                 </div>
                 <PageTypeAttributes
                   attributes={pageType?.attributes}
@@ -176,29 +157,33 @@ const PageTypeDetailsPage: React.FC<PageTypeDetailsPageProps> = props => {
                 />
                 <Hr className={classes.hr} />
                 <div>
-                  <Typography>
+                  <Text>
                     <FormattedMessage
                       id="OVOU1z"
                       defaultMessage="Metadata"
                       description="section header"
                     />
-                  </Typography>
+                  </Text>
                 </div>
                 <Metadata data={data} onChange={changeMetadata} />
               </Grid>
             </DetailPageLayout.Content>
-            <Savebar
-              onCancel={() => navigate(pageTypeListUrl())}
-              onDelete={onDelete}
-              onSubmit={submit}
-              disabled={isSaveDisabled}
-              state={saveButtonBarState}
-            />
+            <Savebar>
+              <Savebar.DeleteButton onClick={onDelete} />
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(pageTypeListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={isSaveDisabled}
+              />
+            </Savebar>
           </DetailPageLayout>
         );
       }}
     </Form>
   );
 };
+
 PageTypeDetailsPage.displayName = "PageTypeDetailsPage";
 export default PageTypeDetailsPage;

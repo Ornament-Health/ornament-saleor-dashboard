@@ -86,25 +86,18 @@ export const createGetCellContent =
         return readonlyTextCell(rowData?.name ?? PLACEHOLDER);
       case "min-spent":
         return hasChannelsLoaded
-          ? moneyCell(
-              channel?.minSpent?.amount ?? null,
-              channel?.minSpent?.currency ?? "",
-              {
-                readonly: true,
-              },
-            )
+          ? moneyCell(channel?.minSpent?.amount ?? null, channel?.minSpent?.currency ?? "", {
+              cursor: "pointer",
+              readonly: true,
+            })
           : readonlyTextCell(PLACEHOLDER);
       case "start-date":
         return readonlyTextCell(
-          rowData.startDate
-            ? moment(rowData.startDate).locale(locale).format("lll")
-            : PLACEHOLDER,
+          rowData.startDate ? moment(rowData.startDate).locale(locale).format("lll") : PLACEHOLDER,
         );
       case "end-date":
         return readonlyTextCell(
-          rowData.endDate
-            ? moment(rowData.endDate).locale(locale).format("lll")
-            : PLACEHOLDER,
+          rowData.endDate ? moment(rowData.endDate).locale(locale).format("lll") : PLACEHOLDER,
         );
 
       case "value":
@@ -112,9 +105,7 @@ export const createGetCellContent =
 
       case "limit":
         return readonlyTextCell(
-          rowData.usageLimit === null
-            ? PLACEHOLDER
-            : rowData.usageLimit.toString(),
+          rowData.usageLimit === null ? PLACEHOLDER : rowData.usageLimit.toString(),
         );
 
       default:
@@ -134,6 +125,7 @@ function getVoucherValueCell(
 
   if (voucher?.discountValueType === "FIXED") {
     return moneyCell(channel?.discountValue, channel?.currency ?? "", {
+      cursor: "pointer",
       readonly: true,
     });
   }

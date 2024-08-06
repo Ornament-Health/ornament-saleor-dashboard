@@ -7,7 +7,8 @@ import useForm from "@dashboard/hooks/useForm";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import { DialogProps } from "@dashboard/types";
 import commonErrorMessages from "@dashboard/utils/errors/common";
-import { TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -22,51 +23,40 @@ export interface GiftCardBalanceUpdateFormData {
   balanceAmount: number;
 }
 
-const GiftCardUpdateBalanceDialog: React.FC<DialogProps> = ({
-  open,
-  onClose,
-}) => {
+const GiftCardUpdateBalanceDialog: React.FC<DialogProps> = ({ open, onClose }) => {
   const intl = useIntl();
   const classes = useStyles({});
   const notify = useNotifier();
-
   const {
     giftCard: {
       id,
       currentBalance: { amount, currency },
     },
   } = useGiftCardDetails();
-
   const initialFormData: GiftCardBalanceUpdateFormData = {
     balanceAmount: amount,
   };
+  const [updateGiftCardBalance, updateGiftCardBalanceOpts] = useGiftCardUpdateMutation({
+    onCompleted: data => {
+      const errors = data?.giftCardUpdate?.errors;
+      const notifierData: IMessage = errors?.length
+        ? {
+            status: "error",
+            text: intl.formatMessage(commonErrorMessages.unknownError),
+          }
+        : {
+            status: "success",
+            text: intl.formatMessage(messages.updatedSuccessAlertTitle),
+          };
 
-  const [updateGiftCardBalance, updateGiftCardBalanceOpts] =
-    useGiftCardUpdateMutation({
-      onCompleted: data => {
-        const errors = data?.giftCardUpdate?.errors;
+      notify(notifierData);
 
-        const notifierData: IMessage = !!errors?.length
-          ? {
-              status: "error",
-              text: intl.formatMessage(commonErrorMessages.unknownError),
-            }
-          : {
-              status: "success",
-              text: intl.formatMessage(messages.updatedSuccessAlertTitle),
-            };
-
-        notify(notifierData);
-
-        if (!errors.length) {
-          onClose();
-        }
-      },
-    });
-
-  const handleSubmit = async ({
-    balanceAmount,
-  }: GiftCardBalanceUpdateFormData) => {
+      if (!errors.length) {
+        onClose();
+      }
+    },
+  });
+  const handleSubmit = async ({ balanceAmount }: GiftCardBalanceUpdateFormData) => {
     const result = await updateGiftCardBalance({
       variables: {
         id,
@@ -78,14 +68,8 @@ const GiftCardUpdateBalanceDialog: React.FC<DialogProps> = ({
 
     return result?.data?.giftCardUpdate?.errors;
   };
-
-  const { data, change, submit, reset } = useForm(
-    initialFormData,
-    handleSubmit,
-  );
-
+  const { data, change, submit, reset } = useForm(initialFormData, handleSubmit);
   const { loading, status, data: submitData } = updateGiftCardBalanceOpts;
-
   const { formErrors } = useDialogFormReset({
     open,
     reset,
@@ -95,7 +79,6 @@ const GiftCardUpdateBalanceDialog: React.FC<DialogProps> = ({
 
   return (
     <ActionDialog
-      maxWidth="sm"
       open={open}
       onConfirm={submit}
       confirmButtonLabel={intl.formatMessage(messages.changeButtonLabel)}
@@ -103,28 +86,26 @@ const GiftCardUpdateBalanceDialog: React.FC<DialogProps> = ({
       title={intl.formatMessage(messages.title)}
       confirmButtonState={status}
       disabled={loading}
+      size="lg"
     >
-      <Typography>{intl.formatMessage(messages.subtitle)}</Typography>
+      <Text>{intl.formatMessage(messages.subtitle)}</Text>
       <CardSpacer />
       <TextField
         inputProps={{ min: 0 }}
         error={!!formErrors?.initialBalanceAmount}
-        helperText={getGiftCardErrorMessage(
-          formErrors?.initialBalanceAmount,
-          intl,
-        )}
+        helperText={getGiftCardErrorMessage(formErrors?.initialBalanceAmount, intl)}
         name="balanceAmount"
         value={data.balanceAmount}
         onChange={change}
         className={classes.inputContainer}
-        label={intl.formatMessage(
-          tableMessages.giftCardsTableColumnBalanceTitle,
-        )}
+        label={intl.formatMessage(tableMessages.giftCardsTableColumnBalanceTitle)}
         type="float"
         InputProps={{
           startAdornment: (
             <div className={classes.currencyCodeContainer}>
-              <Typography variant="caption">{currency}</Typography>
+              <Text size={2} fontWeight="light">
+                {currency}
+              </Text>
             </div>
           ),
         }}

@@ -5,7 +5,7 @@ import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButto
 import Form from "@dashboard/components/Form";
 import Grid from "@dashboard/components/Grid";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import {
   ConfigurationItemInput,
   PluginConfigurationExtendedFragment,
@@ -55,20 +55,15 @@ const PluginsDetailsPage: React.FC<PluginsDetailsPageProps> = ({
 }) => {
   const intl = useIntl();
   const navigate = useNavigator();
-
   const initialFormData: PluginDetailsPageFormData = {
     active: selectedConfig?.active,
     configuration: selectedConfig?.configuration
-      ?.filter(
-        field =>
-          !isSecretField(selectedConfig?.configuration || [], field.name),
-      )
+      ?.filter(field => !isSecretField(selectedConfig?.configuration || [], field.name))
       .map(field => ({
         ...field,
         value: field.value || "",
       })),
   };
-
   const selectedChannelId = selectedConfig?.channel?.id;
 
   return (
@@ -96,6 +91,7 @@ const PluginsDetailsPage: React.FC<PluginsDetailsPageProps> = ({
 
           set(newData);
         };
+
         return (
           <DetailPageLayout gridTemplateColumns={1}>
             <TopNav
@@ -139,10 +135,7 @@ const PluginsDetailsPage: React.FC<PluginsDetailsPageProps> = ({
                         onChange={onChange}
                       />
                       {selectedConfig?.configuration.some(field =>
-                        isSecretField(
-                          selectedConfig?.configuration,
-                          field.name,
-                        ),
+                        isSecretField(selectedConfig?.configuration, field.name),
                       ) && (
                         <>
                           <CardSpacer />
@@ -157,12 +150,15 @@ const PluginsDetailsPage: React.FC<PluginsDetailsPageProps> = ({
                   )}
                 </div>
               </Grid>
-              <Savebar
-                disabled={isSaveDisabled}
-                state={saveButtonBarState}
-                onCancel={() => navigate(pluginListUrl())}
-                onSubmit={submit}
-              />
+              <Savebar>
+                <Savebar.Spacer />
+                <Savebar.CancelButton onClick={() => navigate(pluginListUrl())} />
+                <Savebar.ConfirmButton
+                  transitionState={saveButtonBarState}
+                  onClick={submit}
+                  disabled={isSaveDisabled}
+                />
+              </Savebar>
             </DetailPageLayout.Content>
           </DetailPageLayout>
         );

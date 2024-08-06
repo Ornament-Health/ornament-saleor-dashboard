@@ -1,9 +1,6 @@
 import { ConfirmButton } from "@dashboard/components/ConfirmButton";
 import { Task } from "@dashboard/containers/BackgroundTasks/types";
-import {
-  useExportGiftCardsMutation,
-  useGiftCardTotalCountQuery,
-} from "@dashboard/graphql";
+import { useExportGiftCardsMutation, useGiftCardTotalCountQuery } from "@dashboard/graphql";
 import useBackgroundTask from "@dashboard/hooks/useBackgroundTask";
 import useForm from "@dashboard/hooks/useForm";
 import useNotifier from "@dashboard/hooks/useNotifier";
@@ -14,12 +11,8 @@ import {
   exportSettingsInitialFormDataWithIds,
 } from "@dashboard/products/components/ProductExportDialog/types";
 import { DialogProps } from "@dashboard/types";
-import {
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@material-ui/core";
+import { DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -28,6 +21,7 @@ import { useGiftCardList } from "../GiftCardsList/providers/GiftCardListProvider
 import { giftCardExportDialogMessages as messages } from "./messages";
 import useStyles from "./styles";
 import { getExportGiftCardsInput } from "./utils";
+
 type IdsToExport = string[] | null;
 
 const GiftCardExportDialog: React.FC<
@@ -39,22 +33,16 @@ const GiftCardExportDialog: React.FC<
   const notify = useNotifier();
   const { queue } = useBackgroundTask();
   const classes = useStyles();
-
   const hasIdsToExport = !!idsToExport?.length;
-
   const {
     loading: loadingGiftCardList,
     totalCount: filteredGiftCardsCount,
     selectedRowIds,
   } = useGiftCardList();
-
   const selectedIds = idsToExport ?? selectedRowIds;
-
   const { data: allGiftCardsCountData, loading: loadingGiftCardCount } =
     useGiftCardTotalCountQuery();
-
   const loading = loadingGiftCardList || loadingGiftCardCount;
-
   const [exportGiftCards, exportGiftCardsOpts] = useExportGiftCardsMutation({
     onCompleted: data => {
       const errors = data?.exportGiftCards?.errors;
@@ -64,16 +52,13 @@ const GiftCardExportDialog: React.FC<
           text: intl.formatMessage(messages.successAlertDescription),
           title: intl.formatMessage(messages.successAlertTitle),
         });
-
         queue(Task.EXPORT, {
           id: data?.exportGiftCards?.exportFile?.id,
         });
-
         onClose();
       }
     },
   });
-
   const handleSubmit = (data: ExportSettingsFormData) => {
     exportGiftCards({
       variables: {
@@ -84,15 +69,11 @@ const GiftCardExportDialog: React.FC<
       },
     });
   };
-
   const { data, change, submit } = useForm(
-    hasIdsToExport
-      ? exportSettingsInitialFormDataWithIds
-      : exportSettingsInitialFormData,
+    hasIdsToExport ? exportSettingsInitialFormDataWithIds : exportSettingsInitialFormData,
     handleSubmit,
   );
   const allGiftCardsCount = allGiftCardsCountData?.giftCards?.totalCount ?? 0;
-
   const exportScopeLabels = {
     allItems: intl.formatMessage(
       {
@@ -126,9 +107,7 @@ const GiftCardExportDialog: React.FC<
           {!loading && (
             <>
               <ExportDialogSettings
-                errors={
-                  exportGiftCardsOpts?.data?.exportGiftCards?.errors ?? []
-                }
+                errors={exportGiftCardsOpts?.data?.exportGiftCards?.errors ?? []}
                 onChange={change}
                 selectedItems={selectedIds?.length}
                 data={data}
@@ -139,9 +118,9 @@ const GiftCardExportDialog: React.FC<
                   all: allGiftCardsCount,
                 }}
               />
-              <Typography className={classes.note} variant="body2">
+              <Text className={classes.note} fontSize={3}>
                 {intl.formatMessage(messages.exportNote)}
-              </Typography>
+              </Text>
             </>
           )}
         </ContentWithProgress>

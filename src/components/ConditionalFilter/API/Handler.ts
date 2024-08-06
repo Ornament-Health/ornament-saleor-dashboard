@@ -15,13 +15,16 @@ import {
   _GetDynamicLeftOperandsDocument,
   _GetDynamicLeftOperandsQuery,
   _GetDynamicLeftOperandsQueryVariables,
+  _GetLegacyChannelOperandsDocument,
   _GetProductTypesChoicesDocument,
   _GetProductTypesChoicesQuery,
   _GetProductTypesChoicesQueryVariables,
 } from "@dashboard/graphql";
+import { IntlShape } from "react-intl";
 
 import { ItemOption } from "../FilterElement/ConditionValue";
 import { LeftOperand } from "../LeftOperandsProvider";
+import { getLocalizedLabel } from "./initialState/orders/intl";
 
 export interface Handler {
   fetch: () => Promise<ItemOption[]>;
@@ -64,12 +67,16 @@ export class AttributeChoicesHandler implements Handler {
         query,
       },
     });
+
     return createOptionsFromAPI(data.attribute?.choices?.edges ?? []);
   };
 }
 
 export class CollectionHandler implements Handler {
-  constructor(public client: ApolloClient<unknown>, public query: string) {}
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
 
   fetch = async () => {
     const { data } = await this.client.query<
@@ -88,7 +95,10 @@ export class CollectionHandler implements Handler {
 }
 
 export class CategoryHandler implements Handler {
-  constructor(public client: ApolloClient<unknown>, public query: string) {}
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
 
   fetch = async () => {
     const { data } = await this.client.query<
@@ -107,7 +117,10 @@ export class CategoryHandler implements Handler {
 }
 
 export class ProductTypeHandler implements Handler {
-  constructor(public client: ApolloClient<unknown>, public query: string) {}
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
 
   fetch = async () => {
     const { data } = await this.client.query<
@@ -126,7 +139,10 @@ export class ProductTypeHandler implements Handler {
 }
 
 export class ChannelHandler implements Handler {
-  constructor(public client: ApolloClient<unknown>, public query: string) {}
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
 
   fetch = async () => {
     const { data } = await this.client.query<
@@ -135,6 +151,7 @@ export class ChannelHandler implements Handler {
     >({
       query: _GetChannelOperandsDocument,
     });
+
     const options =
       data.channels?.map(({ id, name, slug }) => ({
         label: name,
@@ -142,14 +159,41 @@ export class ChannelHandler implements Handler {
         slug,
       })) ?? [];
 
-    return options.filter(({ label }) =>
-      label.toLowerCase().includes(this.query.toLowerCase()),
-    );
+    return options.filter(({ label }) => label.toLowerCase().includes(this.query.toLowerCase()));
+  };
+}
+
+// 'Orders' filter required channel ID, not slug
+export class LegacyChannelHandler implements Handler {
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
+
+  fetch = async () => {
+    const { data } = await this.client.query<
+      _GetChannelOperandsQuery,
+      _GetChannelOperandsQueryVariables
+    >({
+      query: _GetLegacyChannelOperandsDocument,
+    });
+
+    const options =
+      data.channels?.map(({ id, name, slug }) => ({
+        label: name,
+        value: id,
+        slug,
+      })) ?? [];
+
+    return options.filter(({ label }) => label.toLowerCase().includes(this.query.toLowerCase()));
   };
 }
 
 export class AttributesHandler implements Handler {
-  constructor(public client: ApolloClient<unknown>, public query: string) {}
+  constructor(
+    public client: ApolloClient<unknown>,
+    public query: string,
+  ) {}
 
   fetch = async (): Promise<LeftOperand[]> => {
     const { data } = await this.client.query<
@@ -162,6 +206,7 @@ export class AttributesHandler implements Handler {
         query: this.query,
       },
     });
+
     return (
       data.attributes?.edges.map(({ node }) => ({
         label: node.name ?? "",
@@ -180,3 +225,48 @@ export class BooleanValuesHandler implements Handler {
     return this.options;
   };
 }
+
+export class EnumValuesHandler implements Handler {
+  private options: LeftOperand[];
+
+  public query?: string[];
+
+  constructor(
+    enumObject: Record<string, string>,
+    type: LeftOperand["type"],
+    intl: IntlShape,
+    query?: string[],
+  ) {
+    this.options = Object.values(enumObject).map(value => ({
+      value,
+      slug: value,
+      type,
+      label: getLocalizedLabel(type, value, intl),
+    }));
+    this.query = query;
+  }
+
+  fetch = async (): Promise<LeftOperand[]> => {
+    if (this.query) {
+      return this.options.filter(el => {
+        if (this.query) {
+          return this.query.includes(el.value);
+        }
+
+        return false;
+      });
+    }
+
+    return this.options;
+  };
+}
+
+export class TextInputValuesHandler implements Handler {
+  constructor(public options: LeftOperand[]) {}
+
+  fetch = async (): Promise<LeftOperand[]> => {
+    return this.options;
+  };
+}
+
+export const NoopValuesHandler = TextInputValuesHandler;

@@ -7,10 +7,7 @@ import React, { useState } from "react";
 import { FormattedMessage } from "react-intl";
 
 import { VoucherCodesAddButton } from "../VoucherCodesAddButton/VoucherCodesAddButton";
-import {
-  VoucherCodesDatagrid,
-  VoucherCodesDatagridProps,
-} from "../VoucherCodesDatagrid";
+import { VoucherCodesDatagrid, VoucherCodesDatagridProps } from "../VoucherCodesDatagrid";
 import { VoucherCodesDeleteDialog } from "../VoucherCodesDeleteDialog";
 import {
   GenerateMultipleVoucherCodeFormData,
@@ -40,15 +37,8 @@ export const VoucherCodes = ({
   ...datagridProps
 }: VoucherCodesProps) => {
   const { pageInfo, ...paginationValues } = voucherCodesPagination;
-  const [openModal, setOpenModal] = useState<VoucherCodesUrlDialog | null>(
-    null,
-  );
-
-  const hasSavedCodesToDelete = hasSavedVoucherCodesToDelete(
-    selectedCodesIds,
-    datagridProps.codes,
-  );
-
+  const [openModal, setOpenModal] = useState<VoucherCodesUrlDialog | null>(null);
+  const hasSavedCodesToDelete = hasSavedVoucherCodesToDelete(selectedCodesIds, datagridProps.codes);
   const closeModal = () => {
     setOpenModal(null);
   };
@@ -64,7 +54,7 @@ export const VoucherCodes = ({
           marginTop={8}
           paddingX={6}
         >
-          <Text variant="heading">
+          <Text size={5} fontWeight="bold">
             <FormattedMessage defaultMessage="Voucher codes" id="kVL3LM" />
           </Text>
           <Box display="flex" gap={3}>
@@ -74,10 +64,7 @@ export const VoucherCodes = ({
                 onClick={() => setOpenModal("delete-codes")}
               >
                 {hasSavedCodesToDelete ? (
-                  <FormattedMessage
-                    defaultMessage="Can't delete saved codes"
-                    id="4gJAm6"
-                  />
+                  <FormattedMessage defaultMessage="Can't delete saved codes" id="4gJAm6" />
                 ) : (
                   <FormattedMessage defaultMessage="Delete codes" id="UJ97Lb" />
                 )}

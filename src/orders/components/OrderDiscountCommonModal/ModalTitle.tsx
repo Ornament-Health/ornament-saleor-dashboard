@@ -1,7 +1,8 @@
 import CardSpacer from "@dashboard/components/CardSpacer";
-import { Divider, Typography } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 const useStyles = makeStyles(
@@ -26,17 +27,15 @@ interface ModalTitleProps {
   withBorder?: boolean;
 }
 
-const ModalTitle: React.FC<ModalTitleProps> = ({
-  title,
-  onClose,
-  withBorder = false,
-}) => {
+const ModalTitle: React.FC<ModalTitleProps> = ({ title, onClose, withBorder = false }) => {
   const classes = useStyles({});
 
   return (
     <>
       <div className={classes.container}>
-        <Typography variant="h5">{title}</Typography>
+        <Text size={3} fontWeight="bold" lineHeight={2}>
+          {title}
+        </Text>
         <CloseIcon className={classes.closeIcon} onClick={onClose} />
       </div>
       {withBorder && (

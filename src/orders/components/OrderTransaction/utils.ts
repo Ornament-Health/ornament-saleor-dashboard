@@ -1,6 +1,7 @@
 // @ts-strict-ignore
 import {
   TransactionActionEnum,
+  TransactionBaseEventFragment,
   TransactionEventFragment,
   TransactionEventTypeEnum,
   TransactionItemFragment,
@@ -18,10 +19,7 @@ import { transactionActionMessages } from "./messages";
 // type TransactionActionUnion = Exclude<`${TransactionActionEnum}`, "REFUND">;
 type TransactionActionUnion = TransactionActionEnum;
 
-export const mapActionToMessage: Record<
-  TransactionActionUnion,
-  MessageDescriptor
-> = {
+export const mapActionToMessage: Record<TransactionActionUnion, MessageDescriptor> = {
   CHARGE: transactionActionMessages.capture,
   CANCEL: transactionActionMessages.cancel,
   // refund is handled in "Send refund" view not in Transactions list
@@ -112,7 +110,7 @@ const typeMap: Record<TransactionEventTypeEnum, TransactionMappingResult> = {
 };
 
 export const mapTransactionEvent = (
-  event: TransactionEventFragment | TransactionFakeEvent | undefined,
+  event: TransactionEventFragment | TransactionFakeEvent | TransactionBaseEventFragment | undefined,
 ): TransactionMappingResult => {
   if (!event) {
     return {
@@ -126,6 +124,7 @@ export const mapTransactionEvent = (
   }
 
   const mappedResult = typeMap[event.type];
+
   if (mappedResult) {
     return mappedResult;
   }
@@ -143,5 +142,6 @@ export const getTransactionEvents = (
   if (transaction.__typename === "FakeTransaction") {
     return fakeEvents;
   }
+
   return transaction.events;
 };

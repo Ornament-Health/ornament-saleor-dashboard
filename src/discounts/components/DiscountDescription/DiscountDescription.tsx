@@ -16,18 +16,18 @@ export const DiscountDescription = ({
   disabled = false,
   error = false,
 }: DiscountDescriptionProps) => {
-  const { defaultValue, editorRef, isReadyForMount, handleChange } =
-    useRichTextContext();
-
+  const { defaultValue, editorRef, isReadyForMount, handleChange } = useRichTextContext();
   const { field } = useController<DiscoutFormData, "description">({
     name: "description",
   });
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        <FormattedMessage defaultMessage="Description" id="Q8Qw5B" />
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          <FormattedMessage defaultMessage="Description" id="Q8Qw5B" />
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         {isReadyForMount ? (
           <RichTextEditor
