@@ -13,10 +13,7 @@ interface HomeActivityCardProps {
   testId?: string;
 }
 
-export const HomeActivityCard = ({
-  activities,
-  testId,
-}: HomeActivityCardProps) => {
+export const HomeActivityCard = ({ activities, testId }: HomeActivityCardProps) => {
   const intl = useIntl();
   const { themeValues } = useTheme();
   const title = intl.formatMessage({
@@ -28,13 +25,12 @@ export const HomeActivityCard = ({
   if (activities.hasError) {
     return (
       <DashboardCard data-test-id={testId}>
-        <DashboardCard.Title>{title}</DashboardCard.Title>
+        <DashboardCard.Header>
+          <DashboardCard.Title>{title}</DashboardCard.Title>
+        </DashboardCard.Header>
         <DashboardCard.Content>
           <Text color="default2">
-            <FormattedMessage
-              id="/U8FUp"
-              defaultMessage="Couldn't load activities"
-            />
+            <FormattedMessage id="/U8FUp" defaultMessage="Couldn't load activities" />
           </Text>
         </DashboardCard.Content>
       </DashboardCard>
@@ -44,12 +40,14 @@ export const HomeActivityCard = ({
   if (activities.loading) {
     return (
       <DashboardCard data-test-id={testId}>
-        <DashboardCard.Title>{title}</DashboardCard.Title>
+        <DashboardCard.Header>
+          <DashboardCard.Title>{title}</DashboardCard.Title>
+        </DashboardCard.Header>
         <DashboardCard.Content>
           <Box display="flex" flexDirection="column" gap={5}>
-            <Skeleton />
-            <Skeleton __width="80%" />
-            <Skeleton />
+            <Skeleton height={3} />
+            <Skeleton __width="80%" height={3} />
+            <Skeleton height={3} />
           </Box>
         </DashboardCard.Content>
       </DashboardCard>
@@ -58,7 +56,9 @@ export const HomeActivityCard = ({
 
   return (
     <DashboardCard data-test-id={testId}>
-      <DashboardCard.Title>{title}</DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{title}</DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <List>
           {renderCollection(
@@ -77,10 +77,8 @@ export const HomeActivityCard = ({
               >
                 {activity ? (
                   <>
-                    <Text variant="body" size="small">
-                      {getActivityMessage(activity, intl)}
-                    </Text>
-                    <Text variant="body" size="small" color="default2">
+                    <Text size={3}>{getActivityMessage(activity, intl)}</Text>
+                    <Text size={3} color="default2">
                       <DateTime date={activity.date} plain />
                     </Text>
                   </>
@@ -93,11 +91,8 @@ export const HomeActivityCard = ({
             ),
             () => (
               <Box paddingY={4}>
-                <Text variant="body" size="small">
-                  <FormattedMessage
-                    id="wWTUrM"
-                    defaultMessage="No activities found"
-                  />
+                <Text size={3}>
+                  <FormattedMessage id="wWTUrM" defaultMessage="No activities found" />
                 </Text>
               </Box>
             ),

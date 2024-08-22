@@ -12,7 +12,7 @@ import { useDevModeContext } from "@dashboard/components/DevModePanel/hooks";
 import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata, MetadataIdSchema } from "@dashboard/components/Metadata";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import {
   OrderDetailsFragment,
   OrderDetailsQuery,
@@ -58,10 +58,7 @@ export interface OrderDetailsPageProps {
   saveButtonBarState: ConfirmButtonTransitionState;
   errors: OrderErrorFragment[];
   onOrderLineAdd?: () => void;
-  onOrderLineChange?: (
-    id: string,
-    data: OrderDraftDetailsProductsFormData,
-  ) => void;
+  onOrderLineChange?: (id: string, data: OrderDraftDetailsProductsFormData) => void;
   onOrderLineRemove?: (id: string) => void;
   onShippingMethodEdit?: () => void;
   onBillingAddressEdit: () => any;
@@ -83,11 +80,9 @@ export interface OrderDetailsPageProps {
   onInvoiceClick: (invoiceId: string) => any;
   onInvoiceGenerate: () => any;
   onInvoiceSend: (invoiceId: string) => any;
-  onTransactionAction: (
-    transactionId: string,
-    actionType: TransactionActionEnum,
-  ) => any;
+  onTransactionAction: (transactionId: string, actionType: TransactionActionEnum) => any;
   onAddManualTransaction: () => any;
+  onRefundAdd: () => void;
   onSubmit: (data: MetadataIdSchema) => SubmitPromise;
 }
 
@@ -122,43 +117,36 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
     onAddManualTransaction,
     onShowMetadata,
     onMarkAsPaid,
+    onRefundAdd,
     onSubmit,
   } = props;
   const navigate = useNavigator();
   const intl = useIntl();
-
   const isOrderUnconfirmed = order?.status === OrderStatus.UNCONFIRMED;
   const canCancel = order?.status !== OrderStatus.CANCELED;
   const canEditAddresses = order?.status !== OrderStatus.CANCELED;
   const canFulfill = order?.status !== OrderStatus.CANCELED;
   const notAllowedToFulfillUnpaid =
-    shop?.fulfillmentAutoApprove &&
-    !shop?.fulfillmentAllowUnpaid &&
-    !order?.isPaid;
-  const unfulfilled = (order?.lines || []).filter(
-    line => line.quantityToFulfill > 0,
-  );
-
+    shop?.fulfillmentAutoApprove && !shop?.fulfillmentAllowUnpaid && !order?.isPaid;
+  const unfulfilled = (order?.lines || []).filter(line => line.quantityToFulfill > 0);
   const handleSubmit = async (data: MetadataIdSchema) => {
     const result = await onSubmit(data);
+
     return getMutationErrors(result);
   };
-
   const initial = createOrderMetadataIdSchema(order);
-
   const saveLabel = isOrderUnconfirmed
     ? { confirm: intl.formatMessage(messages.confirmOrder) }
     : undefined;
-
   const allowSave = () => {
     if (!isOrderUnconfirmed) {
       return loading;
     } else if (!order?.lines?.length) {
       return true;
     }
+
     return loading;
   };
-
   const selectCardMenuItems = filteredConditionalItems([
     {
       item: {
@@ -175,18 +163,9 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
       shouldExist: hasAnyItemsReplaceable(order),
     },
   ]);
-
-  const { ORDER_DETAILS_MORE_ACTIONS } = useExtensions(
-    extensionMountPoints.ORDER_DETAILS,
-  );
-
-  const extensionMenuItems = mapToMenuItemsForOrderDetails(
-    ORDER_DETAILS_MORE_ACTIONS,
-    order?.id,
-  );
-
+  const { ORDER_DETAILS_MORE_ACTIONS } = useExtensions(extensionMountPoints.ORDER_DETAILS);
+  const extensionMenuItems = mapToMenuItemsForOrderDetails(ORDER_DETAILS_MORE_ACTIONS, order?.id);
   const context = useDevModeContext();
-
   const openPlaygroundURL = () => {
     context.setDevModeContent(defaultGraphiQLQuery);
     context.setVariables(`{ "id": "${order?.id}" }`);
@@ -194,18 +173,9 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
   };
 
   return (
-    <Form
-      confirmLeave
-      initial={initial}
-      onSubmit={handleSubmit}
-      mergeData={false}
-    >
+    <Form confirmLeave initial={initial} onSubmit={handleSubmit} mergeData={false}>
       {({ set, triggerChange, data, submit }) => {
-        const handleChangeMetadata = createMetadataHandler(
-          data,
-          set,
-          triggerChange,
-        );
+        const handleChangeMetadata = createMetadataHandler(data, set, triggerChange);
 
         return (
           <DetailPageLayout>
@@ -256,15 +226,9 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
                   fulfillmentAllowUnpaid={shop?.fulfillmentAllowUnpaid}
                   order={order}
                   onShowMetadata={onShowMetadata}
-                  onOrderFulfillmentCancel={() =>
-                    onFulfillmentCancel(fulfillment.id)
-                  }
-                  onTrackingCodeAdd={() =>
-                    onFulfillmentTrackingNumberUpdate(fulfillment.id)
-                  }
-                  onOrderFulfillmentApprove={() =>
-                    onFulfillmentApprove(fulfillment.id)
-                  }
+                  onOrderFulfillmentCancel={() => onFulfillmentCancel(fulfillment.id)}
+                  onTrackingCodeAdd={() => onFulfillmentTrackingNumberUpdate(fulfillment.id)}
+                  onOrderFulfillmentApprove={() => onFulfillmentApprove(fulfillment.id)}
                 >
                   <Metadata
                     isLoading={loading}
@@ -282,6 +246,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
                 onPaymentRefund={onPaymentRefund}
                 onMarkAsPaid={onMarkAsPaid}
                 onAddManualTransaction={onAddManualTransaction}
+                onRefundAdd={onRefundAdd}
               />
               <Metadata
                 isLoading={loading}
@@ -320,13 +285,17 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
               )}
               <OrderCustomerNote note={maybe(() => order.customerNote)} />
             </DetailPageLayout.RightSidebar>
-            <Savebar
-              labels={saveLabel}
-              onCancel={() => navigate(orderListUrl())}
-              onSubmit={submit}
-              state={saveButtonBarState}
-              disabled={allowSave()}
-            />
+            <Savebar>
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(orderListUrl())} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={allowSave()}
+              >
+                {saveLabel?.confirm}
+              </Savebar.ConfirmButton>
+            </Savebar>
           </DetailPageLayout>
         );
       }}

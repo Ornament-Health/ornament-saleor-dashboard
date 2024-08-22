@@ -8,13 +8,5 @@
  * https://docs.saleor.io/docs/3.x/api-reference/miscellaneous/queries/plugins
  */
 export const getPluginsWithAppReplacementsIds = () => {
-  return [
-    "mirumee.payments.adyen",
-    "mirumee.taxes.avalara",
-    "mirumee.invoicing",
-    "mirumee.notifications.sendgrid_email",
-    "saleor.payments.stripe",
-    "mirumee.payments.stripe",
-    "mirumee.notifications.user_email",
-  ];
+  return ["mirumee.payments.adyen", "mirumee.taxes.avalara", "mirumee.invoicing"];
 };

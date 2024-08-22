@@ -6,25 +6,15 @@ import ChannelsAvailabilityDialogContentWrapper from "@dashboard/components/Chan
 import Checkbox from "@dashboard/components/Checkbox";
 import Chip from "@dashboard/components/Chip";
 import Hr from "@dashboard/components/Hr";
-import { MultiAutocompleteChoiceType } from "@dashboard/components/MultiAutocompleteSelectField";
-import {
-  ChannelFragment,
-  ExportProductsInput,
-  ProductFieldEnum,
-} from "@dashboard/graphql";
+import { ChannelFragment, ExportProductsInput, ProductFieldEnum } from "@dashboard/graphql";
 import { ChangeEvent, FormChange } from "@dashboard/hooks/useForm";
 import useSearchQuery from "@dashboard/hooks/useSearchQuery";
 import { sectionNames } from "@dashboard/intl";
 import { FetchMoreProps } from "@dashboard/types";
 import { toggle } from "@dashboard/utils/lists";
-import {
-  Button,
-  CircularProgress,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Button, CircularProgress, FormControlLabel, TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Option, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -32,15 +22,14 @@ import useProductExportFieldMessages from "./messages";
 
 export const attributeNamePrefix = "attribute-";
 export const warehouseNamePrefix = "warehouse-";
-const maxChips = 4;
 
+const maxChips = 4;
 const inventoryFields = [
   ProductFieldEnum.PRODUCT_WEIGHT,
   ProductFieldEnum.VARIANT_ID,
   ProductFieldEnum.VARIANT_SKU,
   ProductFieldEnum.VARIANT_WEIGHT,
 ];
-
 const useStyles = makeStyles(
   theme => ({
     accordion: {
@@ -113,7 +102,6 @@ const useStyles = makeStyles(
     name: "ProductExportDialogInfo",
   },
 );
-
 const Option: React.FC<{
   checked: boolean;
   name: string;
@@ -128,12 +116,7 @@ const Option: React.FC<{
       }}
       color="primary"
       control={
-        <Checkbox
-          className={classes.checkbox}
-          checked={checked}
-          name={name}
-          onChange={onChange}
-        />
+        <Checkbox className={classes.checkbox} checked={checked} name={name} onChange={onChange} />
       }
       className={classes.label}
       label={children}
@@ -141,7 +124,6 @@ const Option: React.FC<{
     />
   );
 };
-
 const FieldAccordion: React.FC<
   AccordionProps & {
     data: ExportProductsInput;
@@ -152,14 +134,8 @@ const FieldAccordion: React.FC<
 > = ({ data, fields, onChange, onToggleAll, ...props }) => {
   const classes = useStyles({});
   const getFieldLabel = useProductExportFieldMessages();
-
-  const selectedAll = fields.every(field =>
-    data.exportInfo.fields.includes(field),
-  );
-
-  const selectedFields = data.exportInfo.fields.filter(field =>
-    fields.includes(field),
-  );
+  const selectedAll = fields.every(field => data.exportInfo.fields.includes(field));
+  const selectedFields = data.exportInfo.fields.filter(field => fields.includes(field));
 
   return (
     <Accordion
@@ -182,7 +158,7 @@ const FieldAccordion: React.FC<
               />
             ))}
             {selectedFields.length > maxChips && (
-              <Typography className={classes.moreLabel} variant="caption">
+              <Text className={classes.moreLabel} size={2} fontWeight="light">
                 <FormattedMessage
                   id="ve/Sph"
                   defaultMessage="and {number} more"
@@ -191,18 +167,14 @@ const FieldAccordion: React.FC<
                     number: selectedFields.length - maxChips,
                   }}
                 />
-              </Typography>
+              </Text>
             )}
           </div>
         )
       }
       {...props}
     >
-      <Option
-        checked={selectedAll}
-        name="all"
-        onChange={() => onToggleAll(fields, !selectedAll)}
-      >
+      <Option checked={selectedAll} name="all" onChange={() => onToggleAll(fields, !selectedAll)}>
         <FormattedMessage
           id="lQRnYK"
           defaultMessage="Select All"
@@ -224,12 +196,12 @@ const FieldAccordion: React.FC<
 };
 
 export interface ProductExportDialogInfoProps extends FetchMoreProps {
-  attributes: MultiAutocompleteChoiceType[];
+  attributes: Option[];
   channels: ChannelFragment[];
   selectedChannels: ChannelFragment[];
-  warehouses: MultiAutocompleteChoiceType[];
+  warehouses: Option[];
   data: ExportProductsInput;
-  selectedAttributes: MultiAutocompleteChoiceType[];
+  selectedAttributes: Option[];
   onAttrtibuteSelect: FormChange;
   onWarehouseSelect: FormChange;
   onChange: FormChange;
@@ -266,22 +238,16 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
     onQueryChange: onChannelsQueryChange,
     filteredChannels,
   } = useChannelsSearch(channels);
-
   const handleFieldChange = (event: ChangeEvent) =>
     onChange({
       target: {
         name: "exportInfo",
         value: {
           ...data.exportInfo,
-          fields: toggle(
-            event.target.name,
-            data.exportInfo.fields,
-            (a, b) => a === b,
-          ),
+          fields: toggle(event.target.name, data.exportInfo.fields, (a, b) => a === b),
         },
       },
     });
-
   const handleToggleAllFields = (fields: ProductFieldEnum[], setTo: boolean) =>
     onChange({
       target: {
@@ -291,33 +257,27 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
           fields: setTo
             ? [
                 ...data.exportInfo.fields,
-                ...fields.filter(
-                  field => !data.exportInfo.fields.includes(field),
-                ),
+                ...fields.filter(field => !data.exportInfo.fields.includes(field)),
               ]
             : data.exportInfo.fields.filter(field => !fields.includes(field)),
         },
       },
     });
-
   const selectedInventoryFields = data.exportInfo.fields.filter(field =>
     inventoryFields.includes(field),
   );
-  const selectedAllInventoryFields =
-    selectedInventoryFields.length === inventoryFields.length;
-
-  const handleSelectAllChannels = () =>
-    onSelectAllChannels(selectedChannels, channels.length);
+  const selectedAllInventoryFields = selectedInventoryFields.length === inventoryFields.length;
+  const handleSelectAllChannels = () => onSelectAllChannels(selectedChannels, channels.length);
 
   return (
     <>
-      <Typography className={classes.dialogLabel}>
+      <Text className={classes.dialogLabel}>
         <FormattedMessage
           id="Jwuu4X"
           defaultMessage="Information exported:"
           description="select product informations to be exported"
         />
-      </Typography>
+      </Text>
       <div className={classes.scrollArea}>
         <Accordion
           dataTestId="channel-expand-button"
@@ -335,7 +295,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                   />
                 ))}
                 {selectedChannels.length > maxChips && (
-                  <Typography className={classes.moreLabel} variant="caption">
+                  <Text className={classes.moreLabel} size={2} fontWeight="light">
                     <FormattedMessage
                       id="ve/Sph"
                       defaultMessage="and {number} more"
@@ -344,7 +304,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                         number: selectedChannels.length - maxChips,
                       }}
                     />
-                  </Typography>
+                  </Text>
                 )}
               </div>
             )
@@ -406,7 +366,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                   />
                 ))}
                 {selectedAttributes.length > maxChips && (
-                  <Typography className={classes.moreLabel} variant="caption">
+                  <Text className={classes.moreLabel} size={2} fontWeight="light">
                     <FormattedMessage
                       id="ve/Sph"
                       defaultMessage="and {number} more"
@@ -415,7 +375,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                         number: selectedAttributes.length - maxChips,
                       }}
                     />
-                  </Typography>
+                  </Text>
                 )}
               </div>
             )
@@ -423,6 +383,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
           data-test-id="attributes"
         >
           <TextField
+            data-test-id="attribute-search-input"
             name="query"
             value={query}
             onChange={onQueryChange}
@@ -456,11 +417,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
             <div className={classes.loadMoreContainer}>
               {hasMore && !loading && (
                 <Button color="primary" onClick={onFetchMore}>
-                  <FormattedMessage
-                    id="ZDJEat"
-                    defaultMessage="Load More"
-                    description="button"
-                  />
+                  <FormattedMessage id="ZDJEat" defaultMessage="Load More" description="button" />
                 </Button>
               )}
               {loading && <CircularProgress size={32} />}
@@ -488,8 +445,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
             description: "informations about product stock, header",
           })}
           quickPeek={
-            (data.exportInfo.warehouses.length > 0 ||
-              selectedInventoryFields.length > 0) && (
+            (data.exportInfo.warehouses.length > 0 || selectedInventoryFields.length > 0) && (
               <div className={classes.quickPeekContainer}>
                 {selectedInventoryFields.slice(0, maxChips).map(field => (
                   <Chip
@@ -512,11 +468,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                     <Chip
                       key={warehouseId}
                       className={classes.chip}
-                      label={
-                        warehouses.find(
-                          warehouse => warehouse.value === warehouseId,
-                        ).label
-                      }
+                      label={warehouses.find(warehouse => warehouse.value === warehouseId).label}
                       onClose={() =>
                         onWarehouseSelect({
                           target: {
@@ -527,10 +479,8 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                       }
                     />
                   ))}
-                {data.exportInfo.warehouses.length +
-                  selectedInventoryFields.length >
-                  maxChips && (
-                  <Typography className={classes.moreLabel} variant="caption">
+                {data.exportInfo.warehouses.length + selectedInventoryFields.length > maxChips && (
+                  <Text className={classes.moreLabel} size={2} fontWeight="light">
                     <FormattedMessage
                       id="ve/Sph"
                       defaultMessage="and {number} more"
@@ -542,7 +492,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
                           maxChips,
                       }}
                     />
-                  </Typography>
+                  </Text>
                 )}
               </div>
             )
@@ -553,12 +503,7 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
             <Option
               checked={selectedAllInventoryFields}
               name="all"
-              onChange={() =>
-                handleToggleAllFields(
-                  inventoryFields,
-                  !selectedAllInventoryFields,
-                )
-              }
+              onChange={() => handleToggleAllFields(inventoryFields, !selectedAllInventoryFields)}
             >
               <FormattedMessage
                 id="lQRnYK"
@@ -578,12 +523,9 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
             ))}
           </div>
           <Hr className={classes.hrWarehouses} />
-          <Typography>
-            <FormattedMessage
-              id="ZRz3hM"
-              defaultMessage="Export Product Stock Quantity to CSV"
-            />
-          </Typography>
+          <Text>
+            <FormattedMessage id="ZRz3hM" defaultMessage="Export Product Stock Quantity to CSV" />
+          </Text>
           <div>
             <Option
               checked={warehouses.every(warehouse =>
@@ -600,13 +542,13 @@ const ProductExportDialogInfo: React.FC<ProductExportDialogInfoProps> = ({
             </Option>
           </div>
           <Hr className={classes.hrWarehouses} />
-          <Typography className={classes.warehousesLabel} variant="subtitle1">
+          <Text className={classes.warehousesLabel} fontSize={3}>
             <FormattedMessage
               id="WQMTKI"
               defaultMessage="Warehouses A to Z"
               description="list of warehouses"
             />
-          </Typography>
+          </Text>
           {warehouses.map(warehouse => (
             <Option
               checked={data.exportInfo.warehouses.includes(warehouse.value)}

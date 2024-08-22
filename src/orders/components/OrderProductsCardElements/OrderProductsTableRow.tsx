@@ -1,6 +1,5 @@
 // @ts-strict-ignore
 import Money from "@dashboard/components/Money";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import { AVATAR_MARGIN } from "@dashboard/components/TableCellAvatar/Avatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
@@ -8,6 +7,7 @@ import { OrderDetailsFragment, OrderLineFragment } from "@dashboard/graphql";
 import { maybe } from "@dashboard/misc";
 import { TableCell } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 
 const useStyles = makeStyles(
@@ -54,10 +54,7 @@ interface TableLineProps {
   isOrderLine?: boolean;
 }
 
-const TableLine: React.FC<TableLineProps> = ({
-  line: lineData,
-  isOrderLine = false,
-}) => {
+const TableLine: React.FC<TableLineProps> = ({ line: lineData, isOrderLine = false }) => {
   const classes = useStyles({});
   const { quantity, quantityToFulfill } = lineData as OrderLineFragment;
 
@@ -71,7 +68,6 @@ const TableLine: React.FC<TableLineProps> = ({
         orderLine: lineData,
       } as OrderDetailsFragment["fulfillments"][0]["lines"][0])
     : (lineData as OrderDetailsFragment["fulfillments"][0]["lines"][0]);
-
   const quantityToDisplay = isOrderLine ? quantityToFulfill : quantity;
 
   return (
@@ -85,9 +81,7 @@ const TableLine: React.FC<TableLineProps> = ({
       <TableCell className={classes.colSku}>
         {line?.orderLine ? line.orderLine.productSku : <Skeleton />}
       </TableCell>
-      <TableCell className={classes.colQuantity}>
-        {quantityToDisplay || <Skeleton />}
-      </TableCell>
+      <TableCell className={classes.colQuantity}>{quantityToDisplay || <Skeleton />}</TableCell>
       <TableCell className={classes.colPrice} align="right">
         {maybe(() => line.orderLine.unitPrice.gross) ? (
           <Money money={line.orderLine.unitPrice.gross} />

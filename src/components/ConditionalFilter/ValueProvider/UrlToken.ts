@@ -6,6 +6,20 @@ import { slugFromConditionValue } from "../FilterElement/ConditionValue";
 
 export const CONDITIONS = ["is", "equals", "in", "between", "lower", "greater"];
 
+const ORDER_STATICS = [
+  "paymentStatus",
+  "status",
+  "authorizeStatus",
+  "chargeStatus",
+  "giftCardBought",
+  "giftCardUsed",
+  "isPreorder",
+  "isClickAndCollect",
+  "channels",
+  "customer",
+  "ids",
+];
+
 const STATIC_TO_LOAD = [
   "category",
   "collection",
@@ -16,6 +30,7 @@ const STATIC_TO_LOAD = [
   "isVisibleInListing",
   "hasCategory",
   "giftCard",
+  ...ORDER_STATICS,
 ];
 
 export const TokenType = {
@@ -60,11 +75,7 @@ export class UrlEntry {
   }
 
   public static forStatic(condition: ConditionSelected, paramName: string) {
-    return UrlEntry.fromConditionSelected(
-      condition,
-      paramName,
-      TokenType.STATIC,
-    );
+    return UrlEntry.fromConditionSelected(condition, paramName, TokenType.STATIC);
   }
 
   public getInfo() {
@@ -88,9 +99,7 @@ export class UrlEntry {
       return new UrlEntry(tokenSlug, slug);
     }
 
-    const conditionIndex = CONDITIONS.findIndex(
-      el => el === conditionValue.label,
-    );
+    const conditionIndex = CONDITIONS.findIndex(el => el === conditionValue.label);
 
     return new UrlEntry(`${tokenSlug}${conditionIndex}.${paramName}`, slug);
   }
@@ -115,17 +124,14 @@ export class UrlToken {
   }
 
   public isAttribute() {
-    const result = Object.entries(TokenType).find(
-      ([_, slug]) => slug === this.type,
-    );
+    const result = Object.entries(TokenType).find(([_, slug]) => slug === this.type);
 
     return result && result[0].includes("ATTRIBUTE");
   }
 
   public hasDynamicValues() {
     return (
-      TokenType.ATTRIBUTE_DROPDOWN === this.type ||
-      TokenType.ATTRIBUTE_MULTISELECT === this.type
+      TokenType.ATTRIBUTE_DROPDOWN === this.type || TokenType.ATTRIBUTE_MULTISELECT === this.type
     );
   }
 

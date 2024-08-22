@@ -1,5 +1,5 @@
 import { ATTRIBUTE_TYPES_WITH_CONFIGURABLE_FACED_NAVIGATION } from "@dashboard/attributes/utils/data";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import ControlledSwitch from "@dashboard/components/ControlledSwitch";
 import FormSpacer from "@dashboard/components/FormSpacer";
@@ -7,7 +7,8 @@ import { AttributeErrorFragment, AttributeTypeEnum } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getAttributeErrorMessage from "@dashboard/utils/errors/attribute";
-import { Card, CardContent, TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
@@ -21,8 +22,7 @@ const messages = defineMessages({
   },
   availableInGridCaption: {
     id: "AzMSmb",
-    defaultMessage:
-      "If enabled this attribute can be used as a column in product table.",
+    defaultMessage: "If enabled this attribute can be used as a column in product table.",
     description: "caption",
   },
   dashboardPropertiesTitle: {
@@ -82,18 +82,18 @@ const AttributeProperties: React.FC<AttributePropertiesProps> = ({
   onChange,
 }) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["storefrontSearchPosition"], errors);
-
   const storefrontFacetedNavigationProperties =
-    ATTRIBUTE_TYPES_WITH_CONFIGURABLE_FACED_NAVIGATION.includes(
-      data.inputType,
-    ) && data.type === AttributeTypeEnum.PRODUCT_TYPE;
+    ATTRIBUTE_TYPES_WITH_CONFIGURABLE_FACED_NAVIGATION.includes(data.inputType) &&
+    data.type === AttributeTypeEnum.PRODUCT_TYPE;
 
   return (
-    <Card>
-      <CardTitle title={intl.formatMessage(commonMessages.properties)} />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(commonMessages.properties)}</DashboardCard.Title>
+      </DashboardCard.Header>
+
+      <DashboardCard.Content>
         {storefrontFacetedNavigationProperties && (
           <>
             <ControlledCheckbox
@@ -110,13 +110,8 @@ const AttributeProperties: React.FC<AttributePropertiesProps> = ({
                   disabled={disabled}
                   error={!!formErrors.storefrontSearchPosition}
                   fullWidth
-                  helperText={getAttributeErrorMessage(
-                    formErrors.storefrontSearchPosition,
-                    intl,
-                  )}
-                  name={
-                    "storefrontSearchPosition" as keyof AttributePageFormData
-                  }
+                  helperText={getAttributeErrorMessage(formErrors.storefrontSearchPosition, intl)}
+                  name={"storefrontSearchPosition" as keyof AttributePageFormData}
                   label={intl.formatMessage(messages.storefrontSearchPosition)}
                   value={data.storefrontSearchPosition}
                   onChange={onChange}
@@ -131,18 +126,19 @@ const AttributeProperties: React.FC<AttributePropertiesProps> = ({
           label={
             <>
               <FormattedMessage {...messages.visibleInStorefront} />
-              <Typography variant="caption">
+              <Text fontWeight="medium" fontSize={3} display="block">
                 <FormattedMessage {...messages.visibleInStorefrontCaption} />
-              </Typography>
+              </Text>
             </>
           }
           checked={data.visibleInStorefront}
           onChange={onChange}
           disabled={disabled}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 AttributeProperties.displayName = "AttributeProperties";
 export default AttributeProperties;

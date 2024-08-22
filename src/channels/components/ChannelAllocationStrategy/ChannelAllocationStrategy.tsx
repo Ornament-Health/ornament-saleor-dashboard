@@ -1,10 +1,9 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import PreviewPill from "@dashboard/components/PreviewPill";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
 import { AllocationStrategyEnum, StockSettingsInput } from "@dashboard/graphql";
-import { Card, CardContent, Typography } from "@material-ui/core";
 import HelpOutline from "@material-ui/icons/HelpOutline";
-import { Tooltip } from "@saleor/macaw-ui-next";
+import { Text, Tooltip } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -38,19 +37,20 @@ const ChannelAllocationStrategy: React.FC<ChannelAllocationStrategyProps> = ({
   const classes = useStyles();
 
   return (
-    <Card>
-      <CardTitle
-        title={
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
           <div className={classes.preview}>
             <FormattedMessage {...messages.allocationStrategy} />
             <PreviewPill />
           </div>
-        }
-      />
-      <CardContent>
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+
+      <DashboardCard.Content>
         <RadioGroupField
           label={
-            <Typography>
+            <Text>
               <FormattedMessage {...messages.allocationStrategyDescription} />
               <Tooltip>
                 <Tooltip.Trigger>
@@ -61,19 +61,15 @@ const ChannelAllocationStrategy: React.FC<ChannelAllocationStrategyProps> = ({
                   <FormattedMessage {...messages.allocaationMayOccur} />
                   <ul>
                     <li>
-                      <FormattedMessage
-                        {...messages.allocaationMayOccurWithTrackInventory}
-                      />
+                      <FormattedMessage {...messages.allocaationMayOccurWithTrackInventory} />
                     </li>
                     <li>
-                      <FormattedMessage
-                        {...messages.allocaationMayOccurWithReservationTime}
-                      />
+                      <FormattedMessage {...messages.allocaationMayOccurWithReservationTime} />
                     </li>
                   </ul>
                 </Tooltip.Content>
               </Tooltip>
-            </Typography>
+            </Text>
           }
           choices={strategyOptions.map(option => ({
             label: (
@@ -81,13 +77,13 @@ const ChannelAllocationStrategy: React.FC<ChannelAllocationStrategyProps> = ({
                 className={classes.option}
                 data-test-id={`channel-allocation-strategy-option-${option.type}`}
               >
-                <Typography variant="body1">
+                <Text>
                   <FormattedMessage {...option.title} />
-                </Typography>
+                </Text>
                 {option.subtitle && (
-                  <Typography color="textSecondary" variant="caption">
+                  <Text fontWeight="medium" fontSize={3} color="default2" display="block">
                     <FormattedMessage {...option.subtitle} />
-                  </Typography>
+                  </Text>
                 )}
               </div>
             ),
@@ -98,9 +94,10 @@ const ChannelAllocationStrategy: React.FC<ChannelAllocationStrategyProps> = ({
           value={data?.allocationStrategy!}
           onChange={onChange}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 ChannelAllocationStrategy.displayName = "ChannelAllocationStrategy";
 export default ChannelAllocationStrategy;

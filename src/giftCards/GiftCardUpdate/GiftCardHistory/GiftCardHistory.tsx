@@ -1,17 +1,10 @@
 // @ts-strict-ignore
 import Form from "@dashboard/components/Form";
 import Hr from "@dashboard/components/Hr";
-import Skeleton from "@dashboard/components/Skeleton";
-import Timeline, {
-  TimelineAddNote,
-  TimelineNote,
-} from "@dashboard/components/Timeline";
-import {
-  GiftCardEventsEnum,
-  useGiftCardAddNoteMutation,
-} from "@dashboard/graphql";
+import Timeline, { TimelineAddNote, TimelineNote } from "@dashboard/components/Timeline";
+import { GiftCardEventsEnum, useGiftCardAddNoteMutation } from "@dashboard/graphql";
 import useNotifier from "@dashboard/hooks/useNotifier";
-import { Typography } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -30,7 +23,6 @@ const GiftCardHistory: React.FC = () => {
   const notify = useNotifier();
   const { id, events } = useGiftCardHistoryEvents();
   const classes = useStyles();
-
   const [addTimelineNote, { loading }] = useGiftCardAddNoteMutation({
     refetchQueries: [GIFT_CARD_DETAILS_QUERY],
     onCompleted: ({ giftCardAddNote }) => {
@@ -49,17 +41,17 @@ const GiftCardHistory: React.FC = () => {
       }
     },
   });
-
   const onNoteAdd = (data: FormData) => {
     const { message } = data;
+
     addTimelineNote({ variables: { id, input: { message } } });
   };
 
   return (
     <div className={classes.root}>
-      <Typography className={classes.header} color="textSecondary">
+      <Text className={classes.header} color="default2">
         <FormattedMessage {...messages.historyHeaderTitle} />
-      </Typography>
+      </Text>
       <Hr />
       <Timeline>
         {events ? (
@@ -79,7 +71,7 @@ const GiftCardHistory: React.FC = () => {
               .slice()
               .reverse()
               .map(event => {
-                const { id, message, type, date, user } = event;
+                const { id, message, type, date, user, app } = event;
 
                 if (type === GiftCardEventsEnum.NOTE_ADDED) {
                   return (
@@ -88,14 +80,13 @@ const GiftCardHistory: React.FC = () => {
                       user={user}
                       message={message}
                       key={id}
-                      hasPlainDate
+                      app={app}
+                      hasPlainDate={false}
                     />
                   );
                 }
 
-                return (
-                  <GiftCardTimelineEvent key={id} date={date} event={event} />
-                );
+                return <GiftCardTimelineEvent key={id} date={date} event={event} />;
               })}
           </>
         ) : (

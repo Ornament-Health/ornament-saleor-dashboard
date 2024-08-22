@@ -1,7 +1,6 @@
 // @ts-strict-ignore
 import Form from "@dashboard/components/Form";
 import Hr from "@dashboard/components/Hr";
-import Skeleton from "@dashboard/components/Skeleton";
 import {
   Timeline,
   TimelineAddNote,
@@ -11,7 +10,7 @@ import {
 } from "@dashboard/components/Timeline";
 import { OrderEventFragment } from "@dashboard/graphql";
 import { SubmitPromise } from "@dashboard/hooks/useForm";
-import { Typography } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -34,14 +33,9 @@ interface OrderHistoryProps {
 const OrderHistory: React.FC<OrderHistoryProps> = props => {
   const { history, orderCurrency, onNoteAdd } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
-
-  const getTimelineEventTitleProps = (
-    event: OrderEventFragment,
-  ): Partial<TimelineEventProps> => {
+  const getTimelineEventTitleProps = (event: OrderEventFragment): Partial<TimelineEventProps> => {
     const { type, message } = event;
-
     const title = isTimelineEventOfType("rawMessage", type)
       ? message
       : getEventMessage(event, intl);
@@ -58,18 +52,13 @@ const OrderHistory: React.FC<OrderHistoryProps> = props => {
 
   return (
     <div className={classes.root}>
-      <Typography className={classes.header} color="textSecondary">
+      <Text className={classes.header} color="default2">
         <FormattedMessage id="XBfvKN" defaultMessage="Order History" />
-      </Typography>
+      </Text>
       <Hr />
       {history ? (
         <Timeline>
-          <Form
-            confirmLeave
-            initial={{ message: "" }}
-            onSubmit={onNoteAdd}
-            resetOnSubmit
-          >
+          <Form confirmLeave initial={{ message: "" }} onSubmit={onNoteAdd} resetOnSubmit>
             {({ change, data, reset, submit }) => (
               <TimelineAddNote
                 message={data.message}
@@ -83,27 +72,17 @@ const OrderHistory: React.FC<OrderHistoryProps> = props => {
             .slice()
             .reverse()
             .map(event => {
-              const { id, user, date, message, type } = event;
+              const { id, user, date, message, type, app } = event;
 
               if (isTimelineEventOfType("note", type)) {
                 return (
-                  <TimelineNote
-                    date={date}
-                    user={user}
-                    message={message}
-                    key={id}
-                  />
+                  <TimelineNote date={date} user={user} message={message} key={id} app={app} />
                 );
               }
 
               if (isTimelineEventOfType("note_updated", type)) {
                 return (
-                  <TimelineNote
-                    date={date}
-                    user={user}
-                    message={message}
-                    key={id}
-                  />
+                  <TimelineNote date={date} user={user} message={message} key={id} app={app} />
                 );
               }
 
@@ -113,21 +92,19 @@ const OrderHistory: React.FC<OrderHistoryProps> = props => {
                     key={event.id}
                     event={event}
                     orderCurrency={orderCurrency}
-                    hasPlainDate={true}
+                    hasPlainDate={false}
                   />
                 );
               }
 
               if (isTimelineEventOfType("linked", type)) {
-                return (
-                  <LinkedTimelineEvent event={event} key={id} hasPlainDate />
-                );
+                return <LinkedTimelineEvent event={event} key={id} hasPlainDate={false} />;
               }
 
               return (
                 <TimelineEvent
                   {...getTimelineEventTitleProps(event)}
-                  hasPlainDate
+                  hasPlainDate={false}
                   key={id}
                   date={date}
                 />
@@ -140,5 +117,6 @@ const OrderHistory: React.FC<OrderHistoryProps> = props => {
     </div>
   );
 };
+
 OrderHistory.displayName = "OrderHistory";
 export default OrderHistory;

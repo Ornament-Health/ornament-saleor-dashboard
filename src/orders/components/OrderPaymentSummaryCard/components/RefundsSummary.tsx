@@ -1,5 +1,5 @@
 import { OrderDetailsFragment } from "@dashboard/graphql";
-import { Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -14,19 +14,17 @@ interface RefundsSummary {
 
 export const RefundsSummary: React.FC<RefundsSummary> = ({ order }) => {
   const classes = useStyles();
-
   const { totalRefunded, totalRefundPending, totalGrantedRefund } = order;
   const refundedAmount = totalRefunded?.amount ?? 0;
   const pendingAmount = totalRefundPending?.amount ?? 0;
   const grantedAmount = totalGrantedRefund?.amount ?? 0;
-
   const hasAnyRefund = refundedAmount || pendingAmount || grantedAmount;
 
   if (!hasAnyRefund) {
     return (
-      <Typography variant="body2" className={classes.explainText}>
+      <Text size={3} fontWeight="regular" className={classes.explainText}>
         <FormattedMessage {...orderPaymentMessages.refundsExplanation} />
-      </Typography>
+      </Text>
     );
   }
 

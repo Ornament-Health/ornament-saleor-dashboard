@@ -1,21 +1,29 @@
 import { useEffect } from "react";
 
-type DevModeKeyTriggerCallback = (
-  err: Error | null,
-  { shift }: { shift: boolean },
-) => void;
+type HandleOpen = () => void;
+type HandleClose = () => void;
 
-export const useDevModeKeyTrigger = (callback: DevModeKeyTriggerCallback) => {
+export const useDevModeKeyTrigger = (handleOpen: HandleOpen, handleClose: HandleClose) => {
   useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if (event.shiftKey && event.metaKey && event.code === "Quote") {
-        callback(null, { shift: true });
-      } else if (event.metaKey && event.code === "Quote") {
-        callback(null, { shift: false });
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.code === "Quote") {
+        handleOpen();
       }
     };
 
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [callback]);
+    const keyUpHandler = (event: KeyboardEvent) => {
+      if (event.code === "Escape") {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", keyDownHandler);
+    // GraphiQL Playground stops propagation of keydown event for Escape key
+    document.addEventListener("keyup", keyUpHandler);
+
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener("keyup", keyUpHandler);
+    };
+  }, [handleOpen, handleClose]);
 };

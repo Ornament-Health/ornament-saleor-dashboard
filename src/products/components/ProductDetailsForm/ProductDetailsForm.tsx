@@ -31,14 +31,15 @@ export const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({
 }) => {
   const intl = useIntl();
   const formErrors = getFormErrors(["name", "description", "rating"], errors);
-  const { editorRef, defaultValue, isReadyForMount, handleChange } =
-    useRichTextContext();
+  const { editorRef, defaultValue, isReadyForMount, handleChange } = useRichTextContext();
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage(commonMessages.generalInformations)}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(commonMessages.generalInformations)}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content display="grid" gap={2}>
         <Input
           label={intl.formatMessage({

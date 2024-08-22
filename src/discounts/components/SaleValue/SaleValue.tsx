@@ -1,19 +1,13 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { DiscountErrorFragment } from "@dashboard/graphql";
 import { renderCollection } from "@dashboard/misc";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getDiscountErrorMessage from "@dashboard/utils/errors/discounts";
-import {
-  Card,
-  TableBody,
-  TableCell,
-  TableHead,
-  Typography,
-} from "@material-ui/core";
+import { TableBody, TableCell, TableHead } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import * as React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -30,27 +24,23 @@ export interface SaleValueProps {
 }
 
 const numberOfColumns = 2;
-
-const SaleValue: React.FC<SaleValueProps> = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}) => {
+const SaleValue: React.FC<SaleValueProps> = ({ data, disabled, errors, onChange }) => {
   const { type } = data;
   const intl = useIntl();
   const classes = useStyles({});
   const formErrors = getFormErrors(["value"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "wHdMAX",
-          defaultMessage: "Value",
-          description: "sale value, header",
-        })}
-      />
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "wHdMAX",
+            defaultMessage: "Value",
+            description: "sale value, header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <ResponsiveTable className={classes.table}>
         <colgroup>
           <col />
@@ -80,27 +70,18 @@ const SaleValue: React.FC<SaleValueProps> = ({
           {renderCollection(
             data.channelListings,
             (listing, index) => {
-              const error = formErrors.value?.channels?.find(
-                id => id === listing.id,
-              );
+              const error = formErrors.value?.channels?.find(id => id === listing.id);
 
               return (
-                <TableRowLink
-                  key={listing?.id || `skeleton-${index}`}
-                  className={classes.row}
-                >
+                <TableRowLink key={listing?.id || `skeleton-${index}`} className={classes.row}>
                   <TableCell>
-                    <Typography>{listing?.name || <Skeleton />}</Typography>
+                    <Text>{listing?.name || <Skeleton />}</Text>
                   </TableCell>
                   <TableCell>
                     {listing ? (
                       <SaleValueTextField
                         dataType={type}
-                        helperText={
-                          error
-                            ? getDiscountErrorMessage(formErrors.value, intl)
-                            : ""
-                        }
+                        helperText={error ? getDiscountErrorMessage(formErrors.value, intl) : ""}
                         error={!!error}
                         disabled={disabled}
                         listing={listing}
@@ -116,17 +97,14 @@ const SaleValue: React.FC<SaleValueProps> = ({
             () => (
               <TableRowLink>
                 <TableCell colSpan={numberOfColumns}>
-                  <FormattedMessage
-                    id="/glQgs"
-                    defaultMessage="No channels found"
-                  />
+                  <FormattedMessage id="/glQgs" defaultMessage="No channels found" />
                 </TableCell>
               </TableRowLink>
             ),
           )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };
 

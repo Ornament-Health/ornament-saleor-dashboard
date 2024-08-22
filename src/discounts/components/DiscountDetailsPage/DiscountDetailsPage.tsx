@@ -12,37 +12,28 @@ import {
   PromotionUpdateErrorFragment,
 } from "@dashboard/graphql";
 import { getFormErrors } from "@dashboard/utils/errors";
-import {
-  CommonError,
-  getCommonFormFieldErrorMessage,
-} from "@dashboard/utils/errors/common";
+import { CommonError, getCommonFormFieldErrorMessage } from "@dashboard/utils/errors/common";
 import React from "react";
 import { useIntl } from "react-intl";
 
 import { DiscountDatesWithController } from "../DiscountDates";
 import { DiscountDescription } from "../DiscountDescription";
 import { DiscountDetailsForm } from "../DiscountDetailsForm";
-import { DiscountName } from "../DiscountName";
+import { DiscountGeneralInfo } from "../DiscountGeneralInfo";
 import { DiscountRules } from "../DiscountRules";
 import { DiscountSavebar } from "../DiscountSavebar";
 
 export interface DiscountDetailsPageProps {
   channels: ChannelFragment[];
-  ruleConditionsOptionsDetailsMap: Record<string, string>;
-  ruleConditionsOptionsDetailsLoading: boolean;
   data: PromotionDetailsFragment | undefined | null;
   disabled: boolean;
   errors: PromotionUpdateErrorFragment[];
   submitButtonState: ConfirmButtonTransitionState;
   onSubmit: (data: DiscoutFormData) => void;
   onDelete: () => void;
-  onRuleUpdateSubmit: (
-    data: Rule,
-  ) => Promise<Array<CommonError<PromotionRuleUpdateErrorFragment>>>;
+  onRuleUpdateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleUpdateErrorFragment>>>;
   ruleUpdateButtonState: ConfirmButtonTransitionState;
-  onRuleCreateSubmit: (
-    data: Rule,
-  ) => Promise<Array<CommonError<PromotionRuleCreateErrorFragment>>>;
+  onRuleCreateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleCreateErrorFragment>>>;
   ruleCreateButtonState: ConfirmButtonTransitionState;
   onRuleDeleteSubmit: (id: string) => void;
   ruleDeleteButtonState: ConfirmButtonTransitionState;
@@ -51,8 +42,6 @@ export interface DiscountDetailsPageProps {
 
 export const DiscountDetailsPage = ({
   channels,
-  ruleConditionsOptionsDetailsMap,
-  ruleConditionsOptionsDetailsLoading,
   disabled,
   data,
   errors,
@@ -68,7 +57,6 @@ export const DiscountDetailsPage = ({
   ruleDeleteButtonState,
 }: DiscountDetailsPageProps) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["name"], errors);
 
   return (
@@ -79,33 +67,29 @@ export const DiscountDetailsPage = ({
           data={data}
           disabled={disabled}
           onSubmit={onSubmit}
-          ruleConditionsOptionsDetailsMap={ruleConditionsOptionsDetailsMap}
           onRuleCreateSubmit={onRuleCreateSubmit}
           onRuleDeleteSubmit={onRuleDeleteSubmit}
           onRuleUpdateSubmit={onRuleUpdateSubmit}
         >
-          {({ rulesErrors, rules, onDeleteRule, onRuleSubmit, onSubmit }) => (
+          {({ rulesErrors, rules, discountType, onDeleteRule, onRuleSubmit, onSubmit }) => (
             <>
-              <DiscountName
+              <DiscountGeneralInfo
                 error={getCommonFormFieldErrorMessage(formErrors.name, intl)}
                 disabled={disabled}
+                typeDisabled={true}
               />
 
               <DiscountDescription disabled={disabled} />
 
-              <DiscountDatesWithController
-                errors={errors}
-                disabled={disabled}
-              />
+              <DiscountDatesWithController errors={errors} disabled={disabled} />
 
               <DiscountRules
+                promotionId={data?.id ?? null}
+                discountType={discountType}
                 errors={rulesErrors}
                 rules={rules}
-                loading={ruleConditionsOptionsDetailsLoading}
                 getRuleConfirmButtonState={ruleEditIndex =>
-                  ruleEditIndex !== null
-                    ? ruleUpdateButtonState
-                    : ruleCreateButtonState
+                  ruleEditIndex !== null ? ruleUpdateButtonState : ruleCreateButtonState
                 }
                 deleteButtonState={ruleDeleteButtonState}
                 onRuleDelete={onDeleteRule}

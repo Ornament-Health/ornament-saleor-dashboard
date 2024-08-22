@@ -1,10 +1,10 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { AccountErrorFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getAccountErrorMessage from "@dashboard/utils/errors/account";
-import { Card, CardContent, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -36,32 +36,29 @@ const CustomerCreateDetails: React.FC<CustomerCreateDetailsProps> = props => {
   const classes = useStyles(props);
   const intl = useIntl();
 
-  const formErrors = getFormErrors(
-    ["customerFirstName", "customerLastName", "email"],
-    errors,
-  );
+  const formErrors = getFormErrors(["customerFirstName", "customerLastName", "email"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "fjPWOA",
-          defaultMessage: "Customer Overview",
-          description: "header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "fjPWOA",
+            defaultMessage: "Customer Overview",
+            description: "header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <div className={classes.root}>
           <TextField
+            data-test-id="customer-first-name"
             disabled={disabled}
             error={!!formErrors.customerFirstName}
             fullWidth
             name="customerFirstName"
             label={intl.formatMessage(commonMessages.firstName)}
-            helperText={getAccountErrorMessage(
-              formErrors.customerFirstName,
-              intl,
-            )}
+            helperText={getAccountErrorMessage(formErrors.customerFirstName, intl)}
             type="text"
             value={data.customerFirstName}
             onChange={onChange}
@@ -70,15 +67,13 @@ const CustomerCreateDetails: React.FC<CustomerCreateDetailsProps> = props => {
             }}
           />
           <TextField
+            data-test-id="customer-last-name"
             disabled={disabled}
             error={!!formErrors.customerLastName}
             fullWidth
             name="customerLastName"
             label={intl.formatMessage(commonMessages.lastName)}
-            helperText={getAccountErrorMessage(
-              formErrors.customerLastName,
-              intl,
-            )}
+            helperText={getAccountErrorMessage(formErrors.customerLastName, intl)}
             type="text"
             value={data.customerLastName}
             onChange={onChange}
@@ -87,6 +82,7 @@ const CustomerCreateDetails: React.FC<CustomerCreateDetailsProps> = props => {
             }}
           />
           <TextField
+            data-test-id="customer-email"
             disabled={disabled}
             error={!!formErrors.email}
             fullWidth
@@ -101,8 +97,8 @@ const CustomerCreateDetails: React.FC<CustomerCreateDetailsProps> = props => {
             }}
           />
         </div>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 

@@ -1,34 +1,20 @@
 // @ts-strict-ignore
+import { DashboardCard } from "@dashboard/components/Card";
 import Money from "@dashboard/components/Money";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
-import {
-  OrderDetailsFragment,
-  OrderErrorFragment,
-  OrderLineFragment,
-} from "@dashboard/graphql";
+import { OrderDetailsFragment, OrderErrorFragment, OrderLineFragment } from "@dashboard/graphql";
 import { FormsetChange } from "@dashboard/hooks/useFormset";
 import { getById, renderCollection } from "@dashboard/misc";
 import OrderCardTitle from "@dashboard/orders/components/OrderCardTitle";
-import {
-  Card,
-  CardContent,
-  Checkbox,
-  TableBody,
-  TableCell,
-  TableHead,
-  TextField,
-} from "@material-ui/core";
+import { Checkbox, TableBody, TableCell, TableHead, TextField } from "@material-ui/core";
 import { ResponsiveTable } from "@saleor/macaw-ui";
+import { Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { FormsetQuantityData, FormsetReplacementData } from "../../form";
-import {
-  getQuantityDataFromItems,
-  getReplacementDataFromItems,
-} from "../../utils";
+import { getQuantityDataFromItems, getReplacementDataFromItems } from "../../utils";
 import { MaximalButton } from "../MaximalButton";
 import { ProductErrorCell } from "../ProductErrorCell";
 import { itemsCardMessages } from "./messages";
@@ -59,24 +45,20 @@ export const ItemsCard: React.FC<OrderReturnRefundLinesCardProps> = ({
 }) => {
   const classes = useItemCardStyles({});
   const intl = useIntl();
-
-  const handleChangeQuantity =
-    (id: string) => (event: React.ChangeEvent<HTMLInputElement>) =>
-      onChangeQuantity(id, parseInt(event.target.value, 10));
-
+  const handleChangeQuantity = (id: string) => (event: React.ChangeEvent<HTMLInputElement>) =>
+    onChangeQuantity(id, parseInt(event.target.value, 10));
   const fulfillment = order?.fulfillments.find(getById(fulfilmentId));
 
   return (
-    <Card>
+    <DashboardCard>
       <OrderCardTitle
         orderNumber={order?.number}
-        lines={lines}
         fulfillmentOrder={fulfillment?.fulfillmentOrder}
         status={fulfillment?.status}
       />
-      <CardContent className={classes.cartContent}>
+      <DashboardCard.Content className={classes.cartContent}>
         <MaximalButton onClick={onSetMaxQuantity} />
-      </CardContent>
+      </DashboardCard.Content>
       <ResponsiveTable>
         <TableHead>
           <TableRowLink>
@@ -125,24 +107,14 @@ export const ItemsCard: React.FC<OrderReturnRefundLinesCardProps> = ({
                 variant,
               } = line;
               const isValueError = false;
-              const { isRefunded, currentQuantity } = getQuantityDataFromItems(
-                itemsQuantities,
-                id,
-              );
-              const { isSelected } = getReplacementDataFromItems(
-                itemsSelections,
-                id,
-              );
+              const { isRefunded, currentQuantity } = getQuantityDataFromItems(itemsQuantities, id);
+              const { isSelected } = getReplacementDataFromItems(itemsSelections, id);
               const isReplacable = !!variant && !isRefunded;
               const isReturnable = !!variant;
               const isPreorder = !!variant?.preorder;
               const lineQuantity = fulfilmentId ? quantity : quantityToFulfill;
-              const anyLineWithoutVariant = lines.some(
-                ({ variant }) => !variant,
-              );
-              const productNameCellWidth = anyLineWithoutVariant
-                ? "30%"
-                : "50%";
+              const anyLineWithoutVariant = lines.some(({ variant }) => !variant);
+              const productNameCellWidth = anyLineWithoutVariant ? "30%" : "50%";
 
               return (
                 <TableRowLink key={id}>
@@ -179,15 +151,12 @@ export const ItemsCard: React.FC<OrderReturnRefundLinesCardProps> = ({
                         onChange={handleChangeQuantity(id)}
                         InputProps={{
                           endAdornment: lineQuantity && (
-                            <div className={classes.remainingQuantity}>
-                              / {lineQuantity}
-                            </div>
+                            <div className={classes.remainingQuantity}>/ {lineQuantity}</div>
                           ),
                         }}
                         error={isValueError}
                         helperText={
-                          isValueError &&
-                          intl.formatMessage(itemsCardMessages.improperValue)
+                          isValueError && intl.formatMessage(itemsCardMessages.improperValue)
                         }
                       />
                     )}
@@ -213,6 +182,6 @@ export const ItemsCard: React.FC<OrderReturnRefundLinesCardProps> = ({
           )}
         </TableBody>
       </ResponsiveTable>
-    </Card>
+    </DashboardCard>
   );
 };

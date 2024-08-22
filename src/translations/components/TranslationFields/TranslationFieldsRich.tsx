@@ -5,7 +5,7 @@ import RichTextEditorContent from "@dashboard/components/RichTextEditor/RichText
 import { RichTextEditorLoading } from "@dashboard/components/RichTextEditor/RichTextEditorLoading";
 import { SubmitPromise } from "@dashboard/hooks/useForm";
 import { OutputData } from "@editorjs/editorjs";
-import { Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -32,14 +32,8 @@ const TranslationFieldsRich: React.FC<TranslationFieldsRichProps> = ({
   onSubmit,
 }) => {
   const intl = useIntl();
-
-  const {
-    isReadyForMount,
-    handleSubmit,
-    defaultValue,
-    handleChange,
-    editorRef,
-  } = useRichTextSubmit(initial, onSubmit);
+  const { isReadyForMount, handleSubmit, defaultValue, handleChange, editorRef } =
+    useRichTextSubmit(initial, onSubmit, disabled);
 
   return edit ? (
     <form onSubmit={handleSubmit}>
@@ -75,16 +69,13 @@ const TranslationFieldsRich: React.FC<TranslationFieldsRichProps> = ({
       />
     </form>
   ) : initial === null ? (
-    <Typography color="textSecondary">
+    <Text color="default2">
       <FormattedMessage id="T/5OyA" defaultMessage="No translation yet" />
-    </Typography>
+    </Text>
   ) : (
-    <Typography>
-      {isReadyForMount && (
-        <RichTextEditorContent key={resetKey} value={defaultValue} />
-      )}
-    </Typography>
+    <Text>{isReadyForMount && <RichTextEditorContent key={resetKey} value={defaultValue} />}</Text>
   );
 };
+
 TranslationFieldsRich.displayName = "TranslationFieldsRich";
 export default TranslationFieldsRich;

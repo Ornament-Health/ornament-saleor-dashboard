@@ -1,8 +1,9 @@
 import { Button } from "@dashboard/components/Button";
+import { DashboardCard } from "@dashboard/components/Card";
 import CardSpacer from "@dashboard/components/CardSpacer";
 import { OrderLineFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
-import { Card, CardActions, CardContent, Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -19,9 +20,7 @@ interface OrderUnfulfilledProductsCardProps {
   onShowMetadata: (id: string) => void;
 }
 
-const OrderUnfulfilledProductsCard: React.FC<
-  OrderUnfulfilledProductsCardProps
-> = ({
+const OrderUnfulfilledProductsCard: React.FC<OrderUnfulfilledProductsCardProps> = ({
   showFulfillmentAction,
   notAllowedToFulfillUnpaid,
   onShowMetadata,
@@ -37,44 +36,29 @@ const OrderUnfulfilledProductsCard: React.FC<
 
   return (
     <>
-      <Card>
-        <OrderCardTitle
-          lines={lines}
-          withStatus
-          status="unfulfilled"
-          className={classes.cardTitle}
-        />
-        <CardContent>
-          <OrderDetailsDatagrid
-            lines={lines}
-            loading={loading}
-            onShowMetadata={onShowMetadata}
-          />
+      <DashboardCard>
+        <OrderCardTitle withStatus status="unfulfilled" className={classes.cardTitle} />
+        <DashboardCard.Content paddingX={0}>
+          <OrderDetailsDatagrid lines={lines} loading={loading} onShowMetadata={onShowMetadata} />
           {showFulfillmentAction && (
-            <CardActions className={classes.actions}>
+            <DashboardCard.BottomActions justifyContent="flex-end">
               <Button
                 data-test-id="fulfill-button"
                 variant="primary"
                 onClick={onFulfill}
                 disabled={notAllowedToFulfillUnpaid}
               >
-                <FormattedMessage
-                  id="/Xwjww"
-                  defaultMessage="Fulfill"
-                  description="button"
-                />
+                <FormattedMessage id="/Xwjww" defaultMessage="Fulfill" description="button" />
               </Button>
               {notAllowedToFulfillUnpaid && (
-                <Typography color="error" variant="caption">
-                  <FormattedMessage
-                    {...commonMessages.cannotFullfillUnpaidOrder}
-                  />
-                </Typography>
+                <Text color="critical1" size={2} fontWeight="light">
+                  <FormattedMessage {...commonMessages.cannotFullfillUnpaidOrder} />
+                </Text>
               )}
-            </CardActions>
+            </DashboardCard.BottomActions>
           )}
-        </CardContent>
-      </Card>
+        </DashboardCard.Content>
+      </DashboardCard>
       <CardSpacer />
     </>
   );

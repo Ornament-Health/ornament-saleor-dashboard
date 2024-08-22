@@ -1,20 +1,15 @@
-import { Box, Chip, DefaultTheme, Tooltip } from "@saleor/macaw-ui-next";
+import { Box, Chip, Option, Tooltip } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { messages } from "../../../../../../messages";
-import { OptionWithConditionType } from "../../utils";
 import { RuleSummaryChips } from "../RuleSummaryChips";
 
 interface RuleSummaryTooltipProps {
-  theme: DefaultTheme;
-  conditionsValues: OptionWithConditionType[];
+  conditionsValues: Option[];
 }
 
-export const RuleSummaryTooltip = ({
-  conditionsValues,
-  theme,
-}: RuleSummaryTooltipProps) => {
+export const RuleSummaryTooltip = ({ conditionsValues }: RuleSummaryTooltipProps) => {
   return (
     <Tooltip>
       <Tooltip.Trigger>
@@ -35,13 +30,8 @@ export const RuleSummaryTooltip = ({
       </Tooltip.Trigger>
       <Tooltip.Content>
         <Box __maxWidth={390} display="flex" flexWrap="wrap" gap={2}>
-          {conditionsValues.map(({ value, label, type }) => (
-            <RuleSummaryChips
-              key={value}
-              type={type}
-              theme={theme}
-              label={label}
-            />
+          {conditionsValues.map(({ value, label }) => (
+            <RuleSummaryChips key={value} value={value} label={label} />
           ))}
         </Box>
       </Tooltip.Content>

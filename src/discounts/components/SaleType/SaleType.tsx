@@ -1,10 +1,7 @@
-import CardTitle from "@dashboard/components/CardTitle";
-import RadioGroupField, {
-  RadioGroupFieldChoice,
-} from "@dashboard/components/RadioGroupField";
+import { DashboardCard } from "@dashboard/components/Card";
+import RadioGroupField, { RadioGroupFieldChoice } from "@dashboard/components/RadioGroupField";
 import { SaleType as SaleTypeEnum } from "@dashboard/graphql";
 import { FormChange } from "@dashboard/hooks/useForm";
-import { Card, CardContent } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
 import React from "react";
 import { IntlShape, useIntl } from "react-intl";
@@ -53,22 +50,22 @@ function createChoices(intl: IntlShape): RadioGroupFieldChoice[] {
 
 const SaleType: React.FC<SaleTypeProps> = props => {
   const { data, disabled, onChange } = props;
-
   const classes = useStyles(props);
   const intl = useIntl();
-
   const choices = createChoices(intl);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "WkxE8/",
-          defaultMessage: "Discount Type",
-          description: "percentage or fixed, header",
-        })}
-      />
-      <CardContent className={classes.root}>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "WkxE8/",
+            defaultMessage: "Discount Type",
+            description: "percentage or fixed, header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content className={classes.root}>
         <RadioGroupField
           choices={choices}
           disabled={disabled}
@@ -76,8 +73,8 @@ const SaleType: React.FC<SaleTypeProps> = props => {
           value={data.type}
           onChange={onChange}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 

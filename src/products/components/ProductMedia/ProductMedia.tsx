@@ -2,18 +2,10 @@
 import { DashboardCard } from "@dashboard/components/Card";
 import ImageUpload from "@dashboard/components/ImageUpload";
 import MediaTile from "@dashboard/components/MediaTile";
-import Skeleton from "@dashboard/components/Skeleton";
 import { ProductMediaFragment, ProductMediaType } from "@dashboard/graphql";
 import { ReorderAction } from "@dashboard/types";
 import createMultiFileUploadHandler from "@dashboard/utils/handlers/multiFileUploadHandler";
-import {
-  Box,
-  Button,
-  Dropdown,
-  List,
-  sprinkles,
-  Text,
-} from "@saleor/macaw-ui-next";
+import { Box, Button, Dropdown, List, Skeleton, sprinkles, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
@@ -30,11 +22,9 @@ interface SortableMediaProps {
   onDelete: () => void;
 }
 
-const SortableMedia = SortableElement<SortableMediaProps>(
-  ({ media, editHref, onDelete }) => (
-    <MediaTile media={media} editHref={editHref} onDelete={onDelete} />
-  ),
-);
+const SortableMedia = SortableElement<SortableMediaProps>(({ media, editHref, onDelete }) => (
+  <MediaTile media={media} editHref={editHref} onDelete={onDelete} />
+));
 
 interface MediaListContainerProps {
   className: string;
@@ -84,20 +74,16 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
     onImageUpload,
     openMediaUrlModal,
   } = props;
-
   const intl = useIntl();
   const imagesUpload = React.useRef<HTMLInputElement>(null);
   const anchor = React.useRef<HTMLButtonElement>();
-  const [imagesToUpload, setImagesToUpload] = React.useState<
-    ProductMediaFragment[]
-  >([]);
-
+  const [imagesToUpload, setImagesToUpload] = React.useState<ProductMediaFragment[]>([]);
   const handleImageUpload = createMultiFileUploadHandler(onImageUpload, {
-    onAfterUpload: () =>
-      setImagesToUpload(prevImagesToUpload => prevImagesToUpload.slice(1)),
+    onAfterUpload: () => setImagesToUpload(prevImagesToUpload => prevImagesToUpload.slice(1)),
     onStart: files => {
       Array.from(files).forEach((file, fileIndex) => {
         const reader = new FileReader();
+
         reader.onload = event => {
           setImagesToUpload(prevImagesToUpload => [
             ...prevImagesToUpload,
@@ -119,9 +105,11 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        <Box display="flex" justifyContent="space-between" cursor="pointer">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
           <FormattedMessage {...messages.media} />
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
           <Dropdown>
             <Dropdown.Trigger>
               <Button
@@ -165,8 +153,8 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
               </List>
             </Dropdown.Content>
           </Dropdown>
-        </Box>
-      </DashboardCard.Title>
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <Box>
           <Box
@@ -231,5 +219,6 @@ const ProductMedia: React.FC<ProductMediaProps> = props => {
     </DashboardCard>
   );
 };
+
 ProductMedia.displayName = "ProductMedia";
 export default ProductMedia;

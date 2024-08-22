@@ -13,10 +13,10 @@ import { useCallback, useRef } from "react";
 import { ProductChannelsListingDialogSubmit } from "./ProductChannelsListingsDialog";
 
 const emptyListing: Omit<ProductChannelListingAddInput, "channelId"> = {
-  availableForPurchaseDate: null,
+  availableForPurchaseAt: null,
   isAvailableForPurchase: false,
   isPublished: false,
-  publicationDate: null,
+  publishedAt: null,
   visibleInListings: false,
 };
 
@@ -30,11 +30,13 @@ export const updateChannelsInput = (
       return {
         ...listing,
         ...data,
-        availableForPurchaseDate: data.availableForPurchase,
+        availableForPurchaseAt: data.availableForPurchase,
       };
     }
+
     return listing;
   };
+
   return {
     ...input,
     updateChannels: input.updateChannels.map(mergeListings),
@@ -45,21 +47,18 @@ export function useProductChannelListingsForm(
   product: Pick<ProductFragment, "channelListings">,
   triggerChange: () => void,
 ) {
-  const [channels, setChannels] =
-    useStateFromProps<ProductChannelListingUpdateInput>({
-      removeChannels: [],
-      updateChannels: product?.channelListings.map(listing => ({
-        channelId: listing.channel.id,
-        availableForPurchaseDate: listing.availableForPurchase,
-        ...listing,
-      })),
-    });
+  const [channels, setChannels] = useStateFromProps<ProductChannelListingUpdateInput>({
+    removeChannels: [],
+    updateChannels: product?.channelListings.map(listing => ({
+      channelId: listing.channel.id,
+      availableForPurchaseAt: listing.availableForPurchaseAt,
+      ...listing,
+    })),
+  });
   const touched = useRef<string[]>([]);
-
   const touch = (id: string) => {
     touched.current = uniq([...touched.current, id]);
   };
-
   const handleChannelChange = useCallback(
     (id: string, data: ChannelOpts) => {
       setChannels(input => updateChannelsInput(input, data, id));
@@ -68,31 +67,29 @@ export function useProductChannelListingsForm(
     },
     [setChannels, triggerChange],
   );
-
-  const handleChannelListUpdate: ProductChannelsListingDialogSubmit =
-    useCallback(
-      ({ added, removed }) => {
-        setChannels(prevData => ({
-          ...prevData,
-          updateChannels: uniqBy(
-            [
-              ...prevData.updateChannels,
-              ...added.map(id => ({
-                channelId: id,
-                ...emptyListing,
-              })),
-            ],
-            "channelId",
-          ).filter(({ channelId }) => !removed.includes(channelId)),
-          removeChannels: uniq([...prevData.removeChannels, ...removed]).filter(
-            id => !added.includes(id),
-          ),
-        }));
-        triggerChange();
-        added.forEach(id => touch(id));
-      },
-      [product],
-    );
+  const handleChannelListUpdate: ProductChannelsListingDialogSubmit = useCallback(
+    ({ added, removed }) => {
+      setChannels(prevData => ({
+        ...prevData,
+        updateChannels: uniqBy(
+          [
+            ...prevData.updateChannels,
+            ...added.map(id => ({
+              channelId: id,
+              ...emptyListing,
+            })),
+          ],
+          "channelId",
+        ).filter(({ channelId }) => !removed.includes(channelId)),
+        removeChannels: uniq([...prevData.removeChannels, ...removed]).filter(
+          id => !added.includes(id),
+        ),
+      }));
+      triggerChange();
+      added.forEach(id => touch(id));
+    },
+    [product],
+  );
 
   return {
     channels,

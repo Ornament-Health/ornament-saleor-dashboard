@@ -1,24 +1,15 @@
 // @ts-strict-ignore
 import { Button } from "@dashboard/components/Button";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Money from "@dashboard/components/Money";
-import Skeleton from "@dashboard/components/Skeleton";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { OrderRefundDataQuery } from "@dashboard/graphql";
 import { FormsetChange } from "@dashboard/hooks/useFormset";
 import { renderCollection } from "@dashboard/misc";
-import {
-  Card,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -71,9 +62,7 @@ interface OrderRefundUnfulfilledProductsProps {
   onSetMaximalQuantities: () => void;
 }
 
-const OrderRefundUnfulfilledProducts: React.FC<
-  OrderRefundUnfulfilledProductsProps
-> = props => {
+const OrderRefundUnfulfilledProducts: React.FC<OrderRefundUnfulfilledProductsProps> = props => {
   const {
     unfulfilledLines,
     data,
@@ -85,26 +74,30 @@ const OrderRefundUnfulfilledProducts: React.FC<
   const intl = useIntl();
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "B/y6LC",
-          defaultMessage: "Unfulfilled Products",
-          description: "section header",
-        })}
-      />
-      <CardContent className={classes.cartContent}>
-        <Typography
-          variant="caption"
-          color="textSecondary"
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "B/y6LC",
+            defaultMessage: "Unfulfilled Products",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content className={classes.cartContent}>
+        <Text
+          fontWeight="medium"
+          fontSize={3}
+          color="default2"
           className={classes.notice}
+          display="block"
         >
           <FormattedMessage
             id="iUIn50"
             defaultMessage="Unfulfilled products will be restocked"
             description="section notice"
           />
-        </Typography>
+        </Text>
         <Button
           className={classes.setMaximalQuantityButton}
           onClick={onSetMaximalQuantities}
@@ -116,7 +109,7 @@ const OrderRefundUnfulfilledProducts: React.FC<
             description="button"
           />
         </Button>
-      </CardContent>
+      </DashboardCard.Content>
       <Table>
         <TableHead>
           <TableRowLink>
@@ -168,11 +161,7 @@ const OrderRefundUnfulfilledProducts: React.FC<
                     {line?.productName ? line?.productName : <Skeleton />}
                   </TableCellAvatar>
                   <TableCell>
-                    {line?.unitPrice ? (
-                      <Money money={line?.unitPrice.gross} />
-                    ) : (
-                      <Skeleton />
-                    )}
+                    {line?.unitPrice ? <Money money={line?.unitPrice.gross} /> : <Skeleton />}
                   </TableCell>
                   <TableCell className={classes.colQuantity}>
                     {lineQuantity || lineQuantity === 0 ? (
@@ -189,16 +178,11 @@ const OrderRefundUnfulfilledProducts: React.FC<
                         fullWidth
                         value={selectedLineQuantity?.value}
                         onChange={event =>
-                          onRefundedProductQuantityChange(
-                            line.id,
-                            event.target.value,
-                          )
+                          onRefundedProductQuantityChange(line.id, event.target.value)
                         }
                         InputProps={{
                           endAdornment: lineQuantity && (
-                            <div className={classes.remainingQuantity}>
-                              / {lineQuantity}
-                            </div>
+                            <div className={classes.remainingQuantity}>/ {lineQuantity}</div>
                           ),
                         }}
                         error={isError}
@@ -233,18 +217,16 @@ const OrderRefundUnfulfilledProducts: React.FC<
             () => (
               <TableRowLink>
                 <TableCell colSpan={4}>
-                  <FormattedMessage
-                    id="Q1Uzbb"
-                    defaultMessage="No products found"
-                  />
+                  <FormattedMessage id="Q1Uzbb" defaultMessage="No products found" />
                 </TableCell>
               </TableRowLink>
             ),
           )}
         </TableBody>
       </Table>
-    </Card>
+    </DashboardCard>
   );
 };
+
 OrderRefundUnfulfilledProducts.displayName = "OrderRefundUnfulfilledProducts";
 export default OrderRefundUnfulfilledProducts;

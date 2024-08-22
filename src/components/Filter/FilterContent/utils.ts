@@ -1,7 +1,7 @@
 // @ts-strict-ignore
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
 import { joinDateTime, splitDateTime } from "@dashboard/misc";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Option } from "@saleor/macaw-ui-next";
 import { IntlShape } from "react-intl";
 
 import { FilterType } from "../types";
@@ -34,9 +34,7 @@ export const useCommonStyles = makeStyles(
   { name: "FilterContentBodyCommon" },
 );
 
-export function getIsFilterMultipleChoices(
-  intl: IntlShape,
-): SingleAutocompleteChoiceType[] {
+export function getIsFilterMultipleChoices(intl: IntlShape): Option[] {
   return [
     {
       label: intl.formatMessage({
@@ -63,17 +61,18 @@ export const getDateFilterValue = (
   dateTimeFormat: boolean,
 ) => {
   const { date } = splitDateTime(dateTime);
+
   if (!dateTimeFormat) {
     return date;
   }
+
   const { time } = splitDateTime(dateTimeString);
+
   return joinDateTime(date, time);
 };
 
-export const getDateTimeFilterValue = (
-  dateTimeString: string | null,
-  timeString: string,
-) => {
+export const getDateTimeFilterValue = (dateTimeString: string | null, timeString: string) => {
   const { date } = splitDateTime(dateTimeString || new Date().toISOString());
+
   return joinDateTime(date, timeString);
 };

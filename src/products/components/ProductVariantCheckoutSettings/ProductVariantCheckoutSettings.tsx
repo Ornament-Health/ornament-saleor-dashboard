@@ -19,22 +19,20 @@ interface ProductVariantCheckoutSettingsProps {
   onChange: FormChange;
 }
 
-const ProductVariantCheckoutSettings: React.FC<
-  ProductVariantCheckoutSettingsProps
-> = props => {
+const ProductVariantCheckoutSettings: React.FC<ProductVariantCheckoutSettingsProps> = props => {
   const { data, disabled, errors, onChange } = props;
-
   const intl = useIntl();
   const classes = useStyles();
-
   const formErrors = getFormErrors(["quantityLimitPerCustomer"], errors);
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage(messages.checkoutLimits)}
-        <PreviewPill className={classes.preview} />
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(messages.checkoutLimits)}
+          <PreviewPill className={classes.preview} />
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <Input
           data-test-id="checkout-limit-input"
@@ -45,11 +43,7 @@ const ProductVariantCheckoutSettings: React.FC<
           name="quantityLimitPerCustomer"
           label={intl.formatMessage(messages.checkoutLineLimit)}
           helperText={intl.formatMessage(messages.checkoutLimitsDescription)}
-          value={
-            !!data.quantityLimitPerCustomer
-              ? String(data.quantityLimitPerCustomer)
-              : ""
-          }
+          value={data.quantityLimitPerCustomer ? String(data.quantityLimitPerCustomer) : ""}
           onChange={onChange}
           min={1}
           autoComplete="off"

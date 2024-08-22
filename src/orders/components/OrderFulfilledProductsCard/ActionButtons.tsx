@@ -3,7 +3,8 @@ import { Button } from "@dashboard/components/Button";
 import { FulfillmentStatus } from "@dashboard/graphql";
 import { buttonMessages, commonMessages } from "@dashboard/intl";
 import { orderPaymentRefundUrl } from "@dashboard/orders/urls";
-import { CardActions, Typography } from "@material-ui/core";
+import { CardActions } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -26,7 +27,6 @@ const statusesToShow = [
   FulfillmentStatus.RETURNED,
   FulfillmentStatus.WAITING_FOR_APPROVAL,
 ];
-
 const ActionButtons: React.FC<AcionButtonsProps> = ({
   orderId,
   status,
@@ -38,7 +38,6 @@ const ActionButtons: React.FC<AcionButtonsProps> = ({
   onApprove,
 }) => {
   const classes = useStyles();
-
   const hasTrackingNumber = !!trackingNumber;
 
   if (!statusesToShow.includes(status)) {
@@ -54,9 +53,9 @@ const ActionButtons: React.FC<AcionButtonsProps> = ({
           <FormattedMessage {...buttonMessages.approve} />
         </Button>
         {cannotFulfill && (
-          <Typography color="error" variant="caption">
+          <Text color="critical1" size={2} fontWeight="light">
             <FormattedMessage {...commonMessages.cannotFullfillUnpaidOrder} />
-          </Typography>
+          </Text>
         )}
       </CardActions>
     );
@@ -74,21 +73,13 @@ const ActionButtons: React.FC<AcionButtonsProps> = ({
 
   return hasTrackingNumber ? (
     <CardActions className={classes.actions}>
-      <Button
-        data-test-id="edit-tracking-button"
-        variant="primary"
-        onClick={onTrackingCodeAdd}
-      >
+      <Button data-test-id="edit-tracking-button" variant="primary" onClick={onTrackingCodeAdd}>
         <FormattedMessage {...actionButtonsMessages.editTracking} />
       </Button>
     </CardActions>
   ) : (
     <CardActions className={classes.actions}>
-      <Button
-        variant="primary"
-        onClick={onTrackingCodeAdd}
-        data-test-id="add-tracking-button"
-      >
+      <Button variant="primary" onClick={onTrackingCodeAdd} data-test-id="add-tracking-button">
         <FormattedMessage {...actionButtonsMessages.addTracking} />
       </Button>
     </CardActions>

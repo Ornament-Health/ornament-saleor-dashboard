@@ -1,17 +1,13 @@
 // @ts-strict-ignore
-import {
-  ConfirmButton,
-  ConfirmButtonTransitionState,
-} from "@dashboard/components/ConfirmButton";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import ResponsiveTable from "@dashboard/components/ResponsiveTable";
 import TableCellAvatar from "@dashboard/components/TableCellAvatar";
 import TableRowLink from "@dashboard/components/TableRowLink";
-import { SearchProductsQuery } from "@dashboard/graphql";
 import useModalDialogOpen from "@dashboard/hooks/useModalDialogOpen";
 import useSearchQuery from "@dashboard/hooks/useSearchQuery";
 import { maybe } from "@dashboard/misc";
 import useScrollableDialogStyle from "@dashboard/styles/useScrollableDialogStyle";
-import { DialogProps, FetchMoreProps, RelayToFlat } from "@dashboard/types";
+import { DialogProps, FetchMoreProps } from "@dashboard/types";
 import {
   CircularProgress,
   Dialog,
@@ -22,6 +18,7 @@ import {
   TableCell,
   TextField,
 } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React, { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -31,15 +28,19 @@ import BackButton from "../BackButton";
 import Checkbox from "../Checkbox";
 import { messages } from "./messages";
 import { useStyles } from "./styles";
+import { Products, SelectedChannel } from "./types";
+import { isProductAvailableInVoucherChannels } from "./utils";
 
 export interface AssignProductDialogFormData {
-  products: RelayToFlat<SearchProductsQuery["search"]>;
+  products: Products;
   query: string;
 }
 
 export interface AssignProductDialogProps extends FetchMoreProps, DialogProps {
   confirmButtonState: ConfirmButtonTransitionState;
-  products: RelayToFlat<SearchProductsQuery["search"]>;
+  products: Products;
+  selectedChannels?: SelectedChannel[];
+  productUnavailableText?: string;
   selectedIds?: Record<string, boolean>;
   loading: boolean;
   onFetch: (value: string) => void;
@@ -47,10 +48,11 @@ export interface AssignProductDialogProps extends FetchMoreProps, DialogProps {
 }
 
 const scrollableTargetId = "assignProductScrollableDialog";
-
 const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
   const {
     confirmButtonState,
+    selectedChannels,
+    productUnavailableText,
     hasMore,
     open,
     loading,
@@ -72,7 +74,6 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
       setProductsDict(prev => {
         const prevIds = Object.keys(prev);
         const newIds = Object.keys(selectedIds);
-
         const preSelected = newIds
           .filter(n => !prevIds.includes(n))
           .reduce((p, c) => ({ ...p, [c]: true }), {});
@@ -81,7 +82,6 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
       });
     }
   }, [selectedIds]);
-
   useModalDialogOpen(open, {
     onOpen: () => {
       queryReset();
@@ -101,14 +101,12 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
       })),
     );
   };
-
   const handleChange = productId => {
     setProductsDict(prev => ({
       ...prev,
       [productId]: !prev[productId] ?? true,
     }));
   };
-
   const handleClose = () => {
     queryReset();
     onClose();
@@ -139,10 +137,7 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
           }}
         />
       </DialogContent>
-      <DialogContent
-        className={scrollableDialogClasses.scrollArea}
-        id={scrollableTargetId}
-      >
+      <DialogContent className={scrollableDialogClasses.scrollArea} id={scrollableTargetId}>
         <InfiniteScroll
           dataLength={products?.length ?? 0}
           next={onFetchMore}
@@ -160,27 +155,34 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
               {products &&
                 products.map(product => {
                   const isSelected = productsDict[product.id] || false;
+                  const isProductAvailable = isProductAvailableInVoucherChannels(
+                    product.channelListings,
+                    selectedChannels,
+                  );
 
                   return (
-                    <TableRowLink
-                      key={product.id}
-                      data-test-id="assign-product-table-row"
-                    >
+                    <TableRowLink key={product.id} data-test-id="assign-product-table-row">
+                      <TableCell padding="checkbox" className={classes.checkboxCell}>
+                        <Checkbox
+                          checked={isSelected}
+                          disabled={!isProductAvailable}
+                          onChange={() => handleChange(product.id)}
+                        />
+                      </TableCell>
                       <TableCellAvatar
                         className={classes.avatar}
                         thumbnail={maybe(() => product.thumbnail.url)}
+                        style={{
+                          opacity: !isProductAvailable ? 0.5 : 1,
+                        }}
                       />
                       <TableCell className={classes.colName}>
                         {product.name}
-                      </TableCell>
-                      <TableCell
-                        padding="checkbox"
-                        className={classes.checkboxCell}
-                      >
-                        <Checkbox
-                          checked={isSelected}
-                          onChange={() => handleChange(product.id)}
-                        />
+                        {!isProductAvailable && productUnavailableText && (
+                          <Text display="block" size={1} color="default2">
+                            {productUnavailableText}
+                          </Text>
+                        )}
                       </TableCell>
                     </TableRowLink>
                   );
@@ -203,5 +205,6 @@ const AssignProductDialog: React.FC<AssignProductDialogProps> = props => {
     </Dialog>
   );
 };
+
 AssignProductDialog.displayName = "AssignProductDialog";
 export default AssignProductDialog;

@@ -1,7 +1,4 @@
-import {
-  ConfirmButton,
-  ConfirmButtonTransitionState,
-} from "@dashboard/components/ConfirmButton";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { DashboardModal } from "@dashboard/components/Modal";
 import { buttonMessages } from "@dashboard/intl";
 import { Button, Text } from "@saleor/macaw-ui-next";
@@ -40,6 +37,7 @@ export const DiscountDeleteModal = ({
             <FormattedMessage {...buttonMessages.cancel} />
           </Button>
           <ConfirmButton
+            data-test-id="delete-confirmation-button"
             transitionState={confirmButtonTransitionState}
             onClick={onConfirm}
           >

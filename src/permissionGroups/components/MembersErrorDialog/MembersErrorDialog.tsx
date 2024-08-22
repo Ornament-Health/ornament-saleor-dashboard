@@ -1,6 +1,5 @@
 import ActionDialog from "@dashboard/components/ActionDialog";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
-import { DialogContentText } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -32,15 +31,14 @@ const MembersErrorDialog: React.FC<MembersErrorDialogProps> = ({
       })}
       variant="info"
     >
-      <DialogContentText>
-        <FormattedMessage
-          id="H/o4Ex"
-          defaultMessage="You are not able to modify this group members. Solve this problem to continue with request."
-          description="dialog content"
-        />
-      </DialogContentText>
+      <FormattedMessage
+        id="H/o4Ex"
+        defaultMessage="You are not able to modify this group members. Solve this problem to continue with request."
+        description="dialog content"
+      />
     </ActionDialog>
   );
 };
+
 MembersErrorDialog.displayName = "MembersErrorDialog";
 export default MembersErrorDialog;

@@ -1,7 +1,4 @@
-import {
-  CollectionDetailsQuery,
-  CollectionPublished,
-} from "@dashboard/graphql";
+import { CollectionDetailsQuery, CollectionPublished } from "@dashboard/graphql";
 
 import * as richTextEditorFixtures from "../components/RichTextEditor/fixtures.json";
 import { CollectionListFilterOpts } from "./components/CollectionListPage";
@@ -38,7 +35,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjox",
@@ -59,7 +56,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjoy",
@@ -80,7 +77,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjoz",
@@ -101,7 +98,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjoa",
@@ -122,7 +119,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjob",
@@ -143,7 +140,7 @@ export const collections: Collections = [
           name: "Channel",
         },
         isPublished: false,
-        publicationDate: null,
+        publishedAt: null,
       },
     ],
     id: "Q29sbGVjdGlvbjoc",
@@ -157,10 +154,7 @@ export const collections: Collections = [
 export const collection: (
   placeholderCollectionImage: string,
   placeholderProductImage: string,
-) => CollectionDetailsQuery["collection"] = (
-  placeholderCollectionImage,
-  placeholderImage,
-) => ({
+) => CollectionDetailsQuery["collection"] = (placeholderCollectionImage, placeholderImage) => ({
   __typename: "Collection",
   backgroundImage: {
     __typename: "Image",
@@ -177,7 +171,7 @@ export const collection: (
         name: "Channel",
       },
       isPublished: false,
-      publicationDate: null,
+      publishedAt: null,
     },
   ],
   description: JSON.stringify(content),
@@ -201,7 +195,8 @@ export const collection: (
           channelListings: [
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoxNw==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -210,12 +205,13 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: true,
-              publicationDate: "2020-07-14",
+              publishedAt: "2020-07-14",
               visibleInListings: true,
             },
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoxOA==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -224,7 +220,7 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: false,
-              publicationDate: "2020-07-30",
+              publishedAt: "2020-07-30",
               visibleInListings: true,
             },
           ],
@@ -245,7 +241,8 @@ export const collection: (
           channelListings: [
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoyNw==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -254,12 +251,13 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: true,
-              publicationDate: "2020-07-14",
+              publishedAt: "2020-07-14",
               visibleInListings: true,
             },
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoyOA==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -268,7 +266,7 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: false,
-              publicationDate: "2020-07-30",
+              publishedAt: "2020-07-30",
               visibleInListings: true,
             },
           ],
@@ -289,7 +287,8 @@ export const collection: (
           channelListings: [
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoyOQ==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -298,12 +297,13 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: true,
-              publicationDate: "2020-07-14",
+              publishedAt: "2020-07-14",
               visibleInListings: false,
             },
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDoyOA==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -312,7 +312,7 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: false,
-              publicationDate: "2020-07-30",
+              publishedAt: "2020-07-30",
               visibleInListings: false,
             },
           ],
@@ -333,7 +333,8 @@ export const collection: (
           channelListings: [
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDo1Mw==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -342,12 +343,13 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: true,
-              publicationDate: "2020-07-14",
+              publishedAt: "2020-07-14",
               visibleInListings: false,
             },
             {
               __typename: "ProductChannelListing",
-              availableForPurchase: null,
+              id: "UHJvZHVjdDo1NA==",
+              availableForPurchaseAt: null,
               channel: {
                 __typename: "Channel",
                 currencyCode: "USD",
@@ -356,7 +358,7 @@ export const collection: (
               },
               isAvailableForPurchase: false,
               isPublished: false,
-              publicationDate: "2020-07-30",
+              publishedAt: "2020-07-30",
               visibleInListings: false,
             },
           ],

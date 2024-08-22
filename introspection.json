@@ -1664,7 +1664,7 @@
           },
           {
             "name": "redirectUrl",
-            "description": "Base of frontend URL that will be needed to create confirmation URL.",
+            "description": "Base of frontend URL that will be needed to create confirmation URL. Required when account confirmation is enabled.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -3155,7 +3155,7 @@
         "fields": [
           {
             "name": "addressFormat",
-            "description": "The address format of the address validation rule.\n\nMany fields in the JSON refer to address fields by one-letter abbreviations. These are defined as follows:\n\n- `N`: Name\n- `O`: Organisation\n- `A`: Street Address Line(s)\n- `D`: Dependent locality (may be an inner-city district or a suburb)\n- `C`: City or Locality\n- `S`: Administrative area such as a state, province, island etc\n- `Z`: Zip or postal code\n- `X`: Sorting code\n\n[Click here for more information.](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata)",
+            "description": "The address format of the address validation rule.\n\nMany fields in the JSON refer to address fields by one-letter abbreviations. These are defined as follows:\n\n- `N`: Name\n- `O`: Organization\n- `A`: Street Address Line(s)\n- `D`: Dependent locality (may be an inner-city district or a suburb)\n- `C`: City or Locality\n- `S`: Administrative area such as a state, province, island etc\n- `Z`: Zip or postal code\n- `X`: Sorting code\n\n[Click here for more information.](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3171,7 +3171,7 @@
           },
           {
             "name": "addressLatinFormat",
-            "description": "The latin address format of the address validation rule.\n\nMany fields in the JSON refer to address fields by one-letter abbreviations. These are defined as follows:\n\n- `N`: Name\n- `O`: Organisation\n- `A`: Street Address Line(s)\n- `D`: Dependent locality (may be an inner-city district or a suburb)\n- `C`: City or Locality\n- `S`: Administrative area such as a state, province, island etc\n- `Z`: Zip or postal code\n- `X`: Sorting code\n\n[Click here for more information.](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata)",
+            "description": "The latin address format of the address validation rule.\n\nMany fields in the JSON refer to address fields by one-letter abbreviations. These are defined as follows:\n\n- `N`: Name\n- `O`: Organization\n- `A`: Street Address Line(s)\n- `D`: Dependent locality (may be an inner-city district or a suburb)\n- `C`: City or Locality\n- `S`: Administrative area such as a state, province, island etc\n- `Z`: Zip or postal code\n- `X`: Sorting code\n\n[Click here for more information.](https://github.com/google/libaddressinput/wiki/AddressValidationMetadata)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3602,7 +3602,7 @@
           },
           {
             "name": "accessToken",
-            "description": "JWT token used to authenticate by thridparty app.",
+            "description": "JWT token used to authenticate by third-party app.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3744,6 +3744,18 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "identifier",
+            "description": "Canonical app ID from the manifest\n\nAdded in Saleor 3.19.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -5416,6 +5428,18 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "identifier",
+            "description": "Canonical app ID. If not provided, the identifier will be generated based on app.id.\n\nAdded in Saleor 3.19.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "name",
             "description": "Name of the app.",
@@ -9953,8 +9977,24 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "attributeId",
+            "description": "The ID of the attribute to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
-            "description": "The ID of the attribute.",
+            "description": "The ID of the attribute translatable content.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -10180,6 +10220,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the attribute fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "AttributeTranslatableContent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -10700,7 +10752,7 @@
           },
           {
             "name": "plainText",
-            "description": "Represents the text of the attribute value, plain text without formating.",
+            "description": "Represents the text of the attribute value, plain text without formatting.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -11359,7 +11411,7 @@
           },
           {
             "name": "plainText",
-            "description": "Represents the text of the attribute value, plain text without formating.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
+            "description": "Represents the text of the attribute value, plain text without formatting.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -11990,6 +12042,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "attributeValueId",
+            "description": "The ID of the attribute value to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": "The ID of the attribute value translatable content.",
             "args": [],
@@ -12268,6 +12336,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the attribute value fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "AttributeValueTranslatableContent",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -12467,7 +12547,7 @@
           },
           {
             "name": "plainText",
-            "description": "Represents the text of the attribute value, plain text without formating.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
+            "description": "Represents the text of the attribute value, plain text without formatting.\n\nDEPRECATED: this field will be removed in Saleor 4.0.The plain text attribute hasn't got predefined value, so can be specified only from instance that supports the given attribute.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -15043,6 +15123,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "categoryId",
+            "description": "The ID of the category to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "description",
             "description": "Category description to translate.\n\nRich text format. For reference see https://editorjs.io/",
             "args": [],
@@ -15326,6 +15422,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the category fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CategoryTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -15990,6 +16098,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "StockSettings",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "taxConfiguration",
+            "description": "Channel specific tax configuration.\n\nAdded in Saleor 3.20.\n\nRequires one of the following permissions: AUTHENTICATED_STAFF_USER, AUTHENTICATED_APP.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TaxConfiguration",
                 "ofType": null
               }
             },
@@ -19506,7 +19630,7 @@
       {
         "kind": "OBJECT",
         "name": "CheckoutDeliveryMethodUpdate",
-        "description": "Updates the delivery method (shipping method or pick up point) of the checkout.\n\nAdded in Saleor 3.1.\n\nTriggers the following webhook events:\n- SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Triggered when updating the checkout delivery method with the external one.\n- CHECKOUT_UPDATED (async): A checkout was updated.",
+        "description": "Updates the delivery method (shipping method or pick up point) of the checkout. Updates the checkout shipping_address for click and collect delivery for a warehouse address. \n\nAdded in Saleor 3.1.\n\nTriggers the following webhook events:\n- SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Triggered when updating the checkout delivery method with the external one.\n- CHECKOUT_UPDATED (async): A checkout was updated.",
         "fields": [
           {
             "name": "checkout",
@@ -19700,7 +19824,7 @@
           },
           {
             "name": "variants",
-            "description": "List of varint IDs which causes the error.",
+            "description": "List of variant IDs which causes the error.",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -19805,6 +19929,18 @@
             "deprecationReason": null
           },
           {
+            "name": "NON_EDITABLE_GIFT_LINE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NON_REMOVABLE_GIFT_LINE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "NOT_FOUND",
             "description": null,
             "isDeprecated": false,
@@ -19848,6 +19984,12 @@
           },
           {
             "name": "SHIPPING_ADDRESS_NOT_SET",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SHIPPING_CHANGE_FORBIDDEN",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -20304,6 +20446,18 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isGift",
+            "description": "Determine if the line is a gift.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -24202,6 +24356,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "collectionId",
+            "description": "The ID of the collection to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "description",
             "description": "Collection's description to translate.\n\nRich text format. For reference see https://editorjs.io/",
             "args": [],
@@ -24485,6 +24655,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the collection fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CollectionTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -30026,6 +30208,81 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "DiscountedObjectWhereInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "AND",
+            "description": "List of conditions that must be met.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "DiscountedObjectWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "OR",
+            "description": "A list of conditions of which at least one must be met.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "DiscountedObjectWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "baseSubtotalPrice",
+            "description": "Filter by the base subtotal price.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DecimalFilterInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "baseTotalPrice",
+            "description": "Filter by the base total price.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DecimalFilterInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "ENUM",
         "name": "DistanceUnitsEnum",
         "description": "An enumeration.",
@@ -31973,6 +32230,16 @@
           {
             "kind": "OBJECT",
             "name": "VoucherCodeExportCompleted",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "VoucherCodesCreated",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "VoucherCodesDeleted",
             "ofType": null
           },
           {
@@ -34242,7 +34509,7 @@
           },
           {
             "name": "extraPayload",
-            "description": "Additional payload that will be merged with the one based on the bussines object ID.",
+            "description": "Additional payload that will be merged with the one based on the business object ID.",
             "type": {
               "kind": "SCALAR",
               "name": "JSONString",
@@ -34744,7 +35011,7 @@
         "fields": [
           {
             "name": "created",
-            "description": null,
+            "description": "Date and time when fulfillment was created.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -34760,7 +35027,7 @@
           },
           {
             "name": "fulfillmentOrder",
-            "description": null,
+            "description": "Sequence in which the fulfillments were created for an order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -34776,7 +35043,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the fulfillment.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -34996,7 +35263,7 @@
           },
           {
             "name": "status",
-            "description": null,
+            "description": "Status of fulfillment.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -35036,7 +35303,7 @@
           },
           {
             "name": "trackingNumber",
-            "description": null,
+            "description": "Fulfillment tracking number.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -35574,7 +35841,7 @@
         "fields": [
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the fulfillment line.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -35590,7 +35857,7 @@
           },
           {
             "name": "orderLine",
-            "description": null,
+            "description": "The order line to which the fulfillment line is related.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -35602,7 +35869,7 @@
           },
           {
             "name": "quantity",
-            "description": null,
+            "description": "The number of items included in the fulfillment line.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -36263,7 +36530,7 @@
           },
           {
             "name": "created",
-            "description": null,
+            "description": "Date and time when gift card was created.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -36384,7 +36651,7 @@
           },
           {
             "name": "expiryDate",
-            "description": null,
+            "description": "Expiry date of the gift card.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -36396,7 +36663,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the gift card.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -36460,7 +36727,7 @@
           },
           {
             "name": "lastUsedOn",
-            "description": null,
+            "description": "Date and time when gift card was last used.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -38036,7 +38303,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the event associated with a gift card.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -39281,7 +39548,7 @@
         "fields": [
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the tag associated with a gift card.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -39297,7 +39564,7 @@
           },
           {
             "name": "name",
-            "description": null,
+            "description": "Name of the tag associated with a gift card.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -49471,6 +49738,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "menuItemId",
+            "description": "The ID of the menu item to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "Name of the menu item to translate.",
             "args": [],
@@ -49647,6 +49930,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the menu item fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "MenuItemTranslatableContent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -52963,7 +53258,7 @@
           },
           {
             "name": "checkoutDeliveryMethodUpdate",
-            "description": "Updates the delivery method (shipping method or pick up point) of the checkout.\n\nAdded in Saleor 3.1.\n\nTriggers the following webhook events:\n- SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Triggered when updating the checkout delivery method with the external one.\n- CHECKOUT_UPDATED (async): A checkout was updated.",
+            "description": "Updates the delivery method (shipping method or pick up point) of the checkout. Updates the checkout shipping_address for click and collect delivery for a warehouse address. \n\nAdded in Saleor 3.1.\n\nTriggers the following webhook events:\n- SHIPPING_LIST_METHODS_FOR_CHECKOUT (sync): Triggered when updating the checkout delivery method with the external one.\n- CHECKOUT_UPDATED (async): A checkout was updated.",
             "args": [
               {
                 "name": "deliveryMethodId",
@@ -58431,7 +58726,7 @@
           },
           {
             "name": "paymentGatewayInitialize",
-            "description": "Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "description": "Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways. There is a limit of 100 transaction items per checkout / order.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "amount",
@@ -62616,7 +62911,7 @@
           },
           {
             "name": "stockBulkUpdate",
-            "description": "Updates stocks for a given variant and warehouse.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.\n\nTriggers the following webhook events:\n- PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.",
+            "description": "Updates stocks for a given variant and warehouse. Variant and warehouse selectors have to be the same for all stock inputs. Is not allowed to use 'variantId' in one input and 'variantExternalReference' in another.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.\n\nTriggers the following webhook events:\n- PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.",
             "args": [
               {
                 "name": "errorPolicy",
@@ -63229,15 +63524,11 @@
               },
               {
                 "name": "id",
-                "description": "The ID of the transaction.",
+                "description": "The ID of the transaction. One of field id or token is required.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -63284,6 +63575,18 @@
                 "deprecationReason": null
               },
               {
+                "name": "token",
+                "description": "The token of the transaction. One of field id or token is required.\n\nAdded in Saleor 3.14.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "type",
                 "description": "Current status of the event to report.",
                 "type": {
@@ -63310,7 +63613,7 @@
           },
           {
             "name": "transactionInitialize",
-            "description": "Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`. \n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "description": "Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`. There is a limit of 100 transaction items per checkout / order.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [
               {
                 "name": "action",
@@ -63359,6 +63662,18 @@
                     "name": "ID",
                     "ofType": null
                   }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "idempotencyKey",
+                "description": "The idempotency key assigned to the action. It will be passed to the payment app to discover potential duplicate actions. If not provided, the default one will be generated. If empty string provided, INVALID error code will be raised.\n\nAdded in Saleor 3.14.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -63419,15 +63734,23 @@
               },
               {
                 "name": "id",
-                "description": "The ID of the transaction to process.",
+                "description": "The ID of the transaction to process. One of field id or token is required.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "The token of the transaction to process. One of field id or token is required.\n\nAdded in Saleor 3.14.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -63476,15 +63799,23 @@
               },
               {
                 "name": "id",
-                "description": "The ID of the transaction.",
+                "description": "The ID of the transaction. One of field id or token is required.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "The token of the transaction. One of field id or token is required.\n\nAdded in Saleor 3.14.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -63521,15 +63852,23 @@
               },
               {
                 "name": "id",
-                "description": "The ID of the transaction.",
+                "description": "The ID of the transaction. One of field id or token is required, if `transactionItem` is not already assigned to the `orderGrantedRefund`. If `transactionItem` is already assigned to the grantedRefund the field will be ignored.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "The token of the transaction. One of field id or token is required, if `transactionItem` is not already assigned to the `orderGrantedRefund`. If `transactionItem` is already assigned to the grantedRefund the field will be ignored.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -63550,15 +63889,23 @@
             "args": [
               {
                 "name": "id",
-                "description": "The ID of the transaction.",
+                "description": "The ID of the transaction. One of field id or token is required.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "The token of the transaction. One of field id or token is required.\n\nAdded in Saleor 3.14.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -64167,7 +64514,7 @@
           },
           {
             "name": "voucherCodeBulkDelete",
-            "description": "Deletes voucher codes.\n\nAdded in Saleor 3.18. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.",
+            "description": "Deletes voucher codes.\n\nAdded in Saleor 3.18. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CODES_DELETED (async): A voucher codes were deleted.",
             "args": [
               {
                 "name": "ids",
@@ -64204,7 +64551,7 @@
           },
           {
             "name": "voucherCreate",
-            "description": "Creates a new voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CREATED (async): A voucher was created.",
+            "description": "Creates a new voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CREATED (async): A voucher was created.\n- VOUCHER_CODES_CREATED (async): A voucher codes were created.",
             "args": [
               {
                 "name": "input",
@@ -64323,7 +64670,7 @@
           },
           {
             "name": "voucherUpdate",
-            "description": "Updates a voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.",
+            "description": "Updates a voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.\n- VOUCHER_CODES_CREATED (async): A voucher code was created.",
             "args": [
               {
                 "name": "id",
@@ -65607,7 +65954,7 @@
           },
           {
             "name": "channel",
-            "description": null,
+            "description": "Channel through which the order was placed.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -65651,7 +65998,7 @@
           },
           {
             "name": "collectionPointName",
-            "description": null,
+            "description": "Name of the collection point where the order should be picked up by the customer.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -65663,7 +66010,7 @@
           },
           {
             "name": "created",
-            "description": null,
+            "description": "Date and time when the order was created.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -65679,7 +66026,7 @@
           },
           {
             "name": "customerNote",
-            "description": null,
+            "description": "Additional information provided by the customer about the order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -65903,7 +66250,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -66303,7 +66650,7 @@
           },
           {
             "name": "redirectUrl",
-            "description": null,
+            "description": "URL to which user should be redirected after order is placed.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -66339,7 +66686,7 @@
           },
           {
             "name": "shippingMethodName",
-            "description": null,
+            "description": "Method used for shipping.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -66479,7 +66826,7 @@
           },
           {
             "name": "status",
-            "description": null,
+            "description": "Status of the order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -66835,7 +67182,7 @@
           },
           {
             "name": "updatedAt",
-            "description": null,
+            "description": "Date and time when the order was created.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -66875,7 +67222,7 @@
           },
           {
             "name": "voucher",
-            "description": null,
+            "description": "Voucher linked to the order.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -66899,7 +67246,7 @@
           },
           {
             "name": "weight",
-            "description": null,
+            "description": "Weight of the order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -68070,18 +68417,6 @@
                 "name": "OrderBulkCreateUserInput",
                 "ofType": null
               }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "voucher",
-            "description": "Code of a voucher associated with the order.\n\nDEPRECATED: this field will be removed in Saleor 3.19. Use `voucherCode` instead.",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -69978,6 +70313,12 @@
             "deprecationReason": null
           },
           {
+            "name": "ORDER_PROMOTION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PROMOTION",
             "description": null,
             "isDeprecated": false,
@@ -70388,6 +70729,18 @@
             "deprecationReason": null
           },
           {
+            "name": "NON_EDITABLE_GIFT_LINE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NON_REMOVABLE_GIFT_LINE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "NOT_AVAILABLE_IN_CHANNEL",
             "description": null,
             "isDeprecated": false,
@@ -70597,7 +70950,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the event associated with an order.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -72552,6 +72905,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AMOUNT_GREATER_THAN_AVAILABLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -72640,6 +72999,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "transactionId",
+            "description": "The ID of the transaction item related to the granted refund. If `amount` provided in the input, the transaction.chargedAmount needs to be equal or greater than provided `amount`.If `amount` is not provided in the input and calculated automatically by Saleor, the `min(calculatedAmount, transaction.chargedAmount)` will be used.Field will be required starting from Saleor 3.21.\n\nAdded in Saleor 3.20.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
               "ofType": null
             },
             "defaultValue": null,
@@ -72961,6 +73332,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AMOUNT_GREATER_THAN_AVAILABLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -73070,6 +73447,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "transactionId",
+            "description": "The ID of the transaction item related to the granted refund. If `amount` provided in the input, the transaction.chargedAmount needs to be equal or greater than provided `amount`.If `amount` is not provided in the input and calculated automatically by Saleor, the `min(calculatedAmount, transaction.chargedAmount)` will be used.Field will be required starting from Saleor 3.21.\n\nAdded in Saleor 3.20.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -73345,6 +73734,54 @@
             "deprecationReason": null
           },
           {
+            "name": "status",
+            "description": "Status of the granted refund calculated based on transactionItem assigned to granted refund.\n\nAdded in Saleor 3.20.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "OrderGrantedRefundStatusEnum",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "transaction",
+            "description": "The transaction assigned to the granted refund.\n\nAdded in Saleor 3.20.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "TransactionItem",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "transactionEvents",
+            "description": "List of refund events associated with the granted refund.\n\nAdded in Saleor 3.20.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "TransactionEvent",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updatedAt",
             "description": "Time of last update.",
             "args": [],
@@ -73450,6 +73887,41 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "OrderGrantedRefundStatusEnum",
+        "description": "Represents the status of a granted refund.\n\n    NONE - the refund on related transactionItem is not processed\n    PENDING - the refund on related transactionItem is pending\n    FULL - the refund on related transactionItem is fully processed\n    FAIL - the refund on related transactionItem failed\n    ",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "FAILURE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NONE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PENDING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SUCCESS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "OrderLine",
         "description": "Represents order line of particular order.",
@@ -73488,7 +73960,7 @@
           },
           {
             "name": "id",
-            "description": null,
+            "description": "ID of the order line.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -73503,8 +73975,20 @@
             "deprecationReason": null
           },
           {
+            "name": "isGift",
+            "description": "Determine if the line is a gift.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "isShippingRequired",
-            "description": null,
+            "description": "Whether the product variant requires shipping.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -73692,7 +74176,7 @@
           },
           {
             "name": "productName",
-            "description": null,
+            "description": "Name of the product in order line.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -73708,7 +74192,7 @@
           },
           {
             "name": "productSku",
-            "description": null,
+            "description": "SKU of the product variant.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -73720,7 +74204,7 @@
           },
           {
             "name": "productVariantId",
-            "description": null,
+            "description": "The ID of the product variant.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -73732,7 +74216,7 @@
           },
           {
             "name": "quantity",
-            "description": null,
+            "description": "Number of variant items ordered.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -73748,7 +74232,7 @@
           },
           {
             "name": "quantityFulfilled",
-            "description": null,
+            "description": "Number of variant items fulfilled.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -73864,7 +74348,7 @@
           },
           {
             "name": "taxRate",
-            "description": null,
+            "description": "Rate of tax applied on product variant.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -74013,7 +74497,7 @@
           },
           {
             "name": "unitDiscountReason",
-            "description": null,
+            "description": "Reason for any discounts applied on a product in the order.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -74081,7 +74565,7 @@
           },
           {
             "name": "variantName",
-            "description": null,
+            "description": "Name of the variant of product in order line.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -75214,6 +75698,69 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "OrderPredicateInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "AND",
+            "description": "List of conditions that must be met.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OrderPredicateInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "OR",
+            "description": "A list of conditions of which at least one must be met.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "OrderPredicateInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "discountedObjectPredicate",
+            "description": "Defines the conditions related to checkout and order objects.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DiscountedObjectWhereInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "OrderRefund",
         "description": "Refund an order. \n\nRequires one of the following permissions: MANAGE_ORDERS.",
@@ -75726,7 +76273,7 @@
         "fields": [
           {
             "name": "allowUnpaidOrders",
-            "description": "Determine if it is possible to place unpdaid order by calling `checkoutComplete` mutation.\n\nAdded in Saleor 3.15.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "description": "Determine if it is possible to place unpaid order by calling `checkoutComplete` mutation.\n\nAdded in Saleor 3.15.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -75938,7 +76485,7 @@
           },
           {
             "name": "automaticallyFulfillNonShippableGiftCard",
-            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically. By defualt set to True.",
+            "description": "When enabled, all non-shippable gift card orders will be fulfilled automatically. By default set to True.",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -78621,6 +79168,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "pageId",
+            "description": "The ID of the page to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "seoDescription",
             "description": "SEO description to translate.",
             "args": [],
@@ -78864,6 +79427,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the page fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PageTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -82024,7 +82599,7 @@
       {
         "kind": "OBJECT",
         "name": "PaymentGatewayInitialize",
-        "description": "Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": "Initializes a payment gateway session. It triggers the webhook `PAYMENT_GATEWAY_INITIALIZE_SESSION`, to the requested `paymentGateways`. If `paymentGateways` is not provided, the webhook will be send to all subscribed payment gateways. There is a limit of 100 transaction items per checkout / order.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
         "fields": [
           {
             "name": "errors",
@@ -84665,7 +85240,7 @@
         "fields": [
           {
             "name": "channels",
-            "description": "List of chnnels IDs which causes the error.",
+            "description": "List of channels IDs which causes the error.",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -92345,6 +92920,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "productId",
+            "description": "The ID of the product to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "seoDescription",
             "description": "SEO description to translate.",
             "args": [],
@@ -92607,6 +93198,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the product fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -98386,6 +98989,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "productVariantId",
+            "description": "The ID of the product variant to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Returns translated product variant fields for the given language code.",
             "args": [
@@ -98581,6 +99200,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the product variant fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ProductVariantTranslatableContent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -99511,6 +100142,18 @@
             "deprecationReason": null
           },
           {
+            "name": "type",
+            "description": "The type of the promotion. Implicate if the discount is applied on catalogue or order level.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "PromotionTypeEnum",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updatedAt",
             "description": "Date time of last update of promotion.",
             "args": [],
@@ -99781,6 +100424,30 @@
             "deprecationReason": null
           },
           {
+            "name": "giftsLimit",
+            "description": "Limit of gifts assigned to promotion rule.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "giftsLimitExceedBy",
+            "description": "Number of gifts defined for this promotion rule exceeding the limit.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "index",
             "description": "Index of an input list item that caused the error.",
             "args": [],
@@ -99803,6 +100470,30 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "rulesLimit",
+            "description": "Limit of rules with orderPredicate defined.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rulesLimitExceedBy",
+            "description": "Number of rules with orderPredicate defined exceeding the limit.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -99819,6 +100510,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "GIFTS_NUMBER_LIMIT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -99831,7 +100528,19 @@
             "deprecationReason": null
           },
           {
+            "name": "INVALID_GIFT_TYPE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "INVALID_PRECISION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MISSING_CHANNELS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -99850,6 +100559,12 @@
           },
           {
             "name": "REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RULES_NUMBER_LIMIT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -99929,6 +100644,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": "Defines the promotion type. Implicate the required promotion rules predicate type and whether the promotion rules will give the catalogue or order discount. \n\nThe default value is `Catalogue`.\n\nThis field will be required from Saleor 3.20.\n\nAdded in Saleor 3.19.",
+            "type": {
+              "kind": "ENUM",
+              "name": "PromotionTypeEnum",
               "ofType": null
             },
             "defaultValue": null,
@@ -100712,6 +101439,38 @@
             "deprecationReason": null
           },
           {
+            "name": "giftIds",
+            "description": "Product variant IDs available as a gift to choose.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "giftsLimit",
+            "description": "Defines the maximum number of gifts to choose from the gifts list.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -100740,6 +101499,30 @@
             "deprecationReason": null
           },
           {
+            "name": "orderPredicate",
+            "description": "The checkout/order predicate that must be met to apply the rule reward.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSON",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "predicateType",
+            "description": "The type of the predicate that must be met to apply the reward.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "PromotionTypeEnum",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "promotion",
             "description": "Promotion to which the rule belongs.",
             "args": [],
@@ -100752,8 +101535,20 @@
             "deprecationReason": null
           },
           {
+            "name": "rewardType",
+            "description": "The reward type of the promotion rule.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "RewardTypeEnum",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "rewardValue",
-            "description": "The reward value of the promotion rule. Defines the discount value applied when the rule conditions are met.",
+            "description": "The reward value of the promotion rule. Defines the discount value applied when the rule conditions are met.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -100897,12 +101692,60 @@
             "deprecationReason": null
           },
           {
+            "name": "giftsLimit",
+            "description": "Limit of gifts assigned to promotion rule.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "giftsLimitExceedBy",
+            "description": "Number of gifts defined for this promotion rule exceeding the limit.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "message",
             "description": "The error message.",
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rulesLimit",
+            "description": "Limit of rules with orderPredicate defined.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rulesLimitExceedBy",
+            "description": "Number of rules with orderPredicate defined exceeding the limit.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -100923,6 +101766,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "GIFTS_NUMBER_LIMIT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -100935,7 +101784,19 @@
             "deprecationReason": null
           },
           {
+            "name": "INVALID_GIFT_TYPE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "INVALID_PRECISION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MISSING_CHANNELS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -100954,6 +101815,12 @@
           },
           {
             "name": "REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RULES_NUMBER_LIMIT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -101012,11 +101879,43 @@
             "deprecationReason": null
           },
           {
+            "name": "gifts",
+            "description": "Product variant IDs available as a gift to choose.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "Promotion rule name.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "orderPredicate",
+            "description": "Defines the conditions on the checkout/draft order level that must be met for the reward to be applied.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OrderPredicateInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -101034,6 +101933,18 @@
                 "name": "ID",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rewardType",
+            "description": "Defines the reward type of the promotion rule.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "ENUM",
+              "name": "RewardTypeEnum",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -101631,11 +102542,55 @@
             "deprecationReason": null
           },
           {
+            "name": "gifts",
+            "description": "Product variant IDs available as a gift to choose.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": "Promotion rule name.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "orderPredicate",
+            "description": "Defines the conditions on the checkout/draft order level that must be met for the reward to be applied.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OrderPredicateInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rewardType",
+            "description": "Defines the reward type of the promotion rule.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "ENUM",
+              "name": "RewardTypeEnum",
               "ofType": null
             },
             "defaultValue": null,
@@ -101712,6 +102667,22 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "promotionRuleId",
+            "description": "ID of the promotion rule to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -101860,6 +102831,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the promotion rule fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PromotionRuleTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -102013,6 +102996,30 @@
             "deprecationReason": null
           },
           {
+            "name": "giftsLimit",
+            "description": "Limit of gifts assigned to promotion rule.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "giftsLimitExceedBy",
+            "description": "Number of gifts defined for this promotion rule exceeding the limit.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "message",
             "description": "The error message.",
             "args": [],
@@ -102045,6 +103052,12 @@
             "deprecationReason": null
           },
           {
+            "name": "GIFTS_NUMBER_LIMIT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -102052,6 +103065,12 @@
           },
           {
             "name": "INVALID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "INVALID_GIFT_TYPE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -102079,6 +103098,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -102091,7 +103116,27 @@
         "inputFields": [
           {
             "name": "addChannels",
-            "description": "List of channel ids to remove.",
+            "description": "List of channel ids to add.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "addGifts",
+            "description": "List of variant IDs available as a gift to add.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -102146,6 +103191,18 @@
             "deprecationReason": null
           },
           {
+            "name": "orderPredicate",
+            "description": "Defines the conditions on the checkout/draft order level that must be met for the reward to be applied.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "OrderPredicateInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "removeChannels",
             "description": "List of channel ids to remove.",
             "type": {
@@ -102160,6 +103217,38 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "removeGifts",
+            "description": "List of variant IDs available as a gift to remove.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "rewardType",
+            "description": "Defines the reward type of the promotion rule.\n\nAdded in Saleor 3.19.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+            "type": {
+              "kind": "ENUM",
+              "name": "RewardTypeEnum",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -102657,6 +103746,22 @@
             "deprecationReason": null
           },
           {
+            "name": "promotionId",
+            "description": "ID of the promotion to translate.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Returns translated promotion fields for the given language code.",
             "args": [
@@ -102804,6 +103909,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the promotion fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "PromotionTranslatableContent",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -102842,6 +103959,72 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "PromotionTypeEnum",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "CATALOGUE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ORDER",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "PromotionTypeEnumFilterInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "eq",
+            "description": "The value equal to.",
+            "type": {
+              "kind": "ENUM",
+              "name": "PromotionTypeEnum",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "oneOf",
+            "description": "The value included in.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "PromotionTypeEnum",
+                  "ofType": null
+                }
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -103331,6 +104514,18 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DateTimeFilterInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "PromotionTypeEnumFilterInput",
               "ofType": null
             },
             "defaultValue": null,
@@ -105182,8 +106377,8 @@
               "name": "OrderEventCountableConnection",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
           },
           {
             "name": "me",
@@ -105702,8 +106897,8 @@
               "name": "TaxedMoney",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
           },
           {
             "name": "page",
@@ -106961,8 +108156,8 @@
               "name": "ProductVariantCountableConnection",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0."
           },
           {
             "name": "sale",
@@ -107725,8 +108920,8 @@
                 }
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This field will be removed in Saleor 4.0. Use `taxClasses` field instead."
           },
           {
             "name": "transaction",
@@ -107734,15 +108929,23 @@
             "args": [
               {
                 "name": "id",
-                "description": "ID of a transaction.",
+                "description": "ID of a transaction. Either it or token is required to fetch the transaction data.",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "token",
+                "description": "Token of a transaction. Either it or ID is required to fetch the transaction data.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "UUID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -108600,6 +109803,29 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "RewardTypeEnum",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "GIFT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SUBTOTAL_DISCOUNT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -110633,6 +111859,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "saleId",
+            "description": "The ID of the sale to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Returns translated sale fields for the given language code.",
             "args": [
@@ -110788,6 +112030,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the sale fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "SaleTranslatableContent",
               "ofType": null
             },
             "isDeprecated": false,
@@ -112346,6 +113600,22 @@
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
           },
           {
+            "name": "shippingMethodId",
+            "description": "The ID of the shipping method to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "translation",
             "description": "Returns translated shipping method fields for the given language code.",
             "args": [
@@ -112447,6 +113717,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the shipping method fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ShippingMethodTranslatableContent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -115575,7 +116857,7 @@
         "fields": [
           {
             "name": "allowLoginWithoutConfirmation",
-            "description": "Determines if user can login without confirmation when `enableAccountConfrimation` is enabled.\n\nAdded in Saleor 3.15.\n\nRequires one of the following permissions: MANAGE_SETTINGS.",
+            "description": "Determines if user can login without confirmation when `enableAccountConfirmation` is enabled.\n\nAdded in Saleor 3.15.\n\nRequires one of the following permissions: MANAGE_SETTINGS.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -115713,6 +116995,30 @@
                   "kind": "OBJECT",
                   "name": "ShippingMethod",
                   "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "availableTaxApps",
+            "description": "List of tax apps that can be assigned to the channel. The list will be calculated by Saleor based on the apps that are subscribed to webhooks related to tax calculations: CHECKOUT_CALCULATE_TAXES\n\nAdded in Saleor 3.19.\n\nRequires one of the following permissions: AUTHENTICATED_STAFF_USER, MANAGE_APPS.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "App",
+                    "ofType": null
+                  }
                 }
               }
             },
@@ -119081,7 +120387,7 @@
       {
         "kind": "OBJECT",
         "name": "StockBulkUpdate",
-        "description": "Updates stocks for a given variant and warehouse.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.\n\nTriggers the following webhook events:\n- PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.",
+        "description": "Updates stocks for a given variant and warehouse. Variant and warehouse selectors have to be the same for all stock inputs. Is not allowed to use 'variantId' in one input and 'variantExternalReference' in another.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point. \n\nRequires one of the following permissions: MANAGE_PRODUCTS.\n\nTriggers the following webhook events:\n- PRODUCT_VARIANT_STOCK_UPDATED (async): A product variant stock details were updated.",
         "fields": [
           {
             "name": "count",
@@ -121619,6 +122925,18 @@
             "deprecationReason": null
           },
           {
+            "name": "taxAppId",
+            "description": "The tax app `App.identifier` that will be used to calculate the taxes for the given channel. Empty value for `TAX_APP` set as `taxCalculationStrategy` means that Saleor will iterate over all installed tax apps. If multiple tax apps exist with provided tax app id use the `App` with newest `created` date. Will become mandatory in 4.0 for `TAX_APP` `taxCalculationStrategy`.\n\nAdded in Saleor 3.19.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "taxCalculationStrategy",
             "description": "The default strategy to use for tax calculation in the given channel. Taxes can be calculated either using user-defined flat rates or with a tax app. Empty value means that no method is selected and taxes are not calculated.",
             "args": [],
@@ -121858,6 +123176,18 @@
             "deprecationReason": null
           },
           {
+            "name": "taxAppId",
+            "description": "The tax app `App.identifier` that will be used to calculate the taxes for the given channel and country. If not provided, use the value from the channel's tax configuration.\n\nAdded in Saleor 3.19.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "taxCalculationStrategy",
             "description": "A country-specific strategy to use for tax calculation. Taxes can be calculated either using user-defined flat rates or with a tax app. If not provided, use the value from the channel's tax configuration.",
             "args": [],
@@ -121924,6 +123254,18 @@
                 "name": "Boolean",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "taxAppId",
+            "description": "The tax app `App.identifier` that will be used to calculate the taxes for the given channel and country. If not provided, use the value from the channel's tax configuration.\n\nAdded in Saleor 3.19.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -122160,6 +123502,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "taxAppId",
+            "description": "The tax app `App.identifier` that will be used to calculate the taxes for the given channel. Empty value for `TAX_APP` set as `taxCalculationStrategy` means that Saleor will iterate over all installed tax apps. If multiple tax apps exist with provided tax app id use the `App` with newest `created` date. It's possible to set plugin by using prefix `plugin:` with `PLUGIN_ID` e.g. with Avalara `plugin:mirumee.taxes.avalara`.Will become mandatory in 4.0 for `TAX_APP` `taxCalculationStrategy`.\n\nAdded in Saleor 3.19.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -124328,6 +125682,18 @@
             "deprecationReason": null
           },
           {
+            "name": "idempotencyKey",
+            "description": "Idempotency key assigned to the event.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "message",
             "description": "Message related to the transaction's event.\n\nAdded in Saleor 3.13.",
             "args": [],
@@ -124726,7 +126092,7 @@
       {
         "kind": "OBJECT",
         "name": "TransactionInitialize",
-        "description": "Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`. \n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
+        "description": "Initializes a transaction session. It triggers the webhook `TRANSACTION_INITIALIZE_SESSION`, to the requested `paymentGateways`. There is a limit of 100 transaction items per checkout / order.\n\nAdded in Saleor 3.13.\n\nNote: this API is currently in Feature Preview and can be subject to changes at later point.",
         "fields": [
           {
             "name": "data",
@@ -124870,6 +126236,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "UNIQUE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -124915,6 +126287,22 @@
               "kind": "SCALAR",
               "name": "JSON",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "idempotencyKey",
+            "description": "Idempotency key assigned to the transaction initialize.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -125148,6 +126536,18 @@
                 "name": "Money",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "checkout",
+            "description": "The related checkout.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Checkout",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -125510,6 +126910,22 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "Money",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "token",
+            "description": "The transaction token.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "UUID",
                 "ofType": null
               }
             },
@@ -126407,6 +127823,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AMOUNT_GREATER_THAN_AVAILABLE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "GRAPHQL_ERROR",
             "description": null,
             "isDeprecated": false,
@@ -126426,6 +127848,18 @@
           },
           {
             "name": "NOT_FOUND",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REFUND_ALREADY_PROCESSED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "REFUND_IS_PENDING",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -129045,7 +130479,7 @@
           },
           {
             "name": "isConfirmed",
-            "description": "User account is confirmed.\n\nAdded in Saleor 3.15.",
+            "description": "User account is confirmed.\n\nAdded in Saleor 3.15.\n\nDEPRECATED: this field will be removed in Saleor 4.0.\n\nThe user will be always set as unconfirmed. The confirmation will take place when the user sets the password.",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -131170,7 +132604,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherCodeBulkDelete",
-        "description": "Deletes voucher codes.\n\nAdded in Saleor 3.18. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.",
+        "description": "Deletes voucher codes.\n\nAdded in Saleor 3.18. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CODES_DELETED (async): A voucher codes were deleted.",
         "fields": [
           {
             "name": "count",
@@ -131503,6 +132937,176 @@
       },
       {
         "kind": "OBJECT",
+        "name": "VoucherCodesCreated",
+        "description": "Event sent when new voucher codes were created.\n\nAdded in Saleor 3.19.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "voucherCodes",
+            "description": "The voucher codes the event relates to.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "VoucherCode",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "VoucherCodesDeleted",
+        "description": "Event sent when voucher codes were deleted.\n\nAdded in Saleor 3.19.",
+        "fields": [
+          {
+            "name": "issuedAt",
+            "description": "Time of the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "issuingPrincipal",
+            "description": "The user or application that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "UNION",
+              "name": "IssuingPrincipal",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "recipient",
+            "description": "The application receiving the webhook.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "App",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "version",
+            "description": "Saleor version that triggered the event.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "voucherCodes",
+            "description": "The voucher codes the event relates to.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "VoucherCode",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Event",
+            "ofType": null
+          }
+        ],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "VoucherCountableConnection",
         "description": null,
         "fields": [
@@ -131610,7 +133214,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherCreate",
-        "description": "Creates a new voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CREATED (async): A voucher was created.",
+        "description": "Creates a new voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_CREATED (async): A voucher was created.\n- VOUCHER_CODES_CREATED (async): A voucher codes were created.",
         "fields": [
           {
             "name": "discountErrors",
@@ -132708,6 +134312,22 @@
             },
             "isDeprecated": true,
             "deprecationReason": "This field will be removed in Saleor 4.0. Get model fields from the root level queries."
+          },
+          {
+            "name": "voucherId",
+            "description": "The ID of the voucher to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -132840,6 +134460,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "translatableContent",
+            "description": "Represents the voucher fields to translate.\n\nAdded in Saleor 3.14.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "VoucherTranslatableContent",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -132885,7 +134517,7 @@
       {
         "kind": "OBJECT",
         "name": "VoucherUpdate",
-        "description": "Updates a voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.",
+        "description": "Updates a voucher. \n\nRequires one of the following permissions: MANAGE_DISCOUNTS.\n\nTriggers the following webhook events:\n- VOUCHER_UPDATED (async): A voucher was updated.\n- VOUCHER_CODES_CREATED (async): A voucher code was created.",
         "fields": [
           {
             "name": "discountErrors",
@@ -136543,6 +138175,18 @@
             "deprecationReason": null
           },
           {
+            "name": "VOUCHER_CODES_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOUCHER_CODES_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "VOUCHER_CODE_EXPORT_COMPLETED",
             "description": "A voucher code export is completed.\n\nAdded in Saleor 3.18.",
             "isDeprecated": false,
@@ -137528,6 +139172,18 @@
           {
             "name": "TRANSLATION_UPDATED",
             "description": "A translation is updated.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOUCHER_CODES_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOUCHER_CODES_DELETED",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -138526,6 +140182,18 @@
             "deprecationReason": null
           },
           {
+            "name": "VOUCHER_CODES_CREATED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VOUCHER_CODES_DELETED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "VOUCHER_CODE_EXPORT_COMPLETED",
             "description": null,
             "isDeprecated": false,
@@ -139000,7 +140668,7 @@
           },
           {
             "name": "value",
-            "description": "Weight value.",
+            "description": "Weight value. Returns a value with maximal three decimal places",
             "args": [],
             "type": {
               "kind": "NON_NULL",

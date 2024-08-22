@@ -1,8 +1,5 @@
 import { useAppListContext } from "@dashboard/apps/context";
-import {
-  appInstallationStatusMessages,
-  appsMessages,
-} from "@dashboard/apps/messages";
+import { appInstallationStatusMessages, appsMessages } from "@dashboard/apps/messages";
 import { AppInstallation } from "@dashboard/apps/types";
 import TableButtonWrapper from "@dashboard/components/TableButtonWrapper/TableButtonWrapper";
 import { JobStatusEnum } from "@dashboard/graphql";
@@ -47,7 +44,9 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
         justifyContent={{ mobile: "space-between", desktop: "flex-start" }}
       >
         <AppAvatar logo={logo} />
-        <Text variant="bodyStrong">{appInstallation.appName}</Text>
+        <Text size={4} fontWeight="bold">
+          {appInstallation.appName}
+        </Text>
         {isExternal && (
           <Chip
             data-test-id="app-external-label"
@@ -55,7 +54,7 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
             backgroundColor="default1"
             borderColor="default1"
           >
-            <Text variant="caption" size="small">
+            <Text size={1}>
               <FormattedMessage {...appsMessages.externalApp} />
             </Text>
           </Chip>
@@ -64,11 +63,7 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
       <div className={classes.actions}>
         {appInstallation?.status === JobStatusEnum.PENDING && (
           <>
-            <Text
-              variant="caption"
-              className={classes.pending}
-              data-test-id="app-pending-label"
-            >
+            <Text size={2} className={classes.pending} data-test-id="app-pending-label">
               {intl.formatMessage(appInstallationStatusMessages.pending)}
             </Text>
             <div className={classes.colSpinner}>
@@ -82,15 +77,8 @@ export const NotInstalledAppListRow: React.FC<AppInstallation> = props => {
               <Tooltip.Trigger>
                 <Box display="flex" placeItems="center" gap={1} marginX={1}>
                   <WarningIcon size="small" color="critical1" />
-                  <Text
-                    variant="caption"
-                    size="small"
-                    color="critical2"
-                    data-test-id="app-failed-label"
-                  >
-                    <FormattedMessage
-                      {...appInstallationStatusMessages.failed}
-                    />
+                  <Text size={1} color="critical2" data-test-id="app-failed-label">
+                    <FormattedMessage {...appInstallationStatusMessages.failed} />
                   </Text>
                 </Box>
               </Tooltip.Trigger>

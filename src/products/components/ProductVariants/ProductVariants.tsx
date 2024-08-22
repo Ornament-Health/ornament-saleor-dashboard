@@ -2,11 +2,8 @@
 import { ChannelData } from "@dashboard/channels/utils";
 import { ColumnPicker } from "@dashboard/components/Datagrid/ColumnPicker/ColumnPicker";
 import { useColumns } from "@dashboard/components/Datagrid/ColumnPicker/useColumns";
-import Datagrid, {
-  GetCellContentOpts,
-} from "@dashboard/components/Datagrid/Datagrid";
+import Datagrid, { GetCellContentOpts } from "@dashboard/components/Datagrid/Datagrid";
 import { DatagridChangeOpts } from "@dashboard/components/Datagrid/hooks/useDatagridChange";
-import { Choice } from "@dashboard/components/SingleSelectField";
 import {
   AttributeInputTypeEnum,
   ProductDetailsVariantFragment,
@@ -21,9 +18,11 @@ import { ProductVariantListError } from "@dashboard/products/views/ProductUpdate
 import { mapEdgesToItems } from "@dashboard/utils/maps";
 import { Item } from "@glideapps/glide-data-grid";
 import { Button } from "@saleor/macaw-ui";
+import { Option } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
+import { ProductVariantsHeader } from "./components/ProductVariantsHeader";
 import {
   useAttributesAdapter,
   useChannelAdapter,
@@ -41,10 +40,8 @@ interface ProductVariantsProps {
   variantAttributes: ProductFragment["productType"]["variantAttributes"];
   variants: ProductDetailsVariantFragment[];
   productName: string;
-  onAttributeValuesSearch: (
-    id: string,
-    query: string,
-  ) => Promise<Array<Choice<string, string>>>;
+  productId: string;
+  onAttributeValuesSearch: (id: string, query: string) => Promise<Option[]>;
   onChange: (data: DatagridChangeOpts) => void;
   onRowClick: (id: string) => void;
 }
@@ -55,6 +52,7 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
   variants,
   variantAttributes,
   productName,
+  productId,
   onAttributeValuesSearch,
   onChange,
   onRowClick,
@@ -83,20 +81,20 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
               `channel:${channel.id}`,
             ]),
             ...warehouses.map(warehouse => `warehouse:${warehouse.id}`),
-            ...variantAttributes
+            ...(variantAttributes
               ?.filter(
                 attribute =>
                   attribute.inputType === AttributeInputTypeEnum.DROPDOWN ||
                   attribute.inputType === AttributeInputTypeEnum.PLAIN_TEXT,
               )
-              .map(attribute => `attribute:${attribute.id}`),
+              .map(attribute => `attribute:${attribute.id}`) ?? []),
           ]
         : undefined,
     [channels, variantAttributes, warehouses],
   );
-  const [columnSettings, setColumnSettings] = useStateFromProps<
-    string[] | undefined
-  >(initialSettings);
+  const [columnSettings, setColumnSettings] = useStateFromProps<string[] | undefined>(
+    initialSettings,
+  );
 
   React.useEffect(() => {
     if (columnSettings) {
@@ -118,30 +116,22 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
     listings: channels,
     selectedColumns: columnSettings,
   });
-
   const availabilityCategory = useChannelAvailabilityAdapter({
     intl,
     listings: channels,
     selectedColumns: columnSettings,
   });
-
   const attributeCategory = useAttributesAdapter({
     intl,
     selectedColumns: columnSettings,
     attributes: variantAttributes,
   });
-
   const warehouseCategory = useWarehouseAdapter({
     selectedColumns: columnSettings,
     intl,
     warehouses,
   });
-
-  const memoizedStaticColumns = React.useMemo(
-    () => variantsStaticColumnsAdapter(intl),
-    [intl],
-  );
-
+  const memoizedStaticColumns = React.useMemo(() => variantsStaticColumnsAdapter(intl), [intl]);
   const {
     handlers,
     columnCategories,
@@ -151,17 +141,12 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
     selectedColumns,
     recentlyAddedColumn,
   } = useColumns({
+    gridName: "variants",
     staticColumns: memoizedStaticColumns,
-    columnCategories: [
-      channelCategory,
-      availabilityCategory,
-      attributeCategory,
-      warehouseCategory,
-    ],
+    columnCategories: [channelCategory, availabilityCategory, attributeCategory, warehouseCategory],
     selectedColumns: columnSettings ?? [],
     onSave: handleColumnChange,
   });
-
   const getCellContent = React.useCallback(
     ([column, row]: Item, opts: GetCellContentOpts) =>
       getData({
@@ -175,7 +160,6 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
       }),
     [channels, visibleColumns, onAttributeValuesSearch, variants],
   );
-
   const getCellError = React.useCallback(
     ([column, row]: Item, opts: GetCellContentOpts) =>
       getError(errors, {
@@ -192,12 +176,10 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
 
   return (
     <Datagrid
-      addButtonLabel={intl.formatMessage({
-        defaultMessage: "Add variant",
-        id: "3C3Nj5",
-        description: "button",
-      })}
       fillHandle={true}
+      renderHeader={props => (
+        <ProductVariantsHeader {...props} productId={productId} productName={productName} />
+      )}
       availableColumns={visibleColumns}
       emptyText={intl.formatMessage(messages.empty)}
       getCellContent={getCellContent}
@@ -231,10 +213,6 @@ export const ProductVariants: React.FC<ProductVariantsProps> = ({
           side="left"
         />
       )}
-      title={intl.formatMessage(messages.title)}
-      fullScreenTitle={intl.formatMessage(messages.fullScreenTitle, {
-        name: productName,
-      })}
       onChange={onChange}
       recentlyAddedColumn={recentlyAddedColumn}
     />

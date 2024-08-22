@@ -15,21 +15,17 @@ export interface WarehouseInfoProps {
   onChange: FormChange;
 }
 
-const WarehouseInfo: React.FC<WarehouseInfoProps> = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}) => {
+const WarehouseInfo: React.FC<WarehouseInfoProps> = ({ data, disabled, errors, onChange }) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["name"], errors);
 
   return (
     <DashboardCard data-test-id="general-information-section" paddingTop={9}>
-      <DashboardCard.Title>
-        {intl.formatMessage(commonMessages.generalInformations)}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage(commonMessages.generalInformations)}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <TextField
           data-test-id="warehouse-name-input"

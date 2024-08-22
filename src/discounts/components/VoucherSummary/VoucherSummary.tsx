@@ -1,69 +1,50 @@
+import { DashboardCard } from "@dashboard/components/Card";
 import CardSpacer from "@dashboard/components/CardSpacer";
-import CardTitle from "@dashboard/components/CardTitle";
 import Date from "@dashboard/components/Date";
 import FormSpacer from "@dashboard/components/FormSpacer";
 import Hr from "@dashboard/components/Hr";
 import Money from "@dashboard/components/Money";
 import Percent from "@dashboard/components/Percent";
-import Skeleton from "@dashboard/components/Skeleton";
-import {
-  DiscountValueTypeEnum,
-  VoucherDetailsFragment,
-} from "@dashboard/graphql";
+import { DiscountValueTypeEnum, VoucherDetailsFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { ChannelProps } from "@dashboard/types";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { maybe } from "../../../misc";
 import { translateVoucherTypes } from "../../translations";
 
 export interface VoucherSummaryProps extends ChannelProps {
   voucher: VoucherDetailsFragment;
 }
 
-const VoucherSummary: React.FC<VoucherSummaryProps> = ({
-  selectedChannelId,
-  voucher,
-}) => {
+const VoucherSummary: React.FC<VoucherSummaryProps> = ({ selectedChannelId, voucher }) => {
   const intl = useIntl();
-
   const translatedVoucherTypes = translateVoucherTypes(intl);
   const channel = voucher?.channelListings?.find(
     listing => listing.channel.id === selectedChannelId,
   );
 
   return (
-    <Card>
-      <CardTitle title={intl.formatMessage(commonMessages.summary)} />
-      <CardContent>
-        <Typography variant="caption">
-          <FormattedMessage
-            id="bcf60I"
-            defaultMessage="Applies to"
-            description="voucher"
-          />
-        </Typography>
-        <Typography>
-          {maybe<React.ReactNode>(
-            () => translatedVoucherTypes[voucher.type],
-            <Skeleton />,
-          )}
-        </Typography>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(commonMessages.summary)}</DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
+        <Text fontWeight="medium" fontSize={3}>
+          <FormattedMessage id="bcf60I" defaultMessage="Applies to" description="voucher" />
+        </Text>
+        <Text display="block">
+          {voucher?.type ? translatedVoucherTypes[voucher.type] : <Skeleton />}
+        </Text>
         <FormSpacer />
 
-        <Typography variant="caption">
-          <FormattedMessage
-            id="JV+EiM"
-            defaultMessage="Value"
-            description="voucher value"
-          />
-        </Typography>
-        <Typography>
+        <Text size={2} fontWeight="light">
+          <FormattedMessage id="JV+EiM" defaultMessage="Value" description="voucher value" />
+        </Text>
+        <Text display="block">
           {voucher ? (
-            voucher.discountValueType === DiscountValueTypeEnum.FIXED &&
-            channel?.discountValue ? (
+            voucher.discountValueType === DiscountValueTypeEnum.FIXED && channel?.discountValue ? (
               <Money
                 money={{
                   amount: channel?.discountValue,
@@ -78,89 +59,60 @@ const VoucherSummary: React.FC<VoucherSummaryProps> = ({
           ) : (
             <Skeleton />
           )}
-        </Typography>
+        </Text>
 
         <CardSpacer />
         <Hr />
         <CardSpacer />
 
-        <Typography variant="caption">
+        <Text size={2} fontWeight="light">
           {intl.formatMessage(commonMessages.startDate)}
-        </Typography>
-        <Typography>
-          {maybe<React.ReactNode>(
-            () => (
-              <Date date={voucher.startDate} plain />
-            ),
-            <Skeleton />,
-          )}
-        </Typography>
+        </Text>
+        <Text display="block">
+          {voucher?.startDate ? <Date date={voucher.startDate} plain /> : <Skeleton />}
+        </Text>
         <FormSpacer />
 
-        <Typography variant="caption">
+        <Text size={2} fontWeight="light">
           {intl.formatMessage(commonMessages.endDate)}
-        </Typography>
-        <Typography>
-          {maybe<React.ReactNode>(
-            () =>
-              voucher.endDate === null ? (
-                "-"
-              ) : (
-                <Date date={voucher.endDate} plain />
-              ),
-            <Skeleton />,
-          )}
-        </Typography>
+        </Text>
+        <Text display="block">
+          {voucher?.endDate ? <Date date={voucher.endDate} plain /> : "-"}
+        </Text>
 
         <CardSpacer />
         <Hr />
         <CardSpacer />
 
-        <Typography variant="caption">
+        <Text size={2} fontWeight="light">
           <FormattedMessage
             id="FOa+Xd"
             defaultMessage="Min. Order Value"
             description="voucher value requirement"
           />
-        </Typography>
-        <Typography>
-          {voucher ? (
-            channel?.minSpent ? (
-              <Money money={channel.minSpent} />
-            ) : (
-              "-"
-            )
-          ) : (
-            <Skeleton />
-          )}
-        </Typography>
+        </Text>
+        <Text display="block">
+          {voucher ? channel?.minSpent ? <Money money={channel.minSpent} /> : "-" : <Skeleton />}
+        </Text>
         <FormSpacer />
 
-        <Typography variant="caption">
+        <Text size={2} fontWeight="light">
           <FormattedMessage
             id="HLqWXA"
             defaultMessage="Usage Limit"
             description="voucher value requirement"
           />
-        </Typography>
-        <Typography>
-          {maybe<React.ReactNode>(
-            () => (voucher.usageLimit === null ? "-" : voucher.usageLimit),
-            <Skeleton />,
-          )}
-        </Typography>
+        </Text>
+        <Text display="block">{voucher?.usageLimit ? voucher.usageLimit : "-"}</Text>
         <FormSpacer />
-        <Typography variant="caption">
-          <FormattedMessage
-            id="h65vZI"
-            defaultMessage="Used"
-            description="times voucher used"
-          />
-        </Typography>
-        <Typography>{voucher?.used ?? <Skeleton />}</Typography>
-      </CardContent>
-    </Card>
+        <Text size={2} fontWeight="light">
+          <FormattedMessage id="h65vZI" defaultMessage="Used" description="times voucher used" />
+        </Text>
+        <Text display="block">{voucher?.used ?? <Skeleton />}</Text>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 VoucherSummary.displayName = "VoucherSummary";
 export default VoucherSummary;

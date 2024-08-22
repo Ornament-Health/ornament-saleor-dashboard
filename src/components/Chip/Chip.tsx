@@ -1,7 +1,7 @@
-import { Typography } from "@material-ui/core";
 import { alpha } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import clsx from "clsx";
 import React from "react";
 
@@ -34,19 +34,17 @@ const useStyles = makeStyles(
 );
 const Chip: React.FC<ChipProps> = props => {
   const { className, label, onClose } = props;
-
   const classes = useStyles(props);
 
   return (
     <div className={clsx(classes.root, className)}>
-      <Typography className={classes.label} variant="caption">
+      <Text className={classes.label} size={2} fontWeight="light">
         {label}
-        {onClose && (
-          <CloseIcon className={classes.closeIcon} onClick={onClose} />
-        )}
-      </Typography>
+        {onClose && <CloseIcon className={classes.closeIcon} onClick={onClose} />}
+      </Text>
     </div>
   );
 };
+
 Chip.displayName = "Chip";
 export default Chip;

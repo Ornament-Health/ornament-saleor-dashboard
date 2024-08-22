@@ -1,13 +1,13 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
-import Skeleton from "@dashboard/components/Skeleton";
 import { AccountErrorFragment, CustomerDetailsQuery } from "@dashboard/graphql";
 import { maybe } from "@dashboard/misc";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getAccountErrorMessage from "@dashboard/utils/errors/account";
-import { Card, CardContent, TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import moment from "moment-timezone";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -50,18 +50,18 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = props => {
   const formErrors = getFormErrors(["note"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        className={classes.cardTitle}
-        title={
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title
+          className={classes.cardTitle}
+          display="flex"
+          flexDirection="column"
+          gap={2}
+        >
           <>
             {maybe<React.ReactNode>(() => customer.email, <Skeleton />)}
             {customer && customer.dateJoined ? (
-              <Typography
-                className={classes.subtitle}
-                variant="caption"
-                component="div"
-              >
+              <Text className={classes.subtitle} size={2} fontWeight="light">
                 <FormattedMessage
                   id="MjUyhA"
                   defaultMessage="Active member since {date}"
@@ -70,15 +70,16 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = props => {
                     date: moment(customer.dateJoined).format("MMM YYYY"),
                   }}
                 />
-              </Typography>
+              </Text>
             ) : (
               <Skeleton style={{ width: "10rem" }} />
             )}
           </>
-        }
-      />
-      <CardContent className={classes.content}>
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content className={classes.content}>
         <ControlledCheckbox
+          data-test-id="customer-active-checkbox"
           checked={data.isActive}
           className={classes.checkbox}
           disabled={disabled}
@@ -91,6 +92,7 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = props => {
           onChange={onChange}
         />
         <TextField
+          data-test-id="customer-note"
           disabled={disabled}
           error={!!formErrors.note}
           fullWidth
@@ -105,9 +107,10 @@ const CustomerDetails: React.FC<CustomerDetailsProps> = props => {
           value={data.note}
           onChange={onChange}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 CustomerDetails.displayName = "CustomerDetails";
 export default CustomerDetails;

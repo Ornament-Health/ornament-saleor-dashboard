@@ -2,7 +2,7 @@
 import DiscountedPrice from "@dashboard/components/DiscountedPrice/DiscountedPrice";
 import Money from "@dashboard/components/Money";
 import { SearchOrderVariantQuery } from "@dashboard/graphql";
-import { Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import * as React from "react";
 
 import { useStyles } from "./styles";
@@ -16,20 +16,18 @@ const OrderPriceLabel: React.FC<OrderPriceLabelProps> = ({ pricing }) => {
 
   if (pricing.onSale) {
     const { price, priceUndiscounted } = pricing;
+
     return (
       <div className={classes.percentDiscountLabelContainer}>
-        <DiscountedPrice
-          discountedPrice={price.gross}
-          regularPrice={priceUndiscounted.gross}
-        />
+        <DiscountedPrice discountedPrice={price.gross} regularPrice={priceUndiscounted.gross} />
       </div>
     );
   }
 
   return (
-    <Typography align="right">
+    <Text>
       <Money money={pricing.priceUndiscounted.gross} />
-    </Typography>
+    </Text>
   );
 };
 

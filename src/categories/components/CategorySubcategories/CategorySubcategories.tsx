@@ -11,15 +11,10 @@ import { FormattedMessage } from "react-intl";
 import { CategoryListDatagrid } from "../CategoryListDatagrid";
 
 interface CategorySubcategoriesProps
-  extends Pick<
-    ListProps<ListViews.CATEGORY_LIST>,
-    "onUpdateListSettings" | "settings"
-  > {
+  extends Pick<ListProps<ListViews.CATEGORY_LIST>, "onUpdateListSettings" | "settings"> {
   categoryId: string;
   disabled: boolean;
-  subcategories: RelayToFlat<
-    NonNullable<CategoryDetailsQuery["category"]>["children"]
-  >;
+  subcategories: RelayToFlat<NonNullable<CategoryDetailsQuery["category"]>["children"]>;
   onCategoriesDelete: () => void;
   onSelectCategoriesIds: (ids: number[], clearSelection: () => void) => void;
 }
@@ -35,13 +30,15 @@ export const CategorySubcategories = ({
 }: CategorySubcategoriesProps) => {
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
           <FormattedMessage
             id="NivJal"
             defaultMessage="All Subcategories"
             description="section header"
           />
+        </DashboardCard.Title>
+        <DashboardCard.Toolbar>
           <InternalLink to={categoryAddUrl(categoryId)}>
             <Button variant="secondary" data-test-id="create-subcategory">
               <FormattedMessage
@@ -51,8 +48,8 @@ export const CategorySubcategories = ({
               />
             </Button>
           </InternalLink>
-        </Box>
-      </DashboardCard.Title>
+        </DashboardCard.Toolbar>
+      </DashboardCard.Header>
 
       <CategoryListDatagrid
         settings={settings}
@@ -63,10 +60,7 @@ export const CategorySubcategories = ({
         selectionActionButton={
           <Box paddingRight={5}>
             <BulkDeleteButton onClick={onCategoriesDelete}>
-              <FormattedMessage
-                defaultMessage="Delete categories"
-                id="FiO/W/"
-              />
+              <FormattedMessage defaultMessage="Delete categories" id="FiO/W/" />
             </BulkDeleteButton>
           </Box>
         }

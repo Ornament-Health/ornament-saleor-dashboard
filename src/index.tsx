@@ -3,6 +3,7 @@ import "./index.css";
 
 import { ApolloProvider } from "@apollo/client";
 import DemoBanner from "@dashboard/components/DemoBanner";
+import { history, Route, Router } from "@dashboard/components/Router";
 import { PermissionEnum } from "@dashboard/graphql";
 import useAppState from "@dashboard/hooks/useAppState";
 import { ThemeProvider } from "@dashboard/theme";
@@ -13,7 +14,7 @@ import { render } from "react-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import TagManager from "react-gtm-module";
 import { useIntl } from "react-intl";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 
 import { AppsSectionRoot } from "./apps";
 import { ExternalAppProvider } from "./apps/components/ExternalAppContext";
@@ -30,23 +31,23 @@ import ChannelsSection from "./channels";
 import { channelsSection } from "./channels/urls";
 import CollectionSection from "./collections";
 import AppLayout from "./components/AppLayout";
-import useAppChannel, {
-  AppChannelProvider,
-} from "./components/AppLayout/AppChannelContext";
+import useAppChannel, { AppChannelProvider } from "./components/AppLayout/AppChannelContext";
 import { DateProvider } from "./components/Date";
 import { DevModeProvider } from "./components/DevModePanel/DevModeProvider";
 import ErrorPage from "./components/ErrorPage";
 import ExitFormDialogProvider from "./components/Form/ExitFormDialogProvider";
 import { LocaleProvider } from "./components/Locale";
 import MessageManagerProvider from "./components/messages";
+import { NavigatorSearchProvider } from "./components/NavigatorSearch/NavigatorSearchProvider";
+import { ProductAnalytics } from "./components/ProductAnalytics";
+import { SavebarRefProvider } from "./components/Savebar/SavebarRefContext";
 import { ShopProvider } from "./components/Shop";
 import { WindowTitle } from "./components/WindowTitle";
-import { DEMO_MODE, getAppMountUri, GTM_ID } from "./config";
+import { DEMO_MODE, GTM_ID } from "./config";
 import ConfigurationSection from "./configuration";
 import { getConfigMenuItemsPermissions } from "./configuration/utils";
 import AppStateProvider from "./containers/AppState";
 import BackgroundTasksProvider from "./containers/BackgroundTasks";
-import ServiceWorker from "./containers/ServiceWorker/ServiceWorker";
 import CustomAppsSection from "./custom-apps";
 import { CustomAppSections } from "./custom-apps/urls";
 import { CustomerSection } from "./customers";
@@ -82,7 +83,7 @@ if (GTM_ID) {
   TagManager.initialize({ gtmId: GTM_ID });
 }
 
-errorTracker.init();
+errorTracker.init(history);
 
 /*
   Handle legacy theming toggle. Since we use new and old macaw,
@@ -93,6 +94,7 @@ const handleLegacyTheming = () => {
 
   if (activeTheme === "defaultDark") {
     localStorage.setItem("macaw-ui-theme", "dark");
+
     return;
   }
 
@@ -104,16 +106,12 @@ handleLegacyTheming();
 const App: React.FC = () => (
   <SaleorProvider client={saleorClient}>
     <ApolloProvider client={apolloClient}>
-      <BrowserRouter basename={getAppMountUri()}>
-        <LegacyThemeProvider
-          overrides={themeOverrides}
-          palettes={paletteOverrides}
-        >
+      <Router>
+        <LegacyThemeProvider overrides={themeOverrides} palettes={paletteOverrides}>
           <ThemeProvider>
             <DateProvider>
               <LocaleProvider>
                 <MessageManagerProvider>
-                  <ServiceWorker />
                   <BackgroundTasksProvider>
                     <AppStateProvider>
                       <AuthProvider>
@@ -121,7 +119,13 @@ const App: React.FC = () => (
                           <AppChannelProvider>
                             <ExitFormDialogProvider>
                               <DevModeProvider>
-                                <Routes />
+                                <NavigatorSearchProvider>
+                                  <ProductAnalytics>
+                                    <SavebarRefProvider>
+                                      <Routes />
+                                    </SavebarRefProvider>
+                                  </ProductAnalytics>
+                                </NavigatorSearchProvider>
                               </DevModeProvider>
                             </ExitFormDialogProvider>
                           </AppChannelProvider>
@@ -134,24 +138,18 @@ const App: React.FC = () => (
             </DateProvider>
           </ThemeProvider>
         </LegacyThemeProvider>
-      </BrowserRouter>
+      </Router>
     </ApolloProvider>
   </SaleorProvider>
 );
-
 const Routes: React.FC = () => {
   const intl = useIntl();
   const [, dispatchAppState] = useAppState();
   const { authenticated, authenticating } = useAuthRedirection();
-
   const { channel } = useAppChannel(false);
-
   const channelLoaded = typeof channel !== "undefined";
-
   const homePageLoaded = channelLoaded && authenticated;
-
   const homePageLoading = (authenticated && !channelLoaded) || authenticating;
-
   const { isAppPath } = useLocationState();
 
   return (
@@ -238,9 +236,7 @@ const Routes: React.FC = () => {
                     component={ProductSection}
                   />
                   <SectionRoute
-                    permissions={[
-                      PermissionEnum.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES,
-                    ]}
+                    permissions={[PermissionEnum.MANAGE_PRODUCT_TYPES_AND_ATTRIBUTES]}
                     path="/product-types"
                     component={ProductTypesSection}
                   />
@@ -281,7 +277,7 @@ const Routes: React.FC = () => {
                     matchPermission="any"
                   />
                   <SectionRoute
-                    permissions={[PermissionEnum.MANAGE_APPS]}
+                    permissions={[]}
                     path={AppSections.appsSection}
                     component={AppsSectionRoot}
                   />

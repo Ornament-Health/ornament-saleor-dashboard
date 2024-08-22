@@ -1,8 +1,9 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import FormSpacer from "@dashboard/components/FormSpacer";
 import { ShopErrorFragment } from "@dashboard/graphql";
 import { getFormErrors } from "@dashboard/utils/errors";
-import { Card, CardContent, TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -23,7 +24,6 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
   onChange,
 }) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(
     [
       "reserveStockDurationAuthenticatedUser",
@@ -34,25 +34,26 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
   );
 
   return (
-    <Card>
-      <CardTitle title={intl.formatMessage(messages.reservedStock)} />
-      <CardContent>
-        <Typography variant="body2">
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(messages.reservedStock)}</DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
+        <Text fontSize={3}>
           <FormattedMessage {...messages.reservedStockDescription} />
-        </Typography>
+        </Text>
         <FormSpacer />
         <TextField
+          data-test-id="reserve-stock-duration-for-auth-user-input"
           disabled={disabled}
           error={!!formErrors.reserveStockDurationAuthenticatedUser}
           type="number"
           fullWidth
           name="reserveStockDurationAuthenticatedUser"
-          label={intl.formatMessage(
-            messages.stockReservationForAuthenticatedUser,
-          )}
+          label={intl.formatMessage(messages.stockReservationForAuthenticatedUser)}
           helperText={intl.formatMessage(messages.stockWillNotBeReserved)}
           value={
-            !!data.reserveStockDurationAuthenticatedUser
+            data.reserveStockDurationAuthenticatedUser
               ? String(data.reserveStockDurationAuthenticatedUser)
               : ""
           }
@@ -65,6 +66,7 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
         />
         <FormSpacer />
         <TextField
+          data-test-id="reserve-stock-duration-for-anon-user-input"
           disabled={disabled}
           error={!!formErrors.reserveStockDurationAnonymousUser}
           type="number"
@@ -73,7 +75,7 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
           label={intl.formatMessage(messages.stockReservationForAnonymousUser)}
           helperText={intl.formatMessage(messages.stockWillNotBeReserved)}
           value={
-            !!data.reserveStockDurationAnonymousUser
+            data.reserveStockDurationAnonymousUser
               ? String(data.reserveStockDurationAnonymousUser)
               : ""
           }
@@ -84,10 +86,13 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
             },
           }}
         />
-      </CardContent>
-      <CardTitle title={intl.formatMessage(messages.checkoutLimits)} />
-      <CardContent>
+      </DashboardCard.Content>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(messages.checkoutLimits)}</DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <TextField
+          data-test-id="checkout-limits-input"
           disabled={disabled}
           error={!!formErrors.reserveStockDurationAuthenticatedUser}
           type="number"
@@ -95,11 +100,7 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
           name="limitQuantityPerCheckout"
           label={intl.formatMessage(messages.checkoutLineLimit)}
           helperText={intl.formatMessage(messages.checkoutLimitsDescription)}
-          value={
-            !!data.limitQuantityPerCheckout
-              ? String(data.limitQuantityPerCheckout)
-              : ""
-          }
+          value={data.limitQuantityPerCheckout ? String(data.limitQuantityPerCheckout) : ""}
           onChange={onChange}
           InputProps={{
             inputProps: {
@@ -108,9 +109,10 @@ const SiteCheckoutSettingsCard: React.FC<SiteCheckoutSettingsCardProps> = ({
             },
           }}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 SiteCheckoutSettingsCard.displayName = "SiteCheckoutSettingsCard";
 export default SiteCheckoutSettingsCard;

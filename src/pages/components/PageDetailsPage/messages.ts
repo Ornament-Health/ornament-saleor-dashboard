@@ -8,8 +8,7 @@ export const messages = defineMessages({
   },
   seoOptionsDescription: {
     id: "Id9vlh",
-    defaultMessage:
-      "Add search engine title and description to make this page easier to find",
+    defaultMessage: "Add search engine title and description to make this page easier to find",
     description: "page seo options description",
   },
   hiddenLabel: {
@@ -26,5 +25,10 @@ export const messages = defineMessages({
     id: "X26jCC",
     defaultMessage: "Visible",
     description: "page label",
+  },
+  setAvailabilityDate: {
+    id: "eP2yRZ",
+    defaultMessage: "Set availability date",
+    description: "page availability date label",
   },
 });

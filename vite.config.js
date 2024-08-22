@@ -1,12 +1,25 @@
 /* eslint-disable no-console */
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import react from "@vitejs/plugin-react-swc";
+import { CodeInspectorPlugin } from "code-inspector-plugin";
 import { copyFileSync, mkdirSync } from "fs";
 import path from "path";
 import nodePolyfills from "rollup-plugin-polyfill-node";
 import { defineConfig, loadEnv, searchForWorkspaceRoot } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
-import { VitePWA } from "vite-plugin-pwa";
+
+const copyNoopSW = () => ({
+  name: "copy-noop-sw",
+  apply: "build",
+  writeBundle: () => {
+    mkdirSync(path.resolve("build", "dashboard"), { recursive: true });
+    copyFileSync(
+      path.resolve("assets", "sw.js"),
+      path.resolve("build", "dashboard", "sw.js"),
+    );
+  },
+});
 
 const copyOgImage = () => ({
   name: "copy-og-image",
@@ -28,7 +41,7 @@ export default defineConfig(({ command, mode }) => {
   */
   const {
     NODE_ENV,
-    API_URI,
+    API_URL,
     SW_INTERVAL,
     IS_CLOUD_INSTANCE,
     APP_MOUNT_URI,
@@ -36,13 +49,20 @@ export default defineConfig(({ command, mode }) => {
     SENTRY_RELEASE,
     ENVIRONMENT,
     STATIC_URL,
-    APPS_MARKETPLACE_API_URI,
+    APPS_MARKETPLACE_API_URL,
     APPS_TUNNEL_URL_KEYWORDS,
     SKIP_SOURCEMAPS,
     DEMO_MODE,
     CUSTOM_VERSION,
     FLAGS_SERVICE_ENABLED,
     LOCALE_CODE,
+    POSTHOG_KEY,
+    POSTHOG_HOST,
+    SENTRY_AUTH_TOKEN,
+    SENTRY_ORG,
+    SENTRY_PROJECT,
+    // eslint-disable-next-line camelcase
+    npm_package_version,
   } = env;
 
   const base = STATIC_URL ?? "/";
@@ -54,17 +74,22 @@ export default defineConfig(({ command, mode }) => {
 
   const plugins = [
     react(),
+    CodeInspectorPlugin({
+      bundler: "vite",
+    }),
     createHtmlPlugin({
       entry: path.resolve(__dirname, "src", "index.tsx"),
       template: "index.html",
       inject: {
         data: {
-          API_URL: API_URI,
+          API_URL,
           APP_MOUNT_URI,
-          APPS_MARKETPLACE_API_URI,
+          APPS_MARKETPLACE_API_URL,
           APPS_TUNNEL_URL_KEYWORDS,
           IS_CLOUD_INSTANCE,
           LOCALE_CODE,
+          POSTHOG_KEY,
+          POSTHOG_HOST,
           injectOgTags:
             DEMO_MODE &&
             `
@@ -84,25 +109,17 @@ export default defineConfig(({ command, mode }) => {
       },
     }),
     copyOgImage(),
+    copyNoopSW(),
   ];
 
   if (!isDev) {
     console.log("Enabling service worker...");
 
     plugins.push(
-      VitePWA({
-        /*
-          We use 'register-service-worker' for registering sw.js.
-         */
-        injectRegister: null,
-        strategies: "injectManifest",
-
-        /*
-          Since "src" is exposed as a root,
-          sw.js has to be moved above, to preventing loading in a dev mode.
-        */
-        srcDir: path.resolve(__dirname),
-        filename: "sw.js",
+      sentryVitePlugin({
+        authToken: SENTRY_AUTH_TOKEN,
+        org: SENTRY_ORG,
+        project: SENTRY_PROJECT,
       }),
     );
   }
@@ -136,7 +153,7 @@ export default defineConfig(({ command, mode }) => {
       */
       "process.env": {
         NODE_ENV,
-        API_URI,
+        API_URL,
         SW_INTERVAL,
         IS_CLOUD_INSTANCE,
         APP_MOUNT_URI,
@@ -146,7 +163,11 @@ export default defineConfig(({ command, mode }) => {
         CUSTOM_VERSION,
         LOCALE_CODE,
         SENTRY_RELEASE,
-        STATIC_URL
+        STATIC_URL,
+        POSTHOG_KEY,
+        POSTHOG_HOST,
+        // eslint-disable-next-line camelcase
+        RELEASE_NAME: npm_package_version,
       },
     },
     build: {

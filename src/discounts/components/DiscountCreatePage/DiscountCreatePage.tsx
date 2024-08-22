@@ -1,7 +1,7 @@
 import { TopNav } from "@dashboard/components/AppLayout";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { discountListUrl } from "@dashboard/discounts/discountsUrls";
 import { DiscoutFormData } from "@dashboard/discounts/types";
 import {
@@ -17,7 +17,7 @@ import { useIntl } from "react-intl";
 import { DiscountCreateForm } from "../DiscountCreateForm";
 import { DiscountDatesWithController } from "../DiscountDates";
 import { DiscountDescription } from "../DiscountDescription";
-import { DiscountName } from "../DiscountName";
+import { DiscountGeneralInfo } from "../DiscountGeneralInfo";
 import { DiscountRules, DiscountRulesErrors } from "../DiscountRules";
 
 export interface DiscountCreatePageProps {
@@ -52,21 +52,21 @@ export const DiscountCreatePage = ({
       />
       <DetailPageLayout.Content>
         <DiscountCreateForm onSubmit={onSubmit}>
-          {({ rules, onDeleteRule, onRuleSubmit, submitHandler }) => (
+          {({ rules, discountType, onDeleteRule, onRuleSubmit, submitHandler }) => (
             <>
-              <DiscountName
+              <DiscountGeneralInfo
                 error={getCommonFormFieldErrorMessage(formErrors.name, intl)}
                 disabled={disabled}
+                typeDisabled={false}
               />
 
               <DiscountDescription disabled={disabled} />
 
-              <DiscountDatesWithController
-                errors={errors}
-                disabled={disabled}
-              />
+              <DiscountDatesWithController errors={errors} disabled={disabled} />
 
               <DiscountRules
+                promotionId={null}
+                discountType={discountType}
                 errors={errors as DiscountRulesErrors<PromotionCreateErrorCode>}
                 channels={channels}
                 disabled={disabled}
@@ -77,12 +77,15 @@ export const DiscountCreatePage = ({
                 deleteButtonState="default"
               />
 
-              <Savebar
-                disabled={disabled}
-                onCancel={onBack}
-                onSubmit={submitHandler}
-                state={submitButtonState}
-              />
+              <Savebar>
+                <Savebar.Spacer />
+                <Savebar.CancelButton onClick={onBack} />
+                <Savebar.ConfirmButton
+                  transitionState={submitButtonState}
+                  onClick={submitHandler}
+                  disabled={disabled}
+                />
+              </Savebar>
             </>
           )}
         </DiscountCreateForm>

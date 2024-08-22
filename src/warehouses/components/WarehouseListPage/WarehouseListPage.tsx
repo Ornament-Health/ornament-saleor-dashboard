@@ -2,27 +2,16 @@ import { LimitsInfo } from "@dashboard/components/AppLayout/LimitsInfo";
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
 import { Backlink } from "@dashboard/components/Backlink";
 import { Button } from "@dashboard/components/Button";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ListPageLayout } from "@dashboard/components/Layouts";
 import LimitReachedAlert from "@dashboard/components/LimitReachedAlert";
 import SearchBar from "@dashboard/components/SearchBar";
 import { configurationMenuUrl } from "@dashboard/configuration";
-import {
-  RefreshLimitsQuery,
-  WarehouseWithShippingFragment,
-} from "@dashboard/graphql";
+import { RefreshLimitsQuery, WarehouseWithShippingFragment } from "@dashboard/graphql";
 import { sectionNames } from "@dashboard/intl";
-import {
-  PageListProps,
-  SearchPageProps,
-  SortPage,
-  TabPageProps,
-} from "@dashboard/types";
+import { PageListProps, SearchPageProps, SortPage, TabPageProps } from "@dashboard/types";
 import { hasLimits, isLimitReached } from "@dashboard/utils/limits";
-import {
-  warehouseAddUrl,
-  WarehouseListUrlSortField,
-} from "@dashboard/warehouses/urls";
-import { Card } from "@material-ui/core";
+import { warehouseAddUrl, WarehouseListUrlSortField } from "@dashboard/warehouses/urls";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -56,7 +45,6 @@ export const WarehouseListPage: React.FC<WarehouseListPageProps> = ({
   ...listProps
 }) => {
   const intl = useIntl();
-
   const limitReached = isLimitReached(limits, "warehouses");
 
   return (
@@ -64,21 +52,14 @@ export const WarehouseListPage: React.FC<WarehouseListPageProps> = ({
       <Backlink href={configurationMenuUrl}>
         <FormattedMessage {...sectionNames.configuration} />
       </Backlink>
-      <TopNav
-        href={configurationMenuUrl}
-        title={intl.formatMessage(sectionNames.warehouses)}
-      >
+      <TopNav href={configurationMenuUrl} title={intl.formatMessage(sectionNames.warehouses)}>
         <Button
           data-test-id="create-warehouse"
           disabled={limitReached}
           variant="primary"
           href={warehouseAddUrl}
         >
-          <FormattedMessage
-            id="wmdHhD"
-            defaultMessage="Create Warehouse"
-            description="button"
-          />
+          <FormattedMessage id="wmdHhD" defaultMessage="Create Warehouse" description="button" />
         </Button>
         {hasLimits(limits, "warehouses") && (
           <LimitsInfo
@@ -110,7 +91,7 @@ export const WarehouseListPage: React.FC<WarehouseListPageProps> = ({
           />
         </LimitReachedAlert>
       )}
-      <Card>
+      <DashboardCard>
         <SearchBar
           allTabLabel={intl.formatMessage({
             id: "2yU+q9",
@@ -138,7 +119,7 @@ export const WarehouseListPage: React.FC<WarehouseListPageProps> = ({
           onUpdateListSettings={onUpdateListSettings}
           {...listProps}
         />
-      </Card>
+      </DashboardCard>
     </ListPageLayout>
   );
 };
