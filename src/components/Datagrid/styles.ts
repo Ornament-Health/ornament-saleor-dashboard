@@ -45,11 +45,10 @@ const useStyles = makeStyles<{ actionButtonPosition?: "left" | "right" }>(
         padding: vars.spacing[1],
       },
       portal: {
-        "& input::-webkit-outer-spin-button, input::-webkit-inner-spin-button":
-          {
-            appearance: "none",
-            margin: 0,
-          },
+        "& input::-webkit-outer-spin-button, input::-webkit-inner-spin-button": {
+          appearance: "none",
+          margin: 0,
+        },
         "& input[type=number]": {
           appearance: "textfield",
         },
@@ -72,10 +71,10 @@ const useStyles = makeStyles<{ actionButtonPosition?: "left" | "right" }>(
           appearance: "none",
           background: "none",
           border: "none",
-          fontSize: vars.fontSize.bodySmall,
-          letterSpacing: vars.letterSpacing.bodyStrongSmall,
-          lineHeight: vars.lineHeight.bodyEmpMedium,
-          fontWeight: vars.fontWeight.bodySmall,
+          fontSize: vars.fontSize[3],
+          letterSpacing: vars.letterSpacing[3],
+          lineHeight: vars.lineHeight[3],
+          fontWeight: vars.fontWeight.regular,
           padding: vars.spacing[1],
           outline: 0,
         },
@@ -97,9 +96,6 @@ const useStyles = makeStyles<{ actionButtonPosition?: "left" | "right" }>(
         boxSizing: "content-box",
         width: "100%",
         paddingBottom: "1px",
-      },
-      root: {
-        position: "relative",
       },
       rowActionBar: {
         height: "100%",
@@ -160,14 +156,6 @@ const useStyles = makeStyles<{ actionButtonPosition?: "left" | "right" }>(
         boxShadow: "-1px 0px 12px rgba(0, 0, 0, 0.80)",
       },
       rowActionSelected,
-      cardContentRoot: {
-        padding: "0",
-        flex: 1,
-
-        "&:last-child": {
-          padding: "0",
-        },
-      },
     };
   },
   { name: "Datagrid" },
@@ -192,12 +180,8 @@ export const useFullScreenStyles = makeStyles<ReturnType<typeof useStyles>>(
   { name: "Datagrid-fullscreen" },
 );
 
-export function useDatagridTheme(
-  readonly?: boolean,
-  hasHeaderClickable?: boolean,
-) {
+export function useDatagridTheme(readonly?: boolean, hasHeaderClickable?: boolean) {
   const { themeValues } = useTheme();
-
   const datagridTheme = useMemo(
     (): Partial<Theme> => ({
       accentColor: themeValues.colors.background.accent1,
@@ -212,9 +196,9 @@ export function useDatagridTheme(
       bgBubbleSelected: themeValues.colors.background.default1,
       borderColor: themeValues.colors.border.default1,
       fontFamily: "'Inter var', sans-serif",
-      baseFontStyle: `${themeValues.fontWeight.bodyEmpMedium} ${themeValues.fontSize.bodySmall}`,
-      headerFontStyle: `${themeValues.fontWeight.bodyStrongSmall} ${themeValues.fontSize.bodyStrongSmall}`,
-      editorFontSize: themeValues.fontSize.bodySmall,
+      baseFontStyle: `${themeValues.fontWeight.medium} ${themeValues.fontSize[3]}`,
+      headerFontStyle: `${themeValues.fontWeight.bold} ${themeValues.fontSize[3]}`,
+      editorFontSize: themeValues.fontSize[3],
       textMedium: themeValues.colors.text.default1,
       textGroupHeader: themeValues.colors.text.default1,
       textBubble: themeValues.colors.background.default1,
@@ -228,7 +212,6 @@ export function useDatagridTheme(
     }),
     [themeValues, hasHeaderClickable],
   );
-
   const readonylDatagridTheme = useMemo(
     () => ({
       ...datagridTheme,
@@ -237,6 +220,7 @@ export function useDatagridTheme(
     }),
     [themeValues, datagridTheme],
   );
+
   return readonly ? readonylDatagridTheme : datagridTheme;
 }
 

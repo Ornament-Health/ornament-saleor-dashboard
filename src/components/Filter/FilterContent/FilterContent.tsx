@@ -1,19 +1,14 @@
 // @ts-strict-ignore
 import CollectionWithDividers from "@dashboard/components/CollectionWithDividers";
 import useStateFromProps from "@dashboard/hooks/useStateFromProps";
-import { makeStyles, Paper, Typography } from "@material-ui/core";
+import { makeStyles, Paper } from "@material-ui/core";
 import { Accordion, AccordionSummary } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 
 import { FilterAutocompleteDisplayValues } from "../FilterAutocompleteField";
 import { FilterReducerAction } from "../reducer";
-import {
-  FieldType,
-  FilterElement,
-  FilterErrorMessages,
-  IFilter,
-  InvalidFilters,
-} from "../types";
+import { FieldType, FilterElement, FilterErrorMessages, IFilter, InvalidFilters } from "../types";
 import FilterContentBody, { FilterContentBodyProps } from "./FilterContentBody";
 import FilterContentBodyNameField from "./FilterContentBodyNameField";
 import FilterContentHeader from "./FilterContentHeader";
@@ -43,7 +38,6 @@ const useExpanderStyles = makeStyles(
   }),
   { name: "FilterContentExpander" },
 );
-
 const useSummaryStyles = makeStyles(
   theme => ({
     expanded: {},
@@ -65,9 +59,7 @@ const useSummaryStyles = makeStyles(
 
 export interface FilterContentProps<K extends string = string> {
   filters: IFilter<K>;
-  onFilterPropertyChange: <T extends FieldType>(
-    value: FilterReducerAction<K, T>,
-  ) => void;
+  onFilterPropertyChange: <T extends FieldType>(value: FilterReducerAction<K, T>) => void;
   onFilterAttributeFocus?: (id?: string) => void;
   onClear: () => void;
   onSubmit: () => void;
@@ -90,9 +82,7 @@ const FilterContent: React.FC<FilterContentProps> = ({
 }) => {
   const expanderClasses = useExpanderStyles({});
   const summaryClasses = useSummaryStyles({});
-
   const [openedFilter, setOpenedFilter] = useState<FilterElement<string>>();
-
   const getAutocompleteValuesWithNewValues = (
     autocompleteDisplayValues: FilterAutocompleteDisplayValues,
     filterField: FilterElement<string>,
@@ -106,26 +96,15 @@ const FilterContent: React.FC<FilterContentProps> = ({
 
     return autocompleteDisplayValues;
   };
+  const initialAutocompleteDisplayValues = filters.reduce((acc, filterField) => {
+    if (filterField.multipleFields) {
+      return filterField.multipleFields.reduce(getAutocompleteValuesWithNewValues, acc);
+    }
 
-  const initialAutocompleteDisplayValues = filters.reduce(
-    (acc, filterField) => {
-      if (filterField.multipleFields) {
-        return filterField.multipleFields.reduce(
-          getAutocompleteValuesWithNewValues,
-          acc,
-        );
-      }
-
-      return getAutocompleteValuesWithNewValues(acc, filterField);
-    },
-    {},
-  );
-
+    return getAutocompleteValuesWithNewValues(acc, filterField);
+  }, {});
   const [autocompleteDisplayValues, setAutocompleteDisplayValues] =
-    useStateFromProps<FilterAutocompleteDisplayValues>(
-      initialAutocompleteDisplayValues,
-    );
-
+    useStateFromProps<FilterAutocompleteDisplayValues>(initialAutocompleteDisplayValues);
   const commonFilterBodyProps: Omit<
     FilterContentBodyProps<string>,
     "filter" | "onFilterPropertyChange"
@@ -135,14 +114,13 @@ const FilterContent: React.FC<FilterContentProps> = ({
     setAutocompleteDisplayValues,
     initialAutocompleteDisplayValues,
   };
-
   const handleFilterAttributeFocus = (filter?: FilterElement<string>) => {
     setOpenedFilter(filter);
+
     if (onFilterAttributeFocus) {
       onFilterAttributeFocus(filter?.id);
     }
   };
-
   const handleFilterOpen = (filter: FilterElement<string>) => {
     if (filter.name !== openedFilter?.name) {
       handleFilterAttributeFocus(filter);
@@ -150,37 +128,35 @@ const FilterContent: React.FC<FilterContentProps> = ({
       handleFilterAttributeFocus(undefined);
     }
   };
-
-  const handleFilterPropertyGroupChange = function <
-    K extends string,
-    T extends FieldType,
-  >(action: FilterReducerAction<K, T>, filter: FilterElement<string>) {
+  const handleFilterPropertyGroupChange = function <K extends string, T extends FieldType>(
+    action: FilterReducerAction<K, T>,
+    filter: FilterElement<string>,
+  ) {
     const switchToActive = action.payload.update.active;
+
     if (switchToActive && filter.name !== openedFilter?.name) {
       handleFilterAttributeFocus(filter);
     } else if (!switchToActive && filter.name === openedFilter?.name) {
       handleFilterAttributeFocus(undefined);
     }
+
     if (!switchToActive) {
       action.payload.update.value = [];
     }
+
     onFilterPropertyChange(action);
   };
-
-  const handleMultipleFieldPropertyChange = function <
-    K extends string,
-    T extends FieldType,
-  >(action: FilterReducerAction<K, T>) {
+  const handleMultipleFieldPropertyChange = function <K extends string, T extends FieldType>(
+    action: FilterReducerAction<K, T>,
+  ) {
     const { update } = action.payload;
+
     onFilterPropertyChange({
       ...action,
       payload: { ...action.payload, update: { ...update, active: true } },
     });
   };
-
-  const getFilterFromCurrentData = function <T extends string>(
-    filter: FilterElement<T>,
-  ) {
+  const getFilterFromCurrentData = function <T extends string>(filter: FilterElement<T>) {
     return filters.find(({ name }) => filter.name === name);
   };
 
@@ -238,15 +214,13 @@ const FilterContent: React.FC<FilterContentProps> = ({
                     renderItem={filterField => (
                       <FilterContentBody
                         {...commonFilterBodyProps}
-                        onFilterPropertyChange={
-                          handleMultipleFieldPropertyChange
-                        }
+                        onFilterPropertyChange={handleMultipleFieldPropertyChange}
                         filter={{
                           ...getFilterFromCurrentData(filterField),
                           active: currentFilter?.active,
                         }}
                       >
-                        <Typography>{filterField.label}</Typography>
+                        <Text>{filterField.label}</Text>
                       </FilterContentBody>
                     )}
                   />
@@ -264,5 +238,6 @@ const FilterContent: React.FC<FilterContentProps> = ({
     </Paper>
   );
 };
+
 FilterContent.displayName = "FilterContent";
 export default FilterContent;

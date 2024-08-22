@@ -1,6 +1,5 @@
 import { ExternalLinkNext } from "@dashboard/components/ExternalLink";
-import Skeleton from "@dashboard/components/Skeleton";
-import { Box, BoxProps, Text } from "@saleor/macaw-ui-next";
+import { Box, BoxProps, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -44,7 +43,7 @@ export const DataPrivacyCard: React.FC<DataPrivacyCardProps> = ({
 
   return (
     <Box {...boxProps}>
-      <Text variant={"heading"} marginBottom={4} as={"h2"}>
+      <Text size={5} fontWeight="bold" marginBottom={4} as={"h2"}>
         {intl.formatMessage(messages.dataPrivacyTitle)}
       </Text>
       <Box>{renderContent()}</Box>

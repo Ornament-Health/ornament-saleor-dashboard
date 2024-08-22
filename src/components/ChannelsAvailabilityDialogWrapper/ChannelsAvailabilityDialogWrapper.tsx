@@ -1,8 +1,9 @@
 import { ControlledCheckbox } from "@dashboard/components/ControlledCheckbox";
 import Hr from "@dashboard/components/Hr";
 import Label from "@dashboard/orders/components/OrderHistory/Label";
-import { TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 
@@ -54,8 +55,7 @@ export const useStyles = makeStyles(
 const messages = defineMessages({
   selectTitle: {
     id: "7scATx",
-    defaultMessage:
-      "Select channels you want for {contentType} to be available on",
+    defaultMessage: "Select channels you want for {contentType} to be available on",
     description: "select title",
   },
   selectAllChannelsLabel: {
@@ -86,9 +86,7 @@ export interface ChannelsAvailabilityContentProps {
   hasAllSelected: boolean;
 }
 
-export const ChannelsAvailabilityContentWrapper: React.FC<
-  ChannelsAvailabilityContentProps
-> = ({
+export const ChannelsAvailabilityContentWrapper: React.FC<ChannelsAvailabilityContentProps> = ({
   contentType = "",
   toggleAll,
   toggleAllLabel,
@@ -108,9 +106,9 @@ export const ChannelsAvailabilityContentWrapper: React.FC<
   return (
     <div className={classes.content}>
       {!!contentType && (
-        <Typography className={classes.text} variant="caption">
+        <Text className={classes.text} size={2} fontWeight="light">
           <FormattedMessage {...messages.selectTitle} />
-        </Typography>
+        </Text>
       )}
       <TextField
         name="query"
@@ -129,9 +127,7 @@ export const ChannelsAvailabilityContentWrapper: React.FC<
               name="allChannels"
               label={
                 toggleAllLabel || (
-                  <Label
-                    text={intl.formatMessage(messages.selectAllChannelsLabel)}
-                  />
+                  <Label text={intl.formatMessage(messages.selectAllChannelsLabel)} />
                 )
               }
               onChange={toggleAll}
@@ -139,9 +135,9 @@ export const ChannelsAvailabilityContentWrapper: React.FC<
             <Hr />
           </>
         )}
-        <Typography className={classes.contentTitle}>
+        <Text className={classes.contentTitle}>
           <FormattedMessage {...messages.channelsAlphabeticallyTitle} />
-        </Typography>
+        </Text>
         <div
           className={classes.scrollArea}
           data-test-id="manage-products-channels-availiability-list"

@@ -12,21 +12,13 @@ import { OrderDetailsFragment, OrderErrorFragment } from "@dashboard/graphql";
 import useListSettings from "@dashboard/hooks/useListSettings";
 import { productUrl } from "@dashboard/products/urls";
 import { ListViews } from "@dashboard/types";
-import {
-  Box,
-  ExternalLinkIcon,
-  sprinkles,
-  TrashBinIcon,
-} from "@saleor/macaw-ui-next";
+import { Box, ExternalLinkIcon, sprinkles, TrashBinIcon } from "@saleor/macaw-ui-next";
 import React, { useCallback, useMemo } from "react";
 import { useIntl } from "react-intl";
 import { Link } from "react-router-dom";
 
 import { FormData } from "../OrderDraftDetailsProducts/OrderDraftDetailsProducts";
-import {
-  orderDraftDetailsStaticColumnsAdapter,
-  useGetCellContent,
-} from "./datagrid";
+import { orderDraftDetailsStaticColumnsAdapter, useGetCellContent } from "./datagrid";
 import { messages } from "./messages";
 
 interface OrderDraftDetailsDatagridProps {
@@ -47,18 +39,12 @@ export const OrderDraftDetailsDatagrid = ({
 }: OrderDraftDetailsDatagridProps) => {
   const intl = useIntl();
   const datagrid = useDatagridChangeState();
-
-  const { updateListSettings, settings } = useListSettings(
-    ListViews.ORDER_DRAFT_DETAILS_LIST,
-  );
-
+  const { updateListSettings, settings } = useListSettings(ListViews.ORDER_DRAFT_DETAILS_LIST);
   const emptyColumn = useEmptyColumn();
-
   const orderDraftDetailsStaticColumns = useMemo(
     () => orderDraftDetailsStaticColumnsAdapter(emptyColumn, intl),
     [emptyColumn, intl],
   );
-
   const handleColumnChange = useCallback(
     picked => {
       if (updateListSettings) {
@@ -67,26 +53,19 @@ export const OrderDraftDetailsDatagrid = ({
     },
     [updateListSettings],
   );
-
-  const {
-    handlers,
-    visibleColumns,
-    staticColumns,
-    selectedColumns,
-    recentlyAddedColumn,
-  } = useColumns({
-    staticColumns: orderDraftDetailsStaticColumns,
-    selectedColumns: settings?.columns ?? [],
-    onSave: handleColumnChange,
-  });
-
+  const { handlers, visibleColumns, staticColumns, selectedColumns, recentlyAddedColumn } =
+    useColumns({
+      gridName: "order_draft_details_products",
+      staticColumns: orderDraftDetailsStaticColumns,
+      selectedColumns: settings?.columns ?? [],
+      onSave: handleColumnChange,
+    });
   const getCellContent = useGetCellContent({
     columns: visibleColumns,
     lines,
     errors,
     onShowMetadata,
   });
-
   const getMenuItems = useCallback(
     index => [
       {
@@ -137,7 +116,6 @@ export const OrderDraftDetailsDatagrid = ({
     ],
     [intl, lines, onOrderLineRemove],
   );
-
   const handleDatagridChange = useCallback(
     async (
       { currentUpdate }: DatagridChangeOpts,
@@ -164,7 +142,7 @@ export const OrderDraftDetailsDatagrid = ({
         rowMarkers="none"
         columnSelect="none"
         freezeColumns={2}
-        verticalBorder={col => col > 1}
+        verticalBorder={false}
         availableColumns={visibleColumns}
         emptyText={intl.formatMessage(messages.emptyText)}
         getCellContent={getCellContent}

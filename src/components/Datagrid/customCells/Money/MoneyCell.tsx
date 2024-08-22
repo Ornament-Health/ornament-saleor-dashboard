@@ -9,6 +9,7 @@ import {
 import React from "react";
 
 import { usePriceField } from "../../../PriceField/usePriceField";
+import { hasDiscountValue } from "./utils";
 
 interface MoneyCellProps {
   readonly kind: "money-cell";
@@ -22,16 +23,14 @@ const MoneyCellEdit: ReturnType<ProvideEditorCallback<MoneyCell>> = ({
   value: cell,
   onChange: onChangeBase,
 }) => {
-  const { onChange, onKeyDown, minValue, step } = usePriceField(
-    cell.data.currency,
-    event =>
-      onChangeBase({
-        ...cell,
-        data: {
-          ...cell.data,
-          value: event.target.value,
-        },
-      }),
+  const { onChange, onKeyDown, minValue, step } = usePriceField(cell.data.currency, event =>
+    onChangeBase({
+      ...cell,
+      data: {
+        ...cell.data,
+        value: event.target.value,
+      },
+    }),
   );
 
   // TODO: range is read only - we don't need support for editing,
@@ -49,19 +48,16 @@ const MoneyCellEdit: ReturnType<ProvideEditorCallback<MoneyCell>> = ({
   );
 };
 
-export const moneyCellRenderer = (
-  locale: Locale,
-): CustomRenderer<MoneyCell> => ({
+export const moneyCellRenderer = (locale: Locale): CustomRenderer<MoneyCell> => ({
   kind: GridCellKind.Custom,
   isMatch: (c): c is MoneyCell => (c.data as any).kind === "money-cell",
   draw: (args, cell) => {
     const { ctx, theme, rect } = args;
     const { currency, value } = cell.data;
-
     const isRange = Array.isArray(value);
     const displayValue = isRange ? value[0] : value;
 
-    if (!displayValue || !currency) {
+    if (!hasDiscountValue(displayValue) || !currency) {
       return true;
     }
 
@@ -70,7 +66,6 @@ export const moneyCellRenderer = (
       currencyDisplay: "code",
       currency,
     });
-
     const symbolFormatter = new Intl.NumberFormat(locale, {
       style: "currency",
       currencyDisplay: "symbol",
@@ -84,7 +79,6 @@ export const moneyCellRenderer = (
     const format = isRange
       ? codeFormatter.formatRangeToParts(value[0], value[1])
       : codeFormatter.formatToParts(displayValue);
-
     const shortFormat = isRange
       ? symbolFormatter.formatRangeToParts(value[0], value[1])
       : symbolFormatter.formatToParts(displayValue);
@@ -97,11 +91,11 @@ export const moneyCellRenderer = (
 
     let drawingPosition = rect.x + rect.width - theme.cellHorizontalPadding;
     const y = rect.y + rect.height / 2 + getMiddleCenterBias(ctx, theme);
-
     const displayFormat = isHugging ? shortFormat : format;
 
     for (const item of displayFormat.reverse()) {
       ctx.textAlign = "right";
+
       if (item.type === "currency" && item.value.length > 2) {
         ctx.fillStyle = theme.textLight;
       } else {
@@ -113,7 +107,9 @@ export const moneyCellRenderer = (
         ctx.fillText(item.value, rect.x + theme.cellHorizontalPadding, y);
       } else {
         ctx.fillText(item.value, drawingPosition, y);
+
         const textWidth = ctx.measureText(item.value).width;
+
         drawingPosition -= textWidth;
       }
     }

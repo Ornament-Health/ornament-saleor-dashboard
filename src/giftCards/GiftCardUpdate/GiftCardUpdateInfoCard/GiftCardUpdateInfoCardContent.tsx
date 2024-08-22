@@ -11,7 +11,7 @@ import { getOrderNumberLinkObject } from "@dashboard/orders/components/OrderHist
 import { getByType } from "@dashboard/orders/components/OrderReturnPage/utils";
 import { productUrl } from "@dashboard/products/urls";
 import { staffMemberDetailsUrl } from "@dashboard/staff/urls";
-import { Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
 
@@ -22,22 +22,10 @@ import { giftCardUpdateInfoCardMessages as messages } from "./messages";
 const GiftCardUpdateInfoCardContent: React.FC = () => {
   const intl = useIntl();
   const localizeDate = useDateLocalize();
-
   const { giftCard } = useGiftCardDetails();
-
-  const {
-    created,
-    createdByEmail,
-    createdBy,
-    usedByEmail,
-    usedBy,
-    product,
-    events,
-  } = giftCard;
-
+  const { created, createdByEmail, createdBy, usedByEmail, usedBy, product, events } = giftCard;
   const cardIssuedEvent = events.find(getByType(GiftCardEventsEnum.ISSUED));
   const cardBoughtEvent = events.find(getByType(GiftCardEventsEnum.BOUGHT));
-
   const getBuyerFieldData = (): {
     label: MessageDescriptor;
     name: string;
@@ -78,7 +66,6 @@ const GiftCardUpdateInfoCardContent: React.FC = () => {
       url: customerUrl(createdBy?.id),
     };
   };
-
   const getOrderData = () => {
     if (cardIssuedEvent) {
       const { orderId, orderNumber } = cardIssuedEvent;
@@ -104,52 +91,36 @@ const GiftCardUpdateInfoCardContent: React.FC = () => {
 
     return null;
   };
-
-  const {
-    label: buyerLabelMessage,
-    name: buyerName,
-    url: buyerUrl,
-  } = getBuyerFieldData();
-
+  const { label: buyerLabelMessage, name: buyerName, url: buyerUrl } = getBuyerFieldData();
   const orderData = getOrderData();
 
   return (
     <>
       <Label text={intl.formatMessage(messages.creationLabel)} />
-      <Typography>{localizeDate(created)}</Typography>
+      <Text>{localizeDate(created)}</Text>
       <CardSpacer />
 
       <Label text={intl.formatMessage(messages.orderNumberLabel)} />
-      {orderData ? (
-        <Link href={orderData.link}>{orderData.text}</Link>
-      ) : (
-        <Typography>{PLACEHOLDER}</Typography>
-      )}
+      {orderData ? <Link href={orderData.link}>{orderData.text}</Link> : <Text>{PLACEHOLDER}</Text>}
       <CardSpacer />
 
       <Label text={intl.formatMessage(messages.productLabel)} />
       {product ? (
         <Link href={productUrl(product?.id)}>{product?.name}</Link>
       ) : (
-        <Typography>{PLACEHOLDER}</Typography>
+        <Text>{PLACEHOLDER}</Text>
       )}
       <CardSpacer />
 
       <Label text={intl.formatMessage(buyerLabelMessage)} />
-      {buyerUrl ? (
-        <Link href={buyerUrl}>{buyerName}</Link>
-      ) : (
-        <Typography>{buyerName}</Typography>
-      )}
+      {buyerUrl ? <Link href={buyerUrl}>{buyerName}</Link> : <Text>{buyerName}</Text>}
       <CardSpacer />
 
       <Label text={intl.formatMessage(messages.usedByLabel)} />
       {usedBy ? (
         <Link href={customerUrl(usedBy.id)}>{getFullName(usedBy)}</Link>
       ) : (
-        <Typography>
-          {getStringOrPlaceholder(usedByEmail, PLACEHOLDER)}
-        </Typography>
+        <Text>{getStringOrPlaceholder(usedByEmail, PLACEHOLDER)}</Text>
       )}
     </>
   );

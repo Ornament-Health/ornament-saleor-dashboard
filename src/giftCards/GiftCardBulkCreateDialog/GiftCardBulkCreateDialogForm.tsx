@@ -1,8 +1,7 @@
 // @ts-strict-ignore
-import DialogButtons from "@dashboard/components/ActionDialog/DialogButtons";
-import CardSpacer from "@dashboard/components/CardSpacer";
-import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
-import VerticalSpacer from "@dashboard/components/VerticalSpacer";
+import BackButton from "@dashboard/components/BackButton";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
+import { DashboardModal } from "@dashboard/components/Modal";
 import GiftCardTagInput from "@dashboard/giftCards/components/GiftCardTagInput";
 import {
   GiftCardSettingsExpiryTypeEnum,
@@ -10,12 +9,8 @@ import {
   useGiftCardSettingsQuery,
 } from "@dashboard/graphql";
 import useForm from "@dashboard/hooks/useForm";
-import {
-  DialogContent,
-  Divider,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Divider, TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -51,34 +46,32 @@ interface GiftCardBulkCreateDialogFormProps {
   onClose: () => void;
 }
 
-const GiftCardBulkCreateDialogForm: React.FC<
-  GiftCardBulkCreateDialogFormProps
-> = ({ onSubmit, opts, onClose, formErrors = {} }) => {
+const GiftCardBulkCreateDialogForm: React.FC<GiftCardBulkCreateDialogFormProps> = ({
+  onSubmit,
+  opts,
+  onClose,
+  formErrors = {},
+}) => {
   const intl = useIntl();
   const classes = useStyles({});
+  const { data: settingsData, loading: loadingSettings } = useGiftCardSettingsQuery();
+  const getInitialExpirySettingsData = (): Partial<GiftCardBulkCreateFormData> => {
+    if (loadingSettings) {
+      return {};
+    }
 
-  const { data: settingsData, loading: loadingSettings } =
-    useGiftCardSettingsQuery();
+    const { expiryType, expiryPeriod } = settingsData?.giftCardSettings ?? {};
 
-  const getInitialExpirySettingsData =
-    (): Partial<GiftCardBulkCreateFormData> => {
-      if (loadingSettings) {
-        return {};
-      }
+    if (expiryType === GiftCardSettingsExpiryTypeEnum.NEVER_EXPIRE) {
+      return {};
+    }
 
-      const { expiryType, expiryPeriod } = settingsData?.giftCardSettings;
-
-      if (expiryType === GiftCardSettingsExpiryTypeEnum.NEVER_EXPIRE) {
-        return {};
-      }
-
-      return {
-        expiryType,
-        expiryPeriodType: expiryPeriod?.type,
-        expiryPeriodAmount: expiryPeriod?.amount,
-      };
+    return {
+      expiryType,
+      expiryPeriodType: expiryPeriod?.type,
+      expiryPeriodAmount: expiryPeriod?.amount,
     };
-
+  };
   const { submit, toggleValue, change, data, set } = useForm(
     {
       ...initialData,
@@ -87,9 +80,7 @@ const GiftCardBulkCreateDialogForm: React.FC<
     },
     onSubmit,
   );
-
   const { tags, requiresActivation, cardsAmount } = data;
-
   const commonFormProps: GiftCardBulkCreateFormCommonProps = {
     data,
     errors: formErrors,
@@ -99,48 +90,47 @@ const GiftCardBulkCreateDialogForm: React.FC<
 
   return (
     <>
-      <DialogContent className={classes.dialogContent}>
-        <TextField
-          error={!!formErrors?.count}
-          name="cardsAmount"
-          onChange={change}
-          className={classes.fullWidthContainer}
-          label={intl.formatMessage(messages.giftCardsAmountLabel)}
-          value={cardsAmount}
-          helperText={getGiftCardErrorMessage(formErrors?.count, intl)}
-        />
-        <VerticalSpacer spacing={2} />
-        <GiftCardCreateMoneyInput {...commonFormProps} set={set} />
-        <VerticalSpacer spacing={2} />
-        <GiftCardTagInput
-          optional={false}
-          error={formErrors?.tags}
-          name="tags"
-          values={tags}
-          toggleChange={toggleValue}
-        />
-        <CardSpacer />
-        <Divider />
-        <VerticalSpacer />
-        <GiftCardCreateExpirySelect {...commonFormProps} />
-        <VerticalSpacer />
-        <Divider />
-        <VerticalSpacer spacing={2} />
-        <GiftCardCreateRequiresActivationSection
-          onChange={change}
-          checked={requiresActivation}
-        />
-        <VerticalSpacer spacing={2} />
-        <Typography>
-          {intl.formatMessage(messages.bulkCreateExplanation)}
-        </Typography>
-      </DialogContent>
-      <DialogButtons
-        onConfirm={submit}
-        confirmButtonLabel={intl.formatMessage(messages.issueButtonLabel)}
-        confirmButtonState={opts?.status}
-        onClose={onClose}
+      <TextField
+        error={!!formErrors?.count}
+        name="cardsAmount"
+        onChange={change}
+        className={classes.fullWidthContainer}
+        label={intl.formatMessage(messages.giftCardsAmountLabel)}
+        value={cardsAmount}
+        helperText={getGiftCardErrorMessage(formErrors?.count, intl)}
       />
+
+      <GiftCardCreateMoneyInput {...commonFormProps} set={set} />
+
+      <GiftCardTagInput
+        optional={false}
+        error={formErrors?.tags}
+        name="tags"
+        values={tags}
+        toggleChange={change}
+      />
+
+      <Divider />
+
+      <GiftCardCreateExpirySelect {...commonFormProps} />
+
+      <Divider />
+
+      <GiftCardCreateRequiresActivationSection onChange={change} checked={requiresActivation} />
+
+      <Text>{intl.formatMessage(messages.bulkCreateExplanation)}</Text>
+
+      <DashboardModal.Actions>
+        <BackButton onClick={onClose} />
+        <ConfirmButton
+          variant="primary"
+          transitionState={opts?.status}
+          type={open ? undefined : "submit"}
+          onClick={submit}
+        >
+          {intl.formatMessage(messages.issueButtonLabel)}
+        </ConfirmButton>
+      </DashboardModal.Actions>
     </>
   );
 };

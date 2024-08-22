@@ -2,15 +2,7 @@ import TableRowLink from "@dashboard/components/TableRowLink";
 import { MetadataInput } from "@dashboard/graphql";
 import { FormChange } from "@dashboard/hooks/useForm";
 import { Table, TableBody, TableCell, TableHead } from "@material-ui/core";
-import {
-  Box,
-  Button,
-  Input,
-  Text,
-  Textarea,
-  TrashBinIcon,
-  vars,
-} from "@saleor/macaw-ui-next";
+import { Box, Button, Input, Text, Textarea, TrashBinIcon, vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -23,11 +15,7 @@ interface MetadataCardTableProps {
   readonly?: boolean;
 }
 
-export const MetadataCardTable = ({
-  data,
-  onChange,
-  readonly = false,
-}: MetadataCardTableProps) => {
+export const MetadataCardTable = ({ data, onChange, readonly = false }: MetadataCardTableProps) => {
   if (!data || data.length === 0) {
     return null;
   }
@@ -38,7 +26,7 @@ export const MetadataCardTable = ({
         <TableHead>
           <TableRowLink>
             <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-              <Text variant="caption" color="default2">
+              <Text size={2} color="default2">
                 <FormattedMessage
                   id="nudPsY"
                   defaultMessage="Field"
@@ -47,7 +35,7 @@ export const MetadataCardTable = ({
               </Text>
             </TableCell>
             <TableCell style={{ paddingLeft: vars.spacing[8] }}>
-              <Text variant="caption" color="default2">
+              <Text size={2} color="default2">
                 <FormattedMessage
                   id="LkuDEb"
                   defaultMessage="Value"
@@ -62,7 +50,7 @@ export const MetadataCardTable = ({
                   paddingRight: vars.spacing[6],
                 }}
               >
-                <Text variant="caption" color="default2">
+                <Text size={2} color="default2">
                   <FormattedMessage
                     id="nEixpu"
                     defaultMessage="Actions"
@@ -77,20 +65,18 @@ export const MetadataCardTable = ({
           {data.map((field, fieldIndex) => (
             <TableRowLink data-test-id="field" key={fieldIndex}>
               <TableCell width="50%" style={{ paddingLeft: vars.spacing[6] }}>
-                {readonly ? (
-                  <Text variant="caption" size="large" color="default2">
-                    {field.key}
-                  </Text>
-                ) : (
-                  <Input
-                    width="100%"
-                    size="small"
-                    aria-label={`${nameInputPrefix}${nameSeparator}${fieldIndex}`}
-                    name={`${nameInputPrefix}${nameSeparator}${fieldIndex}`}
-                    onChange={onChange}
-                    value={field.key}
-                  />
-                )}
+                <Input
+                  data-test-id="metadata-key-input"
+                  width="100%"
+                  size="small"
+                  aria-label={`${nameInputPrefix}${nameSeparator}${fieldIndex}`}
+                  name={`${nameInputPrefix}${nameSeparator}${fieldIndex}`}
+                  onChange={onChange}
+                  value={field.key}
+                  readOnly={readonly}
+                  color="default1"
+                  fontWeight="bold"
+                />
               </TableCell>
               <TableCell
                 width="50%"
@@ -99,22 +85,18 @@ export const MetadataCardTable = ({
                   paddingBottom: vars.spacing[2],
                 }}
               >
-                {readonly ? (
-                  <Text variant="caption" size="large" color="default2">
-                    {field.value}
-                  </Text>
-                ) : (
-                  <Textarea
-                    disabled={readonly}
-                    width="100%"
-                    rows={1}
-                    size="small"
-                    aria-label={`${valueInputPrefix}${nameSeparator}${fieldIndex}`}
-                    name={`${valueInputPrefix}${nameSeparator}${fieldIndex}`}
-                    onChange={onChange}
-                    value={field.value}
-                  />
-                )}
+                <Textarea
+                  data-test-id="metadata-value-input"
+                  readOnly={readonly}
+                  width="100%"
+                  rows={1}
+                  size="small"
+                  aria-label={`${valueInputPrefix}${nameSeparator}${fieldIndex}`}
+                  name={`${valueInputPrefix}${nameSeparator}${fieldIndex}`}
+                  onChange={onChange}
+                  value={field.value}
+                  color="default1"
+                />
               </TableCell>
               {!readonly && (
                 <TableCell style={{ paddingRight: vars.spacing[6] }}>

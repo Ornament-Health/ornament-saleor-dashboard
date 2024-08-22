@@ -1,19 +1,13 @@
 import useAppState from "@dashboard/hooks/useAppState";
-import { DevModeQuery } from "@dashboard/orders/queries";
-import { getFilterVariables } from "@dashboard/orders/views/OrderList/filters";
 import { LinearProgress } from "@material-ui/core";
-import { useActionBar } from "@saleor/macaw-ui";
 import { Box } from "@saleor/macaw-ui-next";
-import React, { useState } from "react";
-import { useLocation } from "react-router";
+import React from "react";
 
 import { DevModePanel } from "../DevModePanel/DevModePanel";
-import { useDevModeContext } from "../DevModePanel/hooks";
-import { useDevModeKeyTrigger } from "../DevModePanel/useDevModeKeyTrigger";
-import Navigator from "../Navigator";
+import NavigatorSearch from "../NavigatorSearch";
+import { useSavebarRef } from "../Savebar/SavebarRefContext";
 import { Sidebar } from "../Sidebar";
 import { useStyles } from "./styles";
-import { extractQueryParams } from "./util";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -22,51 +16,16 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const classes = useStyles();
-  const { anchor: appActionAnchor } = useActionBar();
+  const { setAnchor } = useSavebarRef();
   const [appState] = useAppState();
-  const [isNavigatorVisible, setNavigatorVisibility] = useState(false);
-
-  const {
-    isDevModeVisible,
-    setDevModeVisibility,
-    setDevModeContent,
-    setVariables,
-  } = useDevModeContext();
-
-  const params = extractQueryParams(useLocation().search);
-
-  useDevModeKeyTrigger((_err, { shift }) => {
-    if (shift) {
-      setDevModeContent(DevModeQuery);
-      const variables = JSON.stringify(
-        {
-          filter: getFilterVariables(params),
-        },
-        null,
-        2,
-      );
-      setVariables(variables);
-    } else {
-      setDevModeContent("");
-      setVariables("");
-    }
-    setDevModeVisibility(!isDevModeVisible);
-  });
 
   return (
     <>
-      <DevModePanel
-        isDevModeVisible={isDevModeVisible}
-        setDevModeVisibility={setDevModeVisibility}
-      />
-      <Navigator
-        visible={isNavigatorVisible}
-        setVisibility={setNavigatorVisibility}
-      />
+      <DevModePanel />
+      <NavigatorSearch />
+
       <Box display="grid" __gridTemplateColumns="auto 1fr">
-        {appState.loading && (
-          <LinearProgress className={classes.appLoader} color="primary" />
-        )}
+        {appState.loading && <LinearProgress className={classes.appLoader} color="primary" />}
         <Box
           height="100vh"
           borderColor="default1"
@@ -81,12 +40,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         >
           <Sidebar />
         </Box>
-        <Box height="100%" width="100%">
-          <Box as="main" width="100%">
+        <Box height="100%" width="100%" overflow="hidden">
+          <Box as="main" width="100%" height="100%">
             {children}
           </Box>
           <Box
-            ref={appActionAnchor}
+            ref={setAnchor}
             position="sticky"
             bottom={0}
             left={0}

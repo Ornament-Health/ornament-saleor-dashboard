@@ -1,11 +1,10 @@
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Grid from "@dashboard/components/Grid";
 import RadioGroupField from "@dashboard/components/RadioGroupField";
 import { DiscountTypeEnum } from "@dashboard/discounts/types";
 import { DiscountErrorFragment } from "@dashboard/graphql";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getDiscountErrorMessage from "@dashboard/utils/errors/discounts";
-import { Card, CardContent } from "@material-ui/core";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -18,16 +17,9 @@ interface VoucherTypesProps {
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
-const VoucherTypes = ({
-  data,
-  disabled,
-  errors,
-  onChange,
-}: VoucherTypesProps) => {
+const VoucherTypes = ({ data, disabled, errors, onChange }: VoucherTypesProps) => {
   const intl = useIntl();
-
   const formErrors = getFormErrors(["discountType"], errors);
-
   const voucherTypeChoices = [
     {
       label: intl.formatMessage({
@@ -56,15 +48,17 @@ const VoucherTypes = ({
   ];
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "6cq+c+",
-          defaultMessage: "Discount Type",
-          description: "header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "6cq+c+",
+            defaultMessage: "Discount Type",
+            description: "header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <Grid variant="uniform">
           <RadioGroupField
             choices={voucherTypeChoices}
@@ -76,8 +70,9 @@ const VoucherTypes = ({
             onChange={onChange}
           />
         </Grid>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 export default VoucherTypes;

@@ -1,8 +1,7 @@
 import { Button } from "@dashboard/components/Button";
 import { buttonMessages } from "@dashboard/intl";
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
-import { vars } from "@saleor/macaw-ui-next";
+import { Text, vars } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -33,16 +32,14 @@ interface FilterContentHeaderProps {
   onClear: () => void;
 }
 
-const FilterContentHeader: React.FC<FilterContentHeaderProps> = ({
-  onClear,
-}) => {
+const FilterContentHeader: React.FC<FilterContentHeaderProps> = ({ onClear }) => {
   const classes = useStyles({});
 
   return (
     <div className={classes.container}>
-      <Typography className={classes.label}>
+      <Text className={classes.label}>
         <FormattedMessage id="zSOvI0" defaultMessage="Filters" />
-      </Typography>
+      </Text>
       <div>
         <Button
           data-test-id="clear"

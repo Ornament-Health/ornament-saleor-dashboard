@@ -3,6 +3,7 @@ import { appMessages } from "@dashboard/apps/messages";
 import { AppPaths, AppUrls } from "@dashboard/apps/urls";
 import NotFoundPage from "@dashboard/components/NotFoundPage";
 import { useAppQuery } from "@dashboard/graphql";
+import { useHasManagedAppsPermission } from "@dashboard/hooks/useHasManagedAppsPermission";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import React, { useCallback } from "react";
@@ -15,20 +16,17 @@ interface AppProps {
 
 export const AppView: React.FC<AppProps> = ({ id }) => {
   const location = useLocation();
+  const { hasManagedAppsPermission } = useHasManagedAppsPermission();
   const { data, refetch } = useAppQuery({
     displayLoader: true,
-    variables: { id },
+    variables: { id, hasManagedAppsPermission },
   });
-
   const appExists = data?.app !== null;
-
   const navigate = useNavigator();
   const notify = useNotifier();
   const intl = useIntl();
-
   const queryParams = new URLSearchParams(location.search);
   const appPath = queryParams.get("appPath");
-
   const handleError = useCallback(
     () =>
       notify({
@@ -56,12 +54,5 @@ export const AppView: React.FC<AppProps> = ({ id }) => {
     return null;
   }
 
-  return (
-    <AppPage
-      data={data.app}
-      url={appCompleteUrl}
-      refetch={refetch}
-      onError={handleError}
-    />
-  );
+  return <AppPage data={data.app} url={appCompleteUrl} refetch={refetch} onError={handleError} />;
 };

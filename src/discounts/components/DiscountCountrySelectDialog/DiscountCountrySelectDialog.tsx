@@ -1,10 +1,7 @@
 // @ts-strict-ignore
 import BackButton from "@dashboard/components/BackButton";
 import Checkbox from "@dashboard/components/Checkbox";
-import {
-  ConfirmButton,
-  ConfirmButtonTransitionState,
-} from "@dashboard/components/ConfirmButton";
+import { ConfirmButton, ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import Form from "@dashboard/components/Form";
 import FormSpacer from "@dashboard/components/FormSpacer";
 import Hr from "@dashboard/components/Hr";
@@ -12,6 +9,7 @@ import ResponsiveTable from "@dashboard/components/ResponsiveTable";
 import TableRowLink from "@dashboard/components/TableRowLink";
 import { CountryWithCodeFragment } from "@dashboard/graphql";
 import { SubmitPromise } from "@dashboard/hooks/useForm";
+import { fuzzySearch } from "@dashboard/misc";
 import useScrollableDialogStyle from "@dashboard/styles/useScrollableDialogStyle";
 import {
   Dialog,
@@ -21,9 +19,8 @@ import {
   TableBody,
   TableCell,
   TextField,
-  Typography,
 } from "@material-ui/core";
-import { filter } from "fuzzaldrin";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -44,33 +41,26 @@ export interface DiscountCountrySelectDialogProps {
   onConfirm: (data: FormData) => SubmitPromise;
 }
 
-const DiscountCountrySelectDialog: React.FC<
-  DiscountCountrySelectDialogProps
-> = props => {
-  const { confirmButtonState, onClose, countries, open, initial, onConfirm } =
-    props;
+const DiscountCountrySelectDialog: React.FC<DiscountCountrySelectDialogProps> = props => {
+  const { confirmButtonState, onClose, countries, open, initial, onConfirm } = props;
   const classes = useStyles(props);
   const scrollableDialogClasses = useScrollableDialogStyle();
-
   const intl = useIntl();
-
   const initialForm: FormData = {
     allCountries: true,
     countries: initial,
     query: "",
   };
+
   return (
     <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
-      <Form
-        initial={initialForm}
-        onSubmit={onConfirm}
-        className={scrollableDialogClasses.form}
-      >
+      <Form initial={initialForm} onSubmit={onConfirm} className={scrollableDialogClasses.form}>
         {({ data, change }) => {
           const countrySelectionMap = countries.reduce((acc, country) => {
             acc[country.code] = !!data.countries.find(
               selectedCountries => selectedCountries === country.code,
             );
+
             return acc;
           }, {});
 
@@ -84,12 +74,12 @@ const DiscountCountrySelectDialog: React.FC<
                 />
               </DialogTitle>
               <DialogContent>
-                <Typography>
+                <Text>
                   <FormattedMessage
                     id="dWK/Ck"
                     defaultMessage="Choose countries, you want voucher to be limited to, from the list below"
                   />
-                </Typography>
+                </Text>
                 <FormSpacer />
                 <TextField
                   name="query"
@@ -110,31 +100,24 @@ const DiscountCountrySelectDialog: React.FC<
                 <FormSpacer />
                 <Hr />
                 <FormSpacer />
-                <Typography variant="subtitle1">
+                <Text fontSize={3}>
                   <FormattedMessage
                     id="wgA48T"
                     defaultMessage="Countries A to Z"
                     description="country selection"
                   />
-                </Typography>
+                </Text>
               </DialogContent>
               <DialogContent className={scrollableDialogClasses.scrollArea}>
                 <ResponsiveTable>
                   <TableBody>
-                    {filter(countries, data.query, {
-                      key: "country",
-                    }).map(country => {
+                    {fuzzySearch(countries, data.query, ["country"]).map(country => {
                       const isChecked = countrySelectionMap[country.code];
 
                       return (
                         <TableRowLink key={country.code}>
-                          <TableCell className={classes.wideCell}>
-                            {country.country}
-                          </TableCell>
-                          <TableCell
-                            padding="checkbox"
-                            className={classes.checkboxCell}
-                          >
+                          <TableCell className={classes.wideCell}>{country.country}</TableCell>
+                          <TableCell padding="checkbox" className={classes.checkboxCell}>
                             <Checkbox
                               checked={isChecked}
                               onChange={() =>
@@ -143,18 +126,14 @@ const DiscountCountrySelectDialog: React.FC<
                                       target: {
                                         name: "countries" as keyof FormData,
                                         value: data.countries.filter(
-                                          selectedCountries =>
-                                            selectedCountries !== country.code,
+                                          selectedCountries => selectedCountries !== country.code,
                                         ),
                                       },
                                     } as any)
                                   : change({
                                       target: {
                                         name: "countries" as keyof FormData,
-                                        value: [
-                                          ...data.countries,
-                                          country.code,
-                                        ],
+                                        value: [...data.countries, country.code],
                                       },
                                     } as any)
                               }
@@ -168,10 +147,7 @@ const DiscountCountrySelectDialog: React.FC<
               </DialogContent>
               <DialogActions>
                 <BackButton onClick={onClose} />
-                <ConfirmButton
-                  transitionState={confirmButtonState}
-                  type="submit"
-                >
+                <ConfirmButton transitionState={confirmButtonState} type="submit">
                   <FormattedMessage
                     id="zZCCqz"
                     defaultMessage="Assign countries"
@@ -186,5 +162,6 @@ const DiscountCountrySelectDialog: React.FC<
     </Dialog>
   );
 };
+
 DiscountCountrySelectDialog.displayName = "DiscountCountrySelectDialog";
 export default DiscountCountrySelectDialog;

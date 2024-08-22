@@ -1,5 +1,11 @@
-import FullScreenIcon from "@dashboard/icons/FullScreenIcon";
-import { Box, Button, PlusIcon, sprinkles, Text } from "@saleor/macaw-ui-next";
+import {
+  Box,
+  Button,
+  FullscreenOffIcon,
+  FullscreenOnIcon,
+  PlusIcon,
+  Text,
+} from "@saleor/macaw-ui-next";
 import React, { FC, PropsWithChildren } from "react";
 
 interface ButtonFullScreenProps {
@@ -13,21 +19,9 @@ const ButtonFullScreen: FC<PropsWithChildren<ButtonFullScreenProps>> = ({
   children,
 }) => {
   return (
-    <Button
-      data-test-id="button-exit-fullscreen"
-      variant="secondary"
-      onClick={onToggle}
-    >
-      <Box
-        as="span"
-        display="flex"
-        __transform={isOpen ? "rotate(180deg)" : undefined}
-      >
-        <FullScreenIcon
-          className={sprinkles({
-            fontSize: "buttonMedium",
-          })}
-        />
+    <Button data-test-id="button-exit-fullscreen" variant="secondary" onClick={onToggle}>
+      <Box as="span" display="flex">
+        {isOpen ? <FullscreenOffIcon /> : <FullscreenOnIcon />}
       </Box>
       {children}
     </Button>
@@ -38,16 +32,9 @@ interface ButtonAddRowProps {
   onAddRow: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const ButtonAddRow: FC<PropsWithChildren<ButtonAddRowProps>> = ({
-  onAddRow,
-  children,
-}) => {
+const ButtonAddRow: FC<PropsWithChildren<ButtonAddRowProps>> = ({ onAddRow, children }) => {
   return (
-    <Button
-      data-test-id="button-add-variant"
-      variant="secondary"
-      onClick={onAddRow}
-    >
+    <Button data-test-id="button-add-variant" variant="secondary" onClick={onAddRow}>
       <PlusIcon />
       {children}
     </Button>
@@ -72,7 +59,9 @@ const Header: GridHeader = ({ title, children }) => {
       paddingX={6}
       paddingY={5}
     >
-      <Text variant="heading">{title}</Text>
+      <Text size={5} fontWeight="bold">
+        {title}
+      </Text>
       <Box display="flex" __flexDirection="row-reverse" gap={2}>
         {children}
       </Box>

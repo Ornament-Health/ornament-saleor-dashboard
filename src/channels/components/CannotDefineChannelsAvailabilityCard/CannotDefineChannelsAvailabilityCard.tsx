@@ -11,19 +11,19 @@ const messages = defineMessages({
   },
   subtitle: {
     id: "8qL/tV",
-    defaultMessage:
-      "You will be able to define availability of product after creating variants.",
+    defaultMessage: "You will be able to define availability of product after creating variants.",
     description: "CannotDefineChannelsAvailabilityCard subtitle",
   },
 });
-
 const CannotDefineChannelsAvailabilityCard: React.FC = () => (
   <DashboardCard gap={2}>
-    <DashboardCard.Title>
-      <FormattedMessage {...messages.title} />
-    </DashboardCard.Title>
+    <DashboardCard.Header>
+      <DashboardCard.Title>
+        <FormattedMessage {...messages.title} />
+      </DashboardCard.Title>
+    </DashboardCard.Header>
     <DashboardCard.Content>
-      <Text variant="caption" color="default2">
+      <Text size={2} color="default2">
         <FormattedMessage {...messages.subtitle} />
       </Text>
     </DashboardCard.Content>

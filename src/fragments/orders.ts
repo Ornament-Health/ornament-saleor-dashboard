@@ -37,11 +37,19 @@ export const fragmentOrderEvent = gql`
       email
       firstName
       lastName
+      avatar(size: 128) {
+        url
+      }
     }
     app {
       id
       name
       appUrl
+      brand {
+        logo {
+          default(size: 128)
+        }
+      }
     }
     lines {
       quantity
@@ -99,6 +107,7 @@ export const fragmentOrderLine = gql`
     }
     productName
     productSku
+    isGift
     quantity
     quantityFulfilled
     quantityToFulfill
@@ -211,6 +220,20 @@ export const invoiceFragment = gql`
   }
 `;
 
+export const orderDiscount = gql`
+  fragment OrderDiscount on OrderDiscount {
+    id
+    type
+    name
+    calculationMode: valueType
+    value
+    reason
+    amount {
+      ...Money
+    }
+  }
+`;
+
 export const fragmentOrderDetails = gql`
   fragment OrderDetails on Order {
     id
@@ -237,14 +260,7 @@ export const fragmentOrderDetails = gql`
     created
     customerNote
     discounts {
-      id
-      type
-      calculationMode: valueType
-      value
-      reason
-      amount {
-        ...Money
-      }
+      ...OrderDiscount
     }
     events {
       ...OrderEvent
@@ -468,16 +484,23 @@ export const fragmentOrderLineStockData = gql`
   }
 `;
 
-export const transactionEvent = gql`
-  fragment TransactionEvent on TransactionEvent {
+export const transactionBaseEvent = gql`
+  fragment TransactionBaseEvent on TransactionEvent {
     id
     pspReference
     amount {
       ...Money
     }
+    externalUrl
     type
     message
     createdAt
+  }
+`;
+
+export const transactionEvent = gql`
+  fragment TransactionEvent on TransactionEvent {
+    ...TransactionBaseEvent
     createdBy {
       ... on User {
         ...StaffMemberAvatar
@@ -490,13 +513,23 @@ export const transactionEvent = gql`
   }
 `;
 
+export const transactionBaseItemFragment = gql`
+  fragment TransactionBaseItem on TransactionItem {
+    id
+    name
+    actions
+    events {
+      ...TransactionBaseEvent
+    }
+  }
+`;
+
 export const transactionItemFragment = gql`
   fragment TransactionItem on TransactionItem {
-    id
+    ...TransactionBaseItem
     pspReference
-    actions
-    name
     externalUrl
+    createdAt
     events {
       ...TransactionEvent
     }
@@ -589,9 +622,13 @@ export const fragmentOrderGrantedRefunds = gql`
     id
     createdAt
     shippingCostsIncluded
+    status
     amount {
       currency
       amount
+    }
+    transactionEvents {
+      id
     }
     reason
     user {
@@ -600,6 +637,13 @@ export const fragmentOrderGrantedRefunds = gql`
     app {
       id
       name
+    }
+    lines {
+      id
+      quantity
+      orderLine {
+        id
+      }
     }
   }
 `;
@@ -631,9 +675,14 @@ export const orderDetailsGrantedRefund = gql`
       ...Money
     }
     shippingCostsIncluded
+    transaction {
+      id
+    }
+    status
     lines {
       id
       quantity
+      reason
       orderLine {
         ...OrderLine
       }
@@ -678,6 +727,9 @@ export const fragmentOrderDetailsGrantRefund = gql`
     }
     grantedRefunds {
       ...OrderDetailsGrantedRefund
+    }
+    transactions {
+      ...TransactionItem
     }
   }
 `;

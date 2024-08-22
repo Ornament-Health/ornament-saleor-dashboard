@@ -1,10 +1,10 @@
 // @ts-strict-ignore
+import { DashboardCard } from "@dashboard/components/Card";
 import CollectionWithDividers from "@dashboard/components/CollectionWithDividers";
-import Skeleton from "@dashboard/components/Skeleton";
 import { PluginsDetailsFragment } from "@dashboard/graphql";
 import { isPluginGlobal } from "@dashboard/plugins/views/utils";
-import { CardContent, Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -33,29 +33,32 @@ export interface PluginDetailsChannelsCardProps {
   plugin: PluginsDetailsFragment;
 }
 
-const PluginDetailsChannelsCardContent: React.FC<
-  PluginDetailsChannelsCardProps
-> = ({ plugin, selectedChannelId, setSelectedChannelId }) => {
+const PluginDetailsChannelsCardContent: React.FC<PluginDetailsChannelsCardProps> = ({
+  plugin,
+  selectedChannelId,
+  setSelectedChannelId,
+}) => {
   const classes = useStyles({});
 
   if (!plugin) {
     return (
-      <CardContent>
+      <DashboardCard.Content>
         <Skeleton />
-      </CardContent>
+      </DashboardCard.Content>
     );
   }
 
   if (isPluginGlobal(plugin.globalConfiguration)) {
     return (
-      <CardContent>
-        <FormattedMessage {...messages.noChannelsSubtitle} />
-      </CardContent>
+      <DashboardCard.Content>
+        <Text>
+          <FormattedMessage {...messages.noChannelsSubtitle} />
+        </Text>
+      </DashboardCard.Content>
     );
   }
 
-  const isChannelSelected = (channelId: string) =>
-    selectedChannelId === channelId;
+  const isChannelSelected = (channelId: string) => selectedChannelId === channelId;
 
   return (
     <>
@@ -68,12 +71,10 @@ const PluginDetailsChannelsCardContent: React.FC<
             key={channel.id}
             onClick={() => setSelectedChannelId(channel.id)}
           >
-            {isChannelSelected(channel.id) && (
-              <div className={classes.itemActiveIndicator}></div>
-            )}
-            <CardContent>
-              <Typography>{channel.name}</Typography>
-            </CardContent>
+            {isChannelSelected(channel.id) && <div className={classes.itemActiveIndicator}></div>}
+            <DashboardCard.Content padding={4}>
+              <Text>{channel.name}</Text>
+            </DashboardCard.Content>
           </div>
         )}
       />

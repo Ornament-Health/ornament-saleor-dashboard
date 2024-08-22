@@ -1,14 +1,14 @@
 // @ts-strict-ignore
 import { toggle } from "@dashboard/utils/lists";
-import { FormControlLabel, TextField, Typography } from "@material-ui/core";
+import { FormControlLabel, TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Option, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import Checkbox from "../Checkbox";
 import Hr from "../Hr";
 import Link from "../Link";
-import { MultiAutocompleteChoiceType } from "../MultiAutocompleteSelectField";
 import { FieldType, FilterFieldBaseProps } from "./types";
 
 interface FilterAutocompleteFieldProps
@@ -18,10 +18,7 @@ interface FilterAutocompleteFieldProps
   initialDisplayValues: FilterAutocompleteDisplayValues;
 }
 
-export type FilterAutocompleteDisplayValues = Record<
-  string,
-  MultiAutocompleteChoiceType[]
->;
+export type FilterAutocompleteDisplayValues = Record<string, Option[]>;
 
 const useStyles = makeStyles(
   theme => ({
@@ -50,7 +47,6 @@ const useStyles = makeStyles(
   }),
   { name: "FilterAutocompleteField" },
 );
-
 const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
   displayValues,
   filter,
@@ -60,26 +56,20 @@ const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
   ...rest
 }) => {
   const classes = useStyles({});
-
   const fieldDisplayValues = displayValues[filter.name] ?? [];
   const initialFieldDisplayValues = initialDisplayValues[filter.name];
   const availableOptions = filter.options.filter(option =>
-    fieldDisplayValues.every(
-      displayValue => displayValue.value !== option.value,
-    ),
+    fieldDisplayValues.every(displayValue => displayValue.value !== option.value),
   );
-  const displayNoResults =
-    availableOptions.length === 0 && fieldDisplayValues.length === 0;
-
-  const getUpdatedFilterValue = (option: MultiAutocompleteChoiceType) => {
+  const displayNoResults = availableOptions.length === 0 && fieldDisplayValues.length === 0;
+  const getUpdatedFilterValue = (option: Option) => {
     if (filter.multiple) {
       return toggle(option.value, filter.value, (a, b) => a === b);
     }
 
     return [option.value];
   };
-
-  const handleChange = (option: MultiAutocompleteChoiceType) => {
+  const handleChange = (option: Option) => {
     onFilterPropertyChange({
       payload: {
         name: filter.name,
@@ -94,25 +84,15 @@ const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
     if (filter.multiple) {
       setDisplayValues({
         ...displayValues,
-        [filter.name]: toggle(
-          option,
-          fieldDisplayValues,
-          (a, b) => a.value === b.value,
-        ),
+        [filter.name]: toggle(option, fieldDisplayValues, (a, b) => a.value === b.value),
       });
     }
   };
-
-  const isValueChecked = (displayValue: MultiAutocompleteChoiceType) =>
-    filter.value.includes(displayValue.value);
-
-  const filteredValuesChecked =
-    initialFieldDisplayValues.filter(isValueChecked);
-
+  const isValueChecked = (displayValue: Option) => filter.value.includes(displayValue.value);
+  const filteredValuesChecked = initialFieldDisplayValues.filter(isValueChecked);
   const filteredValuesUnchecked = fieldDisplayValues.filter(
     displayValue => !isValueChecked(displayValue),
   );
-
   const displayHr = !!filteredValuesChecked.length;
 
   return (
@@ -136,9 +116,7 @@ const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
           <FormControlLabel
             control={
               <Checkbox
-                data-test-id={
-                  "filter-field-autocomplete-selected-" + filter.value
-                }
+                data-test-id={"filter-field-autocomplete-selected-" + filter.value}
                 checked={filter.value.includes(displayValue.value)}
               />
             }
@@ -150,30 +128,20 @@ const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
       ))}
       {displayHr && <Hr className={classes.hr} />}
       {displayNoResults && (
-        <Typography
+        <Text
           data-test-id="filter-field-autocomplete-no-results"
           className={classes.noResults}
-          color="textSecondary"
+          color="default2"
         >
-          <FormattedMessage
-            id="HnVtSS"
-            defaultMessage="No results"
-            description="search"
-          />
-        </Typography>
+          <FormattedMessage id="HnVtSS" defaultMessage="No results" description="search" />
+        </Text>
       )}
       {filteredValuesUnchecked.map(option => (
-        <div
-          className={classes.option}
-          key={option.value}
-          data-test-id="filter-option"
-        >
+        <div className={classes.option} key={option.value} data-test-id="filter-option">
           <FormControlLabel
             control={
               <Checkbox
-                data-test-id={
-                  "filter-field-autocomplete-option-" + filter.value
-                }
+                data-test-id={"filter-field-autocomplete-option-" + filter.value}
                 checked={filter.value.includes(option.value)}
               />
             }
@@ -190,11 +158,7 @@ const FilterAutocompleteField: React.FC<FilterAutocompleteFieldProps> = ({
           underline
           onClick={filter.onFetchMore}
         >
-          <FormattedMessage
-            id="PLCwT/"
-            defaultMessage="Show more"
-            description="search results"
-          />
+          <FormattedMessage id="PLCwT/" defaultMessage="Show more" description="search results" />
         </Link>
       )}
     </div>

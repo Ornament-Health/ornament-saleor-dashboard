@@ -46,11 +46,10 @@ interface ProductOrganizationProps {
   onCategoryChange: (event: ChangeEvent) => void;
   onCollectionChange: (event: ChangeEvent) => void;
   onProductTypeChange?: (event: ChangeEvent) => void;
+  selectedProductCategory?: Option;
 }
 
-export const ProductOrganization: React.FC<
-  ProductOrganizationProps
-> = props => {
+export const ProductOrganization: React.FC<ProductOrganizationProps> = props => {
   const {
     canChangeType,
     categories,
@@ -72,14 +71,18 @@ export const ProductOrganization: React.FC<
     onCategoryChange,
     onCollectionChange,
     onProductTypeChange,
+    selectedProductCategory,
   } = props;
-
   const intl = useIntl();
-
   const formErrors = getFormErrors(
     ["productType", "category", "collections", "isPublished"],
     errors,
   );
+  const [categoryInputActive, setCategoryInputActive] = React.useState(false);
+
+  // Input is hide to proper handle showing nested category structure
+  const hideInput = !categoryInputActive && data.category && !disabled;
+
   const noCategoryError =
     formErrors.isPublished?.code === ProductErrorCode.PRODUCT_WITHOUT_CATEGORY
       ? formErrors.isPublished
@@ -87,13 +90,15 @@ export const ProductOrganization: React.FC<
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage({
-          id: "JjeZEG",
-          defaultMessage: "Organize Product",
-          description: "section header",
-        })}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "JjeZEG",
+            defaultMessage: "Organize Product",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content gap={2} display="flex" flexDirection="column">
         {canChangeType ? (
           <Combobox
@@ -122,17 +127,17 @@ export const ProductOrganization: React.FC<
         ) : (
           <Box display="flex" flexDirection="column" gap={3}>
             <Box display="flex" flexDirection="column">
-              <Text variant="bodyEmp">
+              <Text size={4} fontWeight="bold">
                 <FormattedMessage id="anK7jD" defaultMessage="Product Type" />
               </Text>
               {productType?.id ? (
-                <Text variant="caption">
+                <Text size={2}>
                   <Link href={productTypeUrl(productType?.id) ?? ""}>
                     {productType?.name ?? "..."}
                   </Link>
                 </Text>
               ) : (
-                <Text variant="caption">{productType?.name ?? "..."}</Text>
+                <Text size={2}>{productType?.name ?? "..."}</Text>
               )}
             </Box>
           </Box>
@@ -151,10 +156,7 @@ export const ProductOrganization: React.FC<
                 : null
             }
             error={!!(formErrors.category || noCategoryError)}
-            helperText={getProductErrorMessage(
-              formErrors.category || noCategoryError,
-              intl,
-            )}
+            helperText={getProductErrorMessage(formErrors.category || noCategoryError, intl)}
             onChange={onCategoryChange}
             fetchOptions={fetchCategories}
             fetchMore={fetchMoreCategories}
@@ -163,6 +165,44 @@ export const ProductOrganization: React.FC<
               id: "ccXLVi",
               defaultMessage: "Category",
             })}
+            {...(hideInput && {
+              width: "100%",
+              __opacity: 0,
+              position: "absolute",
+            })}
+            onFocus={() => {
+              setCategoryInputActive(true);
+            }}
+            onBlur={() => {
+              setCategoryInputActive(false);
+            }}
+            startAdornment={val => {
+              if (categoryInputActive || disabled) {
+                return undefined;
+              }
+
+              const availableCategories = selectedProductCategory
+                ? [...categories, selectedProductCategory]
+                : categories;
+
+              const adornment = val
+                ? availableCategories.find(category => category.value === val.value)?.startAdornment
+                : null;
+
+              if (!adornment) {
+                return <Text size={3}>{categoryInputDisplayValue}</Text>;
+              }
+
+              return (
+                <>
+                  {React.cloneElement(adornment as React.ReactElement, {
+                    size: 3,
+                  })}
+                  <Text size={3}>{categoryInputDisplayValue}</Text>
+                </>
+              );
+            }}
+            id="category-list"
           />
         </Box>
         <Multiselect

@@ -1,29 +1,26 @@
 import { Button } from "@dashboard/components/Button";
-import HorizontalSpacer from "@dashboard/components/HorizontalSpacer";
-import VerticalSpacer from "@dashboard/components/VerticalSpacer";
+import { DashboardModal } from "@dashboard/components/Modal";
 import useClipboard from "@dashboard/hooks/useClipboard";
 import useNotifier from "@dashboard/hooks/useNotifier";
 import { buttonMessages } from "@dashboard/intl";
-import { DialogActions, DialogContent, Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
 import { giftCardCreateMessages as messages } from "./messages";
-import { useGiftCardCreateDialogCodeContentStyles as useStyles } from "./styles";
 
 interface GiftCardCreateDialogCodeContentProps {
   cardCode: string;
   onClose: () => void;
 }
 
-const GiftCardCreateDialogCodeContent: React.FC<
-  GiftCardCreateDialogCodeContentProps
-> = ({ cardCode, onClose }) => {
-  const classes = useStyles({});
+const GiftCardCreateDialogCodeContent: React.FC<GiftCardCreateDialogCodeContentProps> = ({
+  cardCode,
+  onClose,
+}) => {
   const intl = useIntl();
   const notify = useNotifier();
   const [, copy] = useClipboard();
-
   const onCopyCode = () => {
     copy(cardCode);
     notify({
@@ -33,27 +30,21 @@ const GiftCardCreateDialogCodeContent: React.FC<
   };
 
   return (
-    <div className={classes.content}>
-      <DialogContent>
-        <Typography>
-          {intl.formatMessage(messages.createdGiftCardLabel)}
-        </Typography>
-        <VerticalSpacer />
-        <Typography variant="h6" color="textSecondary" data-test-id="cardCode">
-          {cardCode}
-        </Typography>
-        <VerticalSpacer spacing={2} />
-      </DialogContent>
-      <DialogActions>
+    <>
+      <Text>{intl.formatMessage(messages.createdGiftCardLabel)}</Text>
+      <Text fontWeight="bold" lineHeight={2} color="default2" data-test-id="cardCode">
+        {cardCode}
+      </Text>
+
+      <DashboardModal.Actions>
         <Button onClick={onCopyCode} data-test-id="copy-code-button">
           {intl.formatMessage(messages.copyCodeLabel)}
         </Button>
-        <HorizontalSpacer spacing={2} />
         <Button variant="primary" onClick={onClose} data-test-id="submit">
           {intl.formatMessage(buttonMessages.ok)}
         </Button>
-      </DialogActions>
-    </div>
+      </DashboardModal.Actions>
+    </>
   );
 };
 

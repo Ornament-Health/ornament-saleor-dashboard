@@ -20,6 +20,7 @@ export const activeApp: AppListItemFragment = {
   version: "1.0.0",
   appUrl: "http://localhost:3000",
   manifestUrl: "http://localhost:3000/api/manifest",
+  created: "2020-06-02T12:24:26.818138+00:00",
   permissions: [
     {
       __typename: "Permission",
@@ -39,6 +40,7 @@ export const inactiveApp: AppListItemFragment = {
   version: "1.0.0",
   appUrl: null,
   manifestUrl: "http://localhost:3000/api/manifest",
+  created: "2020-06-02T12:24:26.818138+00:00",
   permissions: [
     {
       __typename: "Permission",
@@ -54,10 +56,7 @@ export const inactiveApp: AppListItemFragment = {
   brand: null,
 };
 
-export const installedAppsList: AppListItemFragment[] = [
-  activeApp,
-  inactiveApp,
-];
+export const installedAppsList: AppListItemFragment[] = [activeApp, inactiveApp];
 
 export const failedAppInProgress: AppInstallationFragment = {
   __typename: "AppInstallation",
@@ -187,12 +186,10 @@ export const releasedApp: AppstoreApi.ReleasedSaleorApp = {
       name: "First released integration",
       logo: {
         light: {
-          source:
-            "https://www.released-example.com/images/first-integration-logo-light.png",
+          source: "https://www.released-example.com/images/first-integration-logo-light.png",
         },
         dark: {
-          source:
-            "https://www.released-example.com/images/first-integration-logo-dark.png",
+          source: "https://www.released-example.com/images/first-integration-logo-dark.png",
         },
       },
     },
@@ -200,12 +197,10 @@ export const releasedApp: AppstoreApi.ReleasedSaleorApp = {
       name: "Second released integration",
       logo: {
         light: {
-          source:
-            "https://www.released-example.com/images/second-integration-logo-light.png",
+          source: "https://www.released-example.com/images/second-integration-logo-light.png",
         },
         dark: {
-          source:
-            "https://www.released-example.com/images/second-integration-logo-dark.png",
+          source: "https://www.released-example.com/images/second-integration-logo-dark.png",
         },
       },
     },
@@ -229,12 +224,10 @@ export const comingSoonApp: AppstoreApi.ComingSoonSaleorApp = {
       name: "First coming soon integration",
       logo: {
         light: {
-          source:
-            "https://www.coming-soon-example.com/images/first-integration-logo-light.png",
+          source: "https://www.coming-soon-example.com/images/first-integration-logo-light.png",
         },
         dark: {
-          source:
-            "https://www.coming-soon-example.com/images/first-integration-logo-dark.png",
+          source: "https://www.coming-soon-example.com/images/first-integration-logo-dark.png",
         },
       },
     },
@@ -242,12 +235,10 @@ export const comingSoonApp: AppstoreApi.ComingSoonSaleorApp = {
       name: "Second coming soon integration",
       logo: {
         light: {
-          source:
-            "https://www.coming-soon-example.com/images/second-integration-logo-light.png",
+          source: "https://www.coming-soon-example.com/images/second-integration-logo-light.png",
         },
         dark: {
-          source:
-            "https://www.coming-soon-example.com/images/second-integration-logo-dark.png",
+          source: "https://www.coming-soon-example.com/images/second-integration-logo-dark.png",
         },
       },
     },

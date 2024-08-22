@@ -1,12 +1,7 @@
 // @ts-strict-ignore
 import { useExitFormDialog } from "@dashboard/components/Form/useExitFormDialog";
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
 import { AddressTypeInput } from "@dashboard/customers/types";
-import {
-  AddressFragment,
-  CountryWithCodeFragment,
-  Node,
-} from "@dashboard/graphql";
+import { AddressFragment, CountryWithCodeFragment, Node } from "@dashboard/graphql";
 import useForm, {
   CommonUseFormResultWithHandlers,
   FormChange,
@@ -14,6 +9,7 @@ import useForm, {
 } from "@dashboard/hooks/useForm";
 import useHandleFormSubmit from "@dashboard/hooks/useHandleFormSubmit";
 import createSingleAutocompleteSelectHandler from "@dashboard/utils/handlers/singleAutocompleteSelectChangeHandler";
+import { Option } from "@saleor/macaw-ui-next";
 import React, { useEffect, useState } from "react";
 
 export enum AddressInputOptionEnum {
@@ -31,8 +27,7 @@ export interface OrderCustomerAddressesEditFormData {
   billingAddress: AddressTypeInput;
 }
 
-export interface OrderCustomerAddressesEditData
-  extends OrderCustomerAddressesEditFormData {
+export interface OrderCustomerAddressesEditData extends OrderCustomerAddressesEditFormData {
   shippingCountryDisplayName: string;
   billingCountryDisplayName: string;
 }
@@ -59,15 +54,14 @@ interface UseOrderCustomerAddressesEditFormResult
 }
 
 interface UseOrderCustomerAddressesEditFormOpts {
-  countryChoices: SingleAutocompleteChoiceType[];
+  countryChoices: Option[];
   countries: CountryWithCodeFragment[];
   defaultShippingAddress: Node;
   defaultBillingAddress: Node;
   defaultCloneAddress: boolean;
 }
 
-export interface OrderCustomerAddressesEditFormProps
-  extends UseOrderCustomerAddressesEditFormOpts {
+export interface OrderCustomerAddressesEditFormProps extends UseOrderCustomerAddressesEditFormOpts {
   children: (props: UseOrderCustomerAddressesEditFormResult) => React.ReactNode;
   initial?: Partial<OrderCustomerAddressesEditFormData>;
   onSubmit: (data: OrderCustomerAddressesEditData) => void;
@@ -94,27 +88,18 @@ function useOrderCustomerAddressesEditForm(
     shippingAddress: emptyAddress,
     billingAddress: emptyAddress,
   };
-
   const initialData = {
     ...defaultInitialFormData,
     ...providedInitialFormData,
   };
-
   const { handleChange, change, data: formData } = useForm(initialData);
-
   const { setExitDialogSubmitRef } = useExitFormDialog();
-
   const [shippingCountryDisplayName, setShippingCountryDisplayName] = useState(
-    opts.countries.find(
-      country => initialData.shippingAddress.country === country.code,
-    )?.country,
+    opts.countries.find(country => initialData.shippingAddress.country === country.code)?.country,
   );
   const [billingCountryDisplayName, setBillingCountryDisplayName] = useState(
-    opts.countries.find(
-      country => initialData.billingAddress.country === country.code,
-    )?.country,
+    opts.countries.find(country => initialData.billingAddress.country === country.code)?.country,
   );
-
   const handleFormAddressChange = (
     event: React.ChangeEvent<any>,
     addressType: "shippingAddress" | "billingAddress",
@@ -168,22 +153,19 @@ function useOrderCustomerAddressesEditForm(
     setBillingCountryDisplayName,
     opts.countryChoices,
   );
-
   const data = {
     ...formData,
     shippingCountryDisplayName,
     billingCountryDisplayName,
   };
-
   const handleFormSubmit = useHandleFormSubmit({
     onSubmit,
   });
-
   const handleSubmit = () => handleFormSubmit(data);
-
   const submit = (event: React.FormEvent<any>) => {
     event.stopPropagation();
     event.preventDefault();
+
     return handleSubmit();
   };
 
@@ -202,14 +184,13 @@ function useOrderCustomerAddressesEditForm(
   };
 }
 
-const OrderCustomerAddressesEditForm: React.FC<
-  OrderCustomerAddressesEditFormProps
-> = ({ children, initial, onSubmit, ...rest }) => {
-  const props = useOrderCustomerAddressesEditForm(
-    initial || {},
-    onSubmit,
-    rest,
-  );
+const OrderCustomerAddressesEditForm: React.FC<OrderCustomerAddressesEditFormProps> = ({
+  children,
+  initial,
+  onSubmit,
+  ...rest
+}) => {
+  const props = useOrderCustomerAddressesEditForm(initial || {}, onSubmit, rest);
 
   return (
     <form onSubmit={props.submit} autoComplete="off">

@@ -7,8 +7,6 @@ import {
   UseDatagridChangeState,
 } from "@dashboard/components/Datagrid/hooks/useDatagridChange";
 import { MetadataFormData } from "@dashboard/components/Metadata";
-import { MultiAutocompleteChoiceType } from "@dashboard/components/MultiAutocompleteSelectField";
-import { SingleAutocompleteChoiceType } from "@dashboard/components/SingleAutocompleteSelectField";
 import {
   MetadataErrorFragment,
   ProductChannelListingUpdateInput,
@@ -59,10 +57,7 @@ export interface FileAttributeInputData {
   attributeId: string;
   file: File;
 }
-export type FileAttributeInput = FormsetAtomicData<
-  FileAttributeInputData,
-  string[]
->;
+export type FileAttributeInput = FormsetAtomicData<FileAttributeInputData, string[]>;
 
 export interface FileAttributesSubmitData {
   fileAttributes: FileAttributeInput[];
@@ -83,21 +78,13 @@ export interface ProductUpdateSubmitData extends ProductUpdateFormData {
 
 export interface ProductUpdateHandlers
   extends Record<
-      | "changeMetadata"
-      | "selectCategory"
-      | "selectCollection"
-      | "selectTaxClass",
+      "changeMetadata" | "selectCategory" | "selectCollection" | "selectTaxClass",
       FormChange
     >,
-    Record<
-      "selectAttribute" | "selectAttributeMultiple",
-      FormsetChange<string>
-    > {
+    Record<"selectAttribute" | "selectAttributeMultiple", FormsetChange<string>> {
   changeChannels: (id: string, data: ChannelOpts) => void;
   selectAttributeReference: FormsetChange<string[]>;
-  selectAttributeReferenceMetadata: FormsetMetadataChange<
-    AttributeValuesMetadata[]
-  >;
+  selectAttributeReferenceMetadata: FormsetMetadataChange<AttributeValuesMetadata[]>;
   selectAttributeFile: FormsetChange<File>;
   reorderAttributeValue: FormsetChange<ReorderEvent>;
   changeVariants: (data: DatagridChangeOpts) => void;
@@ -107,10 +94,7 @@ export interface ProductUpdateHandlers
 }
 
 export interface UseProductUpdateFormOutput
-  extends CommonUseFormResultWithHandlers<
-      ProductUpdateData,
-      ProductUpdateHandlers
-    >,
+  extends CommonUseFormResultWithHandlers<ProductUpdateData, ProductUpdateHandlers>,
     RichTextProps {
   datagrid: UseDatagridChangeState;
   formErrors: FormErrors<ProductUpdateSubmitData>;
@@ -122,16 +106,11 @@ export type UseProductUpdateFormRenderProps = Omit<
 >;
 
 export interface UseProductUpdateFormOpts
-  extends Record<
-    "categories" | "collections" | "taxClasses",
-    SingleAutocompleteChoiceType[]
-  > {
+  extends Record<"categories" | "collections" | "taxClasses", Option[]> {
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedCollections: React.Dispatch<
-    React.SetStateAction<MultiAutocompleteChoiceType[]>
-  >;
+  setSelectedCollections: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectedTaxClass: React.Dispatch<React.SetStateAction<string>>;
-  selectedCollections: MultiAutocompleteChoiceType[];
+  selectedCollections: Option[];
   hasVariants: boolean;
   referencePages: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts: RelayToFlat<SearchProductsQuery["search"]>;

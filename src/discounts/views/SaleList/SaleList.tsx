@@ -3,11 +3,7 @@ import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import DeleteFilterTabDialog from "@dashboard/components/DeleteFilterTabDialog";
 import SaveFilterTabDialog from "@dashboard/components/SaveFilterTabDialog";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
-import {
-  SaleFragment,
-  useSaleBulkDeleteMutation,
-  useSaleListQuery,
-} from "@dashboard/graphql";
+import { SaleFragment, useSaleBulkDeleteMutation, useSaleListQuery } from "@dashboard/graphql";
 import { useFilterPresets } from "@dashboard/hooks/useFilterPresets";
 import useListSettings from "@dashboard/hooks/useListSettings";
 import useNavigator from "@dashboard/hooks/useNavigator";
@@ -25,23 +21,13 @@ import createFilterHandlers from "@dashboard/utils/handlers/filterHandlers";
 import createSortHandler from "@dashboard/utils/handlers/sortHandler";
 import { mapEdgesToItems, mapNodeToChoice } from "@dashboard/utils/maps";
 import { getSortParams } from "@dashboard/utils/sort";
-import { DialogContentText } from "@material-ui/core";
 import isEqual from "lodash/isEqual";
 import React, { useCallback, useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import SaleListPage from "../../components/SaleListPage";
-import {
-  saleListUrl,
-  SaleListUrlDialog,
-  SaleListUrlQueryParams,
-} from "../../urls";
-import {
-  getFilterOpts,
-  getFilterQueryParam,
-  getFilterVariables,
-  storageUtils,
-} from "./filters";
+import { saleListUrl, SaleListUrlDialog, SaleListUrlQueryParams } from "../../urls";
+import { getFilterOpts, getFilterQueryParam, getFilterVariables, storageUtils } from "./filters";
 import { canBeSorted, DEFAULT_SORT_KEY, getSortQueryVariables } from "./sort";
 
 interface SaleListProps {
@@ -51,26 +37,20 @@ interface SaleListProps {
 export const SaleList: React.FC<SaleListProps> = ({ params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
-  const { updateListSettings, settings } = useListSettings(
-    ListViews.SALES_LIST,
-  );
+  const { updateListSettings, settings } = useListSettings(ListViews.SALES_LIST);
 
   usePaginationReset(saleListUrl, params, settings.rowNumber);
 
   const intl = useIntl();
   const { availableChannels } = useAppChannel(false);
-  const selectedChannel = availableChannels.find(
-    channel => channel.slug === params.channel,
-  );
+  const selectedChannel = availableChannels.find(channel => channel.slug === params.channel);
   const channelOpts = availableChannels
     ? mapNodeToChoice(availableChannels, channel => channel.slug)
     : [];
-
   const [openModal, closeModal] = createDialogActionHandlers<
     SaleListUrlDialog,
     SaleListUrlQueryParams
   >(navigate, saleListUrl, params);
-
   const paginationState = createPaginationState(settings.rowNumber, params);
   const queryVariables = React.useMemo(
     () => ({
@@ -85,16 +65,13 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
     displayLoader: true,
     variables: queryVariables,
   });
-
   const sales: SaleFragment[] = mapEdgesToItems(data?.sales) ?? [];
-
   const {
     clearRowSelection,
     selectedRowIds,
     setSelectedRowIds,
     setClearDatagridRowSelectionCallback,
   } = useRowSelection(params);
-
   const {
     hasPresetsChanged,
     onPresetChange,
@@ -111,16 +88,14 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
     storageUtils,
     reset: clearRowSelection,
   });
-
-  const [changeFilters, resetFilters, handleSearchChange] =
-    createFilterHandlers({
-      cleanupFn: clearRowSelection,
-      createUrl: saleListUrl,
-      getFilterQueryParam,
-      navigate,
-      params,
-      keepActiveTab: true,
-    });
+  const [changeFilters, resetFilters, handleSearchChange] = createFilterHandlers({
+    cleanupFn: clearRowSelection,
+    createUrl: saleListUrl,
+    getFilterQueryParam,
+    navigate,
+    params,
+    keepActiveTab: true,
+  });
 
   useEffect(() => {
     if (!canBeSorted(params?.sort, !!selectedChannel)) {
@@ -138,7 +113,6 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
     paginationState,
     queryString: params,
   });
-
   const [saleBulkDelete, saleBulkDeleteOpts] = useSaleBulkDeleteMutation({
     onCompleted: data => {
       if (data?.saleBulkDelete?.errors?.length === 0) {
@@ -152,9 +126,7 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
       }
     },
   });
-
   const handleSort = createSortHandler(navigate, saleListUrl, params);
-
   const handleSelectSaleIds = useCallback(
     (rows: number[], clearSelection: () => void) => {
       if (!sales) {
@@ -170,14 +142,8 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
 
       setClearDatagridRowSelectionCallback(clearSelection);
     },
-    [
-      sales,
-      selectedRowIds,
-      setClearDatagridRowSelectionCallback,
-      setSelectedRowIds,
-    ],
+    [sales, selectedRowIds, setClearDatagridRowSelectionCallback, setSelectedRowIds],
   );
-
   const onSaleBulkDelete = async () => {
     await saleBulkDelete({
       variables: {
@@ -230,17 +196,15 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
         })}
         variant="delete"
       >
-        <DialogContentText>
-          <FormattedMessage
-            id="FPzzh7"
-            defaultMessage="{counter,plural,one{Are you sure you want to delete this sale?} other{Are you sure you want to delete {displayQuantity} sales?}}"
-            description="dialog content"
-            values={{
-              counter: selectedRowIds.length,
-              displayQuantity: <strong>{selectedRowIds.length}</strong>,
-            }}
-          />
-        </DialogContentText>
+        <FormattedMessage
+          id="FPzzh7"
+          defaultMessage="{counter,plural,one{Are you sure you want to delete this sale?} other{Are you sure you want to delete {displayQuantity} sales?}}"
+          description="dialog content"
+          values={{
+            counter: selectedRowIds.length,
+            displayQuantity: <strong>{selectedRowIds.length}</strong>,
+          }}
+        />
       </ActionDialog>
       <SaveFilterTabDialog
         open={params.action === "save-search"}

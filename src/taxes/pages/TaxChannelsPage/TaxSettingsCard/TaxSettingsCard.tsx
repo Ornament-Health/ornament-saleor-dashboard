@@ -1,11 +1,10 @@
 import CardTitle from "@dashboard/components/CardTitle";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import Grid from "@dashboard/components/Grid";
-import SingleSelectField, {
-  Choice,
-} from "@dashboard/components/SingleSelectField";
+import { Select } from "@dashboard/components/Select";
 import { TaxConfigurationUpdateInput } from "@dashboard/graphql";
 import { FormChange } from "@dashboard/hooks/useForm";
+import { LegacyFlowWarning } from "@dashboard/taxes/components";
 import { taxesMessages } from "@dashboard/taxes/messages";
 import {
   Card,
@@ -16,6 +15,7 @@ import {
   RadioGroup,
   Typography,
 } from "@material-ui/core";
+import { Option } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -24,14 +24,16 @@ import { useStyles } from "./styles";
 
 export interface TaxSettingsCardProps {
   values: TaxConfigurationFormData;
-  strategyChoices: Choice[];
+  strategyChoices: Option[];
   onChange: FormChange;
+  strategyChoicesLoading: boolean;
 }
 
 export const TaxSettingsCard: React.FC<TaxSettingsCardProps> = ({
   values,
   strategyChoices,
   onChange,
+  strategyChoicesLoading,
 }) => {
   const intl = useIntl();
   const classes = useStyles();
@@ -51,21 +53,20 @@ export const TaxSettingsCard: React.FC<TaxSettingsCardProps> = ({
             onChange={onChange}
             label={intl.formatMessage(taxesMessages.chargeTaxes)}
           />
-          <div
-            className={classes.singleSelectWrapper}
-            data-test-id="app-flat-select"
-          >
+          <div className={classes.singleSelectWrapper} data-test-id="app-flat-select">
             <span className={classes.hint}>
-              <FormattedMessage {...taxesMessages.taxStrategyHint} />{" "}
+              <FormattedMessage {...taxesMessages.taxStrategyHint} />
+              {!strategyChoicesLoading && (
+                <LegacyFlowWarning taxCalculationStrategy={values.taxCalculationStrategy} />
+              )}
             </span>
-            <SingleSelectField
-              className={classes.singleSelectField}
-              choices={strategyChoices}
-              disabled={!values.chargeTaxes}
+            <Select
+              size="large"
+              data-test-id="tax-calculation-strategy-select"
+              options={strategyChoices}
+              disabled={strategyChoicesLoading || !values.chargeTaxes}
               value={values.taxCalculationStrategy}
-              name={
-                "taxCalculationStrategy" as keyof TaxConfigurationUpdateInput
-              }
+              name={"taxCalculationStrategy" as keyof TaxConfigurationUpdateInput}
               onChange={onChange}
             />
           </div>

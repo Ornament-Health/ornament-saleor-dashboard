@@ -1,11 +1,9 @@
 // @ts-strict-ignore
 import { FileFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
-import { Box, Button, Text, TrashBinIcon } from "@saleor/macaw-ui-next";
+import { Box, Button, Skeleton, Text, TrashBinIcon } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
-
-import Skeleton from "../Skeleton";
 
 export interface FileChoiceType {
   label: string;
@@ -28,21 +26,11 @@ export interface FileUploadFieldProps {
 }
 
 const FileUploadField: React.FC<FileUploadFieldProps> = props => {
-  const {
-    loading,
-    disabled,
-    file,
-    error,
-    helperText,
-    onFileUpload,
-    onFileDelete,
-    inputProps,
-  } = props;
+  const { loading, disabled, file, error, helperText, onFileUpload, onFileDelete, inputProps } =
+    props;
   const intl = useIntl();
-
   const fileInputAnchor = React.createRef<HTMLInputElement>();
   const clickFileInput = () => fileInputAnchor.current.click();
-
   const handleFileDelete = () => {
     fileInputAnchor.current.value = "";
     onFileDelete();
@@ -59,7 +47,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
       <Box display="flex" justifyContent="flex-start" alignItems="center">
         {file.label ? (
           <Box display="flex" gap={2} alignItems="center">
-            <Text variant="caption">
+            <Text size={2}>
               {loading ? (
                 <Skeleton />
               ) : (
@@ -89,7 +77,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
           </Button>
         )}
         {error && (
-          <Text variant="caption" color="critical1" paddingLeft={3}>
+          <Text size={2} color="critical1" paddingLeft={3}>
             {helperText}
           </Text>
         )}
@@ -106,5 +94,6 @@ const FileUploadField: React.FC<FileUploadFieldProps> = props => {
     </>
   );
 };
+
 FileUploadField.displayName = "FileUploadField";
 export default FileUploadField;

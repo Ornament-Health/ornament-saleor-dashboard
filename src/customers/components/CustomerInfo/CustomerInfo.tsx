@@ -1,13 +1,14 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Grid from "@dashboard/components/Grid";
 import Hr from "@dashboard/components/Hr";
 import { AccountErrorFragment } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
 import { getFormErrors } from "@dashboard/utils/errors";
 import getAccountErrorMessage from "@dashboard/utils/errors/account";
-import { Card, CardContent, TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -18,9 +19,6 @@ const useStyles = makeStyles(
     },
     hr: {
       margin: theme.spacing(3, 0),
-    },
-    sectionHeader: {
-      marginBottom: theme.spacing(),
     },
   }),
   { name: "CustomerInfo" },
@@ -46,22 +44,23 @@ const CustomerInfo: React.FC<CustomerInfoProps> = props => {
   const formErrors = getFormErrors(["firstName", "lastName", "email"], errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
           <FormattedMessage
             id="4v5gfh"
             defaultMessage="Account Information"
             description="account information, header"
           />
-        }
-      />
-      <CardContent className={classes.content}>
-        <Typography className={classes.sectionHeader}>
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content className={classes.content}>
+        <Text>
           <FormattedMessage {...commonMessages.generalInformations} />
-        </Typography>
+        </Text>
         <Grid variant="uniform">
           <TextField
+            data-test-id="customer-first-name"
             disabled={disabled}
             error={!!formErrors.firstName}
             fullWidth
@@ -76,6 +75,7 @@ const CustomerInfo: React.FC<CustomerInfoProps> = props => {
             }}
           />
           <TextField
+            data-test-id="customer-last-name"
             disabled={disabled}
             error={!!formErrors.lastName}
             fullWidth
@@ -91,14 +91,15 @@ const CustomerInfo: React.FC<CustomerInfoProps> = props => {
           />
         </Grid>
         <Hr className={classes.hr} />
-        <Typography className={classes.sectionHeader}>
+        <Text>
           <FormattedMessage
             id="SMakqb"
             defaultMessage="Contact Information"
             description="customer contact section, header"
           />
-        </Typography>
+        </Text>
         <TextField
+          data-test-id="customer-email"
           disabled={disabled}
           error={!!formErrors.email}
           fullWidth
@@ -112,9 +113,10 @@ const CustomerInfo: React.FC<CustomerInfoProps> = props => {
             spellCheck: false,
           }}
         />
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
+
 CustomerInfo.displayName = "CustomerInfo";
 export default CustomerInfo;

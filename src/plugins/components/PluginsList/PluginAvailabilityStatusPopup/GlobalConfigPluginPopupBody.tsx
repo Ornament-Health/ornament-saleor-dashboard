@@ -1,45 +1,38 @@
 // @ts-strict-ignore
+import { DashboardCard } from "@dashboard/components/Card";
 import CardSpacer from "@dashboard/components/CardSpacer";
 import { Pill } from "@dashboard/components/Pill";
 import { PluginBaseFragment } from "@dashboard/graphql";
-import { CardContent, Typography } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import {
-  globalConfigPluginMessages as messages,
-  pluginStatusMessages,
-} from "../messages";
+import { globalConfigPluginMessages as messages, pluginStatusMessages } from "../messages";
 
 interface GlobalConfigPluginPopupBodyProps {
   plugin: PluginBaseFragment;
 }
 
-const GlobalConfigPluginPopupBody: React.FC<
-  GlobalConfigPluginPopupBodyProps
-> = ({ plugin }) => {
+const GlobalConfigPluginPopupBody: React.FC<GlobalConfigPluginPopupBodyProps> = ({ plugin }) => {
   const intl = useIntl();
-
   const { active } = plugin.globalConfiguration;
 
   return (
     <>
-      <CardContent>
-        <Typography>{intl.formatMessage(messages.title)}</Typography>
+      <DashboardCard.Content>
+        <Text>{intl.formatMessage(messages.title)}</Text>
         <CardSpacer />
-        <Typography variant="caption">
+        <Text size={2} fontWeight="light">
           {intl.formatMessage(messages.description)}
-        </Typography>
+        </Text>
         <CardSpacer />
         <Pill
           color={active ? "success" : "error"}
           label={intl.formatMessage(
-            active
-              ? pluginStatusMessages.active
-              : pluginStatusMessages.deactivated,
+            active ? pluginStatusMessages.active : pluginStatusMessages.deactivated,
           )}
         />
-      </CardContent>
+      </DashboardCard.Content>
     </>
   );
 };

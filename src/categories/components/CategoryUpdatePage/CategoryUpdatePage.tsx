@@ -4,7 +4,7 @@ import { CardSpacer } from "@dashboard/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { Metadata } from "@dashboard/components/Metadata/Metadata";
-import Savebar from "@dashboard/components/Savebar";
+import { Savebar } from "@dashboard/components/Savebar";
 import { SeoForm } from "@dashboard/components/SeoForm";
 import { Tab, TabContainer } from "@dashboard/components/Tab";
 import { CategoryDetailsQuery, ProductErrorFragment } from "@dashboard/graphql";
@@ -27,22 +27,15 @@ export enum CategoryPageTab {
 }
 
 export interface CategoryUpdatePageProps
-  extends Pick<
-    ListProps<ListViews.CATEGORY_LIST>,
-    "onUpdateListSettings" | "settings"
-  > {
+  extends Pick<ListProps<ListViews.CATEGORY_LIST>, "onUpdateListSettings" | "settings"> {
   categoryId: string;
   changeTab: (index: CategoryPageTab) => void;
   currentTab: CategoryPageTab;
   errors: ProductErrorFragment[];
   disabled: boolean;
   category: CategoryDetailsQuery["category"] | undefined | null;
-  products?: RelayToFlat<
-    NonNullable<CategoryDetailsQuery["category"]>["products"]
-  >;
-  subcategories?: RelayToFlat<
-    NonNullable<CategoryDetailsQuery["category"]>["children"]
-  >;
+  products?: RelayToFlat<NonNullable<CategoryDetailsQuery["category"]>["products"]>;
+  subcategories?: RelayToFlat<NonNullable<CategoryDetailsQuery["category"]>["children"]>;
   saveButtonBarState: ConfirmButtonTransitionState;
   addProductHref: string;
   onImageDelete: () => void;
@@ -81,17 +74,10 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
 }: CategoryUpdatePageProps) => {
   const intl = useIntl();
   const navigate = useNavigator();
-
-  const backHref = category?.parent?.id
-    ? categoryUrl(category?.parent?.id)
-    : categoryListUrl();
+  const backHref = category?.parent?.id ? categoryUrl(category?.parent?.id) : categoryListUrl();
 
   return (
-    <CategoryUpdateForm
-      category={category}
-      onSubmit={onSubmit}
-      disabled={disabled}
-    >
+    <CategoryUpdateForm category={category} onSubmit={onSubmit} disabled={disabled}>
       {({ data, change, handlers, submit, isSaveDisabled }) => (
         <DetailPageLayout gridTemplateColumns={1}>
           <TopNav href={backHref} title={category?.name} />
@@ -189,13 +175,16 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
               />
             )}
 
-            <Savebar
-              onCancel={() => navigate(backHref)}
-              onDelete={onDelete}
-              onSubmit={submit}
-              state={saveButtonBarState}
-              disabled={!!isSaveDisabled}
-            />
+            <Savebar>
+              <Savebar.DeleteButton onClick={onDelete} />
+              <Savebar.Spacer />
+              <Savebar.CancelButton onClick={() => navigate(backHref)} />
+              <Savebar.ConfirmButton
+                transitionState={saveButtonBarState}
+                onClick={submit}
+                disabled={!!isSaveDisabled}
+              />
+            </Savebar>
           </DetailPageLayout.Content>
         </DetailPageLayout>
       )}

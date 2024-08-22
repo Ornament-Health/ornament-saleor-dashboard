@@ -3,13 +3,13 @@ import { FetchResult } from "@apollo/client";
 import { getAttributesAfterFileAttributesUpdate } from "@dashboard/attributes/utils/data";
 import { prepareAttributesInput } from "@dashboard/attributes/utils/handlers";
 import { DatagridChangeOpts } from "@dashboard/components/Datagrid/hooks/useDatagridChange";
-import { VALUES_PAGINATE_BY } from "@dashboard/config";
 import {
   FileUploadMutation,
   ProductChannelListingAddInput,
   ProductChannelListingUpdateInput,
   ProductChannelListingUpdateMutationVariables,
   ProductFragment,
+  ProductUpdateMutationVariables,
   ProductVariantBulkUpdateInput,
   VariantAttributeFragment,
 } from "@dashboard/graphql";
@@ -19,15 +19,8 @@ import { getParsedDataForJsonStringField } from "@dashboard/utils/richText/misc"
 import pick from "lodash/pick";
 import uniq from "lodash/uniq";
 
-import {
-  getAttributeData,
-  getAttributeInput,
-  getAttributeType,
-} from "./data/attributes";
-import {
-  getUpdateVariantChannelInputs,
-  getVariantChannelsInputs,
-} from "./data/channel";
+import { getAttributeData, getAttributeInput, getAttributeType } from "./data/attributes";
+import { getUpdateVariantChannelInputs, getVariantChannelsInputs } from "./data/channel";
 import { getNameData } from "./data/name";
 import { getSkuData } from "./data/sku";
 import { getStockData, getVaraintUpdateStockData } from "./data/stock";
@@ -42,7 +35,7 @@ export function getProductUpdateVariables(
     uploadFilesResult,
   );
 
-  return {
+  const variables: ProductUpdateMutationVariables = {
     id: product.id,
     input: {
       attributes: prepareAttributesInput({
@@ -50,20 +43,50 @@ export function getProductUpdateVariables(
         prevAttributes: getAttributeInputFromProduct(product),
         updatedFileAttributes,
       }),
-      category: data.category,
-      collections: data.collections.map(collection => collection.value),
-      description: getParsedDataForJsonStringField(data.description),
-      name: data.name,
-      rating: data.rating,
-      seo: {
-        description: data.seoDescription,
-        title: data.seoTitle,
-      },
-      slug: data.slug,
-      taxClass: data.taxClassId,
     },
-    firstValues: VALUES_PAGINATE_BY,
   };
+
+  if (data.category) {
+    variables.input["category"] = data.category;
+  }
+
+  if (data.collections) {
+    variables.input["collections"] = data.collections.map(collection => collection.value);
+  }
+
+  if (data.description) {
+    variables.input["description"] = getParsedDataForJsonStringField(data.description);
+  }
+
+  if (data.name) {
+    variables.input["name"] = data.name;
+  }
+
+  if (data.rating) {
+    variables.input["rating"] = data.rating;
+  }
+
+  if (data.slug) {
+    variables.input["slug"] = data.slug;
+  }
+
+  if (data.taxClassId) {
+    variables.input["taxClass"] = data.taxClassId;
+  }
+
+  if (data.seoDescription || data.seoTitle) {
+    variables.input["seo"] = {};
+  }
+
+  if (data.seoDescription && variables.input["seo"]) {
+    variables.input["seo"].description = data.seoDescription;
+  }
+
+  if (data.seoTitle && variables.input["seo"]) {
+    variables.input["seo"].title = data.seoTitle;
+  }
+
+  return variables;
 }
 
 export function getCreateVariantInput(
@@ -85,11 +108,11 @@ export function getProductChannelsUpdateVariables(
   data: ProductUpdateSubmitData,
 ): ProductChannelListingUpdateMutationVariables {
   const channels = inferProductChannelsAfterUpdate(product, data);
-
   const dataUpdated = new Map<string, ProductChannelListingAddInput>();
+
   data.channels.updateChannels
     .map(listing => {
-      const fielsToPick = [
+      const fieldsToPick = [
         "channelId",
         "isAvailableForPurchase",
         "isPublished",
@@ -97,17 +120,17 @@ export function getProductChannelsUpdateVariables(
       ] as Array<keyof ProductChannelListingAddInput>;
 
       if (!listing.isAvailableForPurchase) {
-        fielsToPick.push("availableForPurchaseAt", "availableForPurchaseDate");
+        fieldsToPick.push("availableForPurchaseAt");
       }
 
       if (!listing.isPublished) {
-        fielsToPick.push("publicationDate", "publishedAt");
+        fieldsToPick.push("publishedAt");
       }
 
       return pick(
         listing,
         // Filtering it here so we send only fields defined in input schema
-        fielsToPick,
+        fieldsToPick,
       );
     })
     .forEach(listing => dataUpdated.set(listing.channelId, listing));
@@ -116,12 +139,11 @@ export function getProductChannelsUpdateVariables(
     .filter(channelId => dataUpdated.has(channelId))
     .map(channelId => {
       const data = dataUpdated.get(channelId);
+
       return {
         ...data,
         isAvailableForPurchase:
-          data.availableForPurchaseDate !== null
-            ? true
-            : data.isAvailableForPurchase,
+          data.availableForPurchaseAt !== null ? true : data.isAvailableForPurchase,
       };
     });
 
@@ -134,9 +156,7 @@ export function getProductChannelsUpdateVariables(
   };
 }
 
-export function hasProductChannelsUpdate(
-  data: ProductChannelListingUpdateInput,
-) {
+export function hasProductChannelsUpdate(data: ProductChannelListingUpdateInput) {
   return data?.removeChannels?.length || data?.updateChannels?.length;
 }
 
@@ -146,6 +166,7 @@ export function getBulkVariantUpdateInputs(
   variantsAttributes: VariantAttributeFragment[],
 ): ProductVariantBulkUpdateInput[] {
   const toUpdateInput = createToUpdateInput(data, variantsAttributes);
+
   return variants
     .filter((_, index) => !data.removed.includes(index))
     .map(toUpdateInput)
@@ -160,61 +181,45 @@ const createToUpdateInput =
     variantIndex: number,
   ): ProductVariantBulkUpdateInput => ({
     id: variant.id,
-    attributes: getVariantAttributesForUpdate(
-      data,
-      variantIndex,
-      variant,
-      variantsAttributes,
-    ),
+    attributes: getVariantAttributesForUpdate(data, variantIndex, variant, variantsAttributes),
     sku: getSkuData(data.updates, variantIndex),
     name: getNameData(data.updates, variantIndex),
     stocks: getVaraintUpdateStockData(data.updates, variantIndex, variant),
     channelListings: getUpdateVariantChannelInputs(data, variantIndex, variant),
   });
-
 const getVariantAttributesForUpdate = (
   data: DatagridChangeOpts,
   variantIndex: number,
   variant: ProductFragment["variants"][number],
   variantsAttributes: VariantAttributeFragment[],
 ) => {
-  const updatedAttributes = getAttributeData(
-    data.updates,
-    variantIndex,
-    variantsAttributes,
-  );
+  const updatedAttributes = getAttributeData(data.updates, variantIndex, variantsAttributes);
 
   if (!updatedAttributes.length) {
     return [];
   }
 
   // Re-send current values for all not-updated attributes, in case some of them were required
-  const notUpdatedAttributes: ReturnType<typeof getAttributeData> =
-    variant.attributes
-      .filter(
-        attribute =>
-          !updatedAttributes.find(
-            updatedAttribute => updatedAttribute.id === attribute.attribute.id,
-          ),
-      )
-      .map(attribute => {
-        const attributeType = getAttributeType(
-          variantsAttributes,
-          attribute.attribute.id,
-        );
+  const notUpdatedAttributes: ReturnType<typeof getAttributeData> = variant.attributes
+    .filter(
+      attribute =>
+        !updatedAttributes.find(updatedAttribute => updatedAttribute.id === attribute.attribute.id),
+    )
+    .map(attribute => {
+      const attributeType = getAttributeType(variantsAttributes, attribute.attribute.id);
 
-        if (!attributeType) {
-          return undefined;
-        }
+      if (!attributeType) {
+        return undefined;
+      }
 
-        return {
-          id: attribute.attribute.id,
-          ...getAttributeInput(attributeType, attribute.values),
-        };
-      });
+      return {
+        id: attribute.attribute.id,
+        ...getAttributeInput(attributeType, attribute.values),
+      };
+    });
+
   return [...updatedAttributes, ...notUpdatedAttributes];
 };
-
 const byAvailability = (variant: ProductVariantBulkUpdateInput): boolean =>
   variant.name !== undefined ||
   variant.sku !== undefined ||
@@ -230,17 +235,12 @@ export function inferProductChannelsAfterUpdate(
   product: ProductFragment,
   data: ProductUpdateSubmitData,
 ) {
-  const productChannelsIds = product.channelListings.map(
-    listing => listing.channel.id,
-  );
-  const updatedChannelsIds =
-    data.channels.updateChannels?.map(listing => listing.channelId) || [];
+  const productChannelsIds = product.channelListings.map(listing => listing.channel.id);
+  const updatedChannelsIds = data.channels.updateChannels?.map(listing => listing.channelId) || [];
   const removedChannelsIds = data.channels.removeChannels || [];
 
   return uniq([
-    ...productChannelsIds.filter(
-      channelId => !removedChannelsIds.includes(channelId),
-    ),
+    ...productChannelsIds.filter(channelId => !removedChannelsIds.includes(channelId)),
     ...updatedChannelsIds,
   ]);
 }

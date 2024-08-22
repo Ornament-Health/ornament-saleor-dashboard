@@ -1,5 +1,6 @@
 // @ts-strict-ignore
 import { TopNav } from "@dashboard/components/AppLayout/TopNav";
+import { DashboardCard } from "@dashboard/components/Card";
 import { ExternalLinkNext } from "@dashboard/components/ExternalLink";
 import FilterBar from "@dashboard/components/FilterBar";
 import { ListPageLayout } from "@dashboard/components/Layouts";
@@ -8,27 +9,14 @@ import { PluginBaseFragment } from "@dashboard/graphql";
 import { sectionNames } from "@dashboard/intl";
 import { getStatusColor } from "@dashboard/misc";
 import { PluginListUrlSortField } from "@dashboard/plugins/urls";
-import {
-  FilterPageProps,
-  PageListProps,
-  SortPage,
-  TabPageProps,
-} from "@dashboard/types";
-import { Card } from "@material-ui/core";
+import { FilterPageProps, PageListProps, SortPage, TabPageProps } from "@dashboard/types";
 import { Box, Text, useTheme } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
 import PluginsList from "../PluginsList/PluginsList";
-import {
-  createFilterStructure,
-  PluginFilterKeys,
-  PluginListFilterOpts,
-} from "./filters";
-import {
-  pluginsFilterErrorMessages,
-  pluginsListPageMessages,
-} from "./messages";
+import { createFilterStructure, PluginFilterKeys, PluginListFilterOpts } from "./filters";
+import { pluginsFilterErrorMessages, pluginsListPageMessages } from "./messages";
 
 export interface PluginsListPageProps
   extends PageListProps,
@@ -53,16 +41,12 @@ const PluginsListPage: React.FC<PluginsListPageProps> = ({
 }) => {
   const intl = useIntl();
   const { theme: currentTheme } = useTheme();
-
   const filterStructure = createFilterStructure(intl, filterOpts);
 
   return (
     <ListPageLayout>
-      <TopNav
-        href={configurationMenuUrl}
-        title={intl.formatMessage(sectionNames.plugins)}
-      />
-      <Card>
+      <TopNav href={configurationMenuUrl} title={intl.formatMessage(sectionNames.plugins)} />
+      <DashboardCard>
         <div>
           <Box
             paddingX={7}
@@ -73,10 +57,10 @@ const PluginsListPage: React.FC<PluginsListPageProps> = ({
               currentTheme,
             })}
           >
-            <Text variant="heading" as="h2">
+            <Text size={5} fontWeight="bold" as="h2">
               {intl.formatMessage(pluginsListPageMessages.warningHeadline)}
             </Text>
-            <Text variant="body">
+            <Text>
               {intl.formatMessage(pluginsListPageMessages.appStoreWarning)}{" "}
               <ExternalLinkNext
                 target="_blank"
@@ -110,9 +94,10 @@ const PluginsListPage: React.FC<PluginsListPageProps> = ({
           })}
         />
         <PluginsList {...listProps} />
-      </Card>
+      </DashboardCard>
     </ListPageLayout>
   );
 };
+
 PluginsListPage.displayName = "PluginsListPage";
 export default PluginsListPage;

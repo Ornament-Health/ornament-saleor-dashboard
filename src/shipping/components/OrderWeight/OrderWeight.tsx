@@ -1,5 +1,5 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import ControlledCheckbox from "@dashboard/components/ControlledCheckbox";
 import VerticalSpacer from "@dashboard/components/VerticalSpacer";
 import { ShippingErrorFragment } from "@dashboard/graphql";
@@ -7,13 +7,8 @@ import { ChangeEvent } from "@dashboard/hooks/useForm";
 import useShop from "@dashboard/hooks/useShop";
 import { getShippingWeightRateErrorMessage } from "@dashboard/shipping/errors";
 import { getFormErrors } from "@dashboard/utils/errors";
-import {
-  Card,
-  CardContent,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { InputAdornment, TextField } from "@material-ui/core";
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -39,20 +34,21 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
   const classes = useStyles({});
   const intl = useIntl();
   const shop = useShop();
-
   const formFields = ["minimumOrderWeight", "maximumOrderWeight"];
   const formErrors = getFormErrors(formFields, errors);
 
   return (
-    <Card>
-      <CardTitle
-        title={intl.formatMessage({
-          id: "vWapBZ",
-          defaultMessage: "Order Weight",
-          description: "card title",
-        })}
-      />
-      <CardContent>
+    <DashboardCard>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "vWapBZ",
+            defaultMessage: "Order Weight",
+            description: "card title",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <ControlledCheckbox
           data-test-id="order-weight-checkbox"
           name="orderValueRestricted"
@@ -63,13 +59,13 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
                 defaultMessage="Restrict order weight"
                 description="checkbox label"
               />
-              <Typography variant="caption">
+              <Text size={2} fontWeight="light" display="block">
                 <FormattedMessage
                   id="7v8suW"
                   defaultMessage="This rate will apply to all orders"
                   description="info text"
                 />
-              </Typography>
+              </Text>
             </>
           }
           checked={orderValueRestricted}
@@ -83,10 +79,7 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
               <TextField
                 data-test-id="min-order-weight-input"
                 disabled={disabled}
-                helperText={getShippingWeightRateErrorMessage(
-                  formErrors.minimumOrderWeight,
-                  intl,
-                )}
+                helperText={getShippingWeightRateErrorMessage(formErrors.minimumOrderWeight, intl)}
                 error={!!formErrors.minimumOrderWeight}
                 fullWidth
                 label={intl.formatMessage({
@@ -103,7 +96,7 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
                   inputProps: { min: 0 },
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Typography>{shop?.defaultWeightUnit}</Typography>
+                      <Text>{shop?.defaultWeightUnit}</Text>
                     </InputAdornment>
                   ),
                 }}
@@ -113,10 +106,7 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
               <TextField
                 data-test-id="max-order-weight-input"
                 disabled={disabled}
-                helperText={getShippingWeightRateErrorMessage(
-                  formErrors.maximumOrderWeight,
-                  intl,
-                )}
+                helperText={getShippingWeightRateErrorMessage(formErrors.maximumOrderWeight, intl)}
                 error={!!formErrors.maximumOrderWeight}
                 fullWidth
                 label={intl.formatMessage({
@@ -129,7 +119,7 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
                   inputProps: { min: minValue },
                   endAdornment: (
                     <InputAdornment position="end">
-                      <Typography>{shop?.defaultWeightUnit}</Typography>
+                      <Text>{shop?.defaultWeightUnit}</Text>
                     </InputAdornment>
                   ),
                 }}
@@ -139,8 +129,8 @@ export const OrderWeight: React.FC<OrderWeightProps> = ({
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 

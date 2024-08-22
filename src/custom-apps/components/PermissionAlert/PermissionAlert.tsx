@@ -4,11 +4,7 @@ import { Box, Chip, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import {
-  buildPermissionMap,
-  getPermissions,
-  IntrospectionQuery,
-} from "./utils";
+import { buildPermissionMap, getPermissions, IntrospectionQuery } from "./utils";
 
 export interface PermissionAlertProps {
   query: string;
@@ -16,7 +12,6 @@ export interface PermissionAlertProps {
 
 const PermissionAlert: React.FC<PermissionAlertProps> = ({ query }) => {
   const intl = useIntl();
-
   const { data } = useQuery(IntrospectionQuery, {
     fetchPolicy: "network-only",
   });
@@ -30,8 +25,7 @@ const PermissionAlert: React.FC<PermissionAlertProps> = ({ query }) => {
         <Alert
           title={intl.formatMessage({
             id: "ngSJ7N",
-            defaultMessage:
-              "Your subscription query requires the following permissions:",
+            defaultMessage: "Your subscription query requires the following permissions:",
             description: "alert title",
           })}
           variant="warning"
@@ -41,9 +35,7 @@ const PermissionAlert: React.FC<PermissionAlertProps> = ({ query }) => {
           <Box display="flex" gap={2}>
             {permissions.map(permission => (
               <Chip size="small" key={permission}>
-                <Text variant="caption" size="small">
-                  {permission}
-                </Text>
+                <Text size={1}>{permission}</Text>
               </Chip>
             ))}
           </Box>

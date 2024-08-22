@@ -1,4 +1,5 @@
 import { ConditionalProductFilterProvider } from "@dashboard/components/ConditionalFilter/context";
+import { Route } from "@dashboard/components/Router";
 import { useFlag } from "@dashboard/featureFlags";
 import { sectionNames } from "@dashboard/intl";
 import { asSortParams } from "@dashboard/utils/sort";
@@ -6,7 +7,7 @@ import { getArrayQueryParam } from "@dashboard/utils/urls";
 import { parse as parseQs } from "qs";
 import React from "react";
 import { useIntl } from "react-intl";
-import { Route, RouteComponentProps, Switch } from "react-router-dom";
+import { RouteComponentProps, Switch } from "react-router-dom";
 
 import { WindowTitle } from "../components/WindowTitle";
 import {
@@ -43,7 +44,6 @@ interface matchParamsProductVariant {
 const ProductList: React.FC<RouteComponentProps<any>> = ({ location }) => {
   const qs = parseQs(location.search.substr(1)) as any;
   const productListingPageFiltersFlag = useFlag("product_filters");
-
   const params: ProductListUrlQueryParams = asSortParams(
     {
       ...qs,
@@ -54,19 +54,18 @@ const ProductList: React.FC<RouteComponentProps<any>> = ({ location }) => {
       productKind: qs.productKind,
     },
     ProductListUrlSortField,
+    ProductListUrlSortField.date,
+    false,
   );
 
   return (
     <ConditionalProductFilterProvider
-      locationSearch={
-        productListingPageFiltersFlag.enabled ? location.search : ""
-      }
+      locationSearch={productListingPageFiltersFlag.enabled ? location.search : ""}
     >
       <ProductListComponent params={params} />
     </ConditionalProductFilterProvider>
   );
 };
-
 const ProductUpdate: React.FC<RouteComponentProps<any>> = ({ match }) => {
   const qs = parseQs(location.search.substr(1)) as any;
   const params: ProductUrlQueryParams = qs;
@@ -81,17 +80,13 @@ const ProductUpdate: React.FC<RouteComponentProps<any>> = ({ match }) => {
     />
   );
 };
-
 const ProductCreate: React.FC<RouteComponentProps<any>> = () => {
   const qs = parseQs(location.search.substr(1));
   const params: ProductCreateUrlQueryParams = qs;
 
   return <ProductCreateComponent params={params} />;
 };
-
-const ProductVariant: React.FC<
-  RouteComponentProps<matchParamsProductVariant>
-> = ({ match }) => {
+const ProductVariant: React.FC<RouteComponentProps<matchParamsProductVariant>> = ({ match }) => {
   const qs = parseQs(location.search.substr(1));
   const params: ProductVariantEditUrlQueryParams = qs;
 
@@ -103,11 +98,7 @@ const ProductVariant: React.FC<
     />
   );
 };
-
-const ProductImage: React.FC<RouteComponentProps<any>> = ({
-  location,
-  match,
-}) => {
+const ProductImage: React.FC<RouteComponentProps<any>> = ({ location, match }) => {
   const qs = parseQs(location.search.substr(1));
   const params: ProductImageUrlQueryParams = qs;
 
@@ -119,10 +110,7 @@ const ProductImage: React.FC<RouteComponentProps<any>> = ({
     />
   );
 };
-
-const ProductVariantCreate: React.FC<RouteComponentProps<MatchParams>> = ({
-  match,
-}) => {
+const ProductVariantCreate: React.FC<RouteComponentProps<MatchParams>> = ({ match }) => {
   const qs = parseQs(location.search.substr(1));
   const params: ProductVariantAddUrlQueryParams = qs;
 
@@ -133,7 +121,6 @@ const ProductVariantCreate: React.FC<RouteComponentProps<MatchParams>> = ({
     />
   );
 };
-
 const Component = () => {
   const intl = useIntl();
 
@@ -143,19 +130,12 @@ const Component = () => {
       <Switch>
         <Route exact path={productListPath} component={ProductList} />
         <Route exact path={productAddPath} component={ProductCreate} />
-        <Route
-          exact
-          path={productVariantAddPath(":id")}
-          component={ProductVariantCreate}
-        />
+        <Route exact path={productVariantAddPath(":id")} component={ProductVariantCreate} />
         <Route
           path={productVariantEditPath(":productId", ":variantId")}
           component={ProductVariant}
         />
-        <Route
-          path={productImagePath(":productId", ":imageId")}
-          component={ProductImage}
-        />
+        <Route path={productImagePath(":productId", ":imageId")} component={ProductImage} />
         <Route path={productPath(":id")} component={ProductUpdate} />
       </Switch>
     </>

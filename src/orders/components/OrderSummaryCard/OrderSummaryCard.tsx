@@ -1,22 +1,17 @@
 // @ts-strict-ignore
-import CardTitle from "@dashboard/components/CardTitle";
-import Link from "@dashboard/components/Link";
-import { giftCardPath } from "@dashboard/giftCards/urls";
-import { OrderDetailsFragment, OrderDiscountType } from "@dashboard/graphql";
-import { Card, CardContent } from "@material-ui/core";
+import { DashboardCard } from "@dashboard/components/Card";
+import { OrderDetailsFragment } from "@dashboard/graphql";
+import { getDiscountTypeLabel } from "@dashboard/orders/utils/data";
 import { makeStyles } from "@saleor/macaw-ui";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { obtainUsedGifrcard } from "../OrderPayment/utils";
+import { obtainUsedGifrcards } from "../OrderPayment/utils";
+import { OrderUsedGiftCards } from "../OrderUsedGiftCards";
 import { orderSummaryMessages } from "./messages";
 import SummaryLine from "./SummaryLine";
 import { SummaryList } from "./SummaryList";
-import {
-  extractOrderGiftCardUsedAmount,
-  getDeliveryMethodName,
-  getTaxTypeText,
-} from "./utils";
+import { extractOrderGiftCardUsedAmount, getDeliveryMethodName, getTaxTypeText } from "./utils";
 
 interface OrderPaymentProps {
   order: OrderDetailsFragment;
@@ -37,21 +32,20 @@ const useStyles = makeStyles(
   }),
   { name: "OrderSummaryCard" },
 );
-
 const OrderSummaryCard: React.FC<OrderPaymentProps> = ({ order }) => {
   const classes = useStyles();
-
   const intl = useIntl();
-
   const giftCardAmount = extractOrderGiftCardUsedAmount(order);
-  const usedGiftcard = obtainUsedGifrcard(order);
+  const usedGiftcards = obtainUsedGifrcards(order);
 
   return (
-    <Card data-test-id="OrderSummaryCard">
-      <CardTitle
-        title={<FormattedMessage {...orderSummaryMessages.orderSummary} />}
-      />
-      <CardContent>
+    <DashboardCard data-test-id="OrderSummaryCard">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          <FormattedMessage {...orderSummaryMessages.orderSummary} />
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         <SummaryList className={classes.list}>
           <SummaryLine
             text={<FormattedMessage {...orderSummaryMessages.subtotal} />}
@@ -71,30 +65,14 @@ const OrderSummaryCard: React.FC<OrderPaymentProps> = ({ order }) => {
             <SummaryLine
               key={discount.id}
               text={<FormattedMessage {...orderSummaryMessages.discount} />}
-              subText={
-                discount.type === OrderDiscountType.MANUAL
-                  ? intl.formatMessage(orderSummaryMessages.staffAdded)
-                  : intl.formatMessage(orderSummaryMessages.voucher)
-              }
+              subText={getDiscountTypeLabel(discount, intl)}
               money={discount.amount}
             />
           ))}
           {/* TODO: Remove when gift cards are not treated as discounts */}
           {giftCardAmount > 0 && (
             <SummaryLine
-              text={
-                <FormattedMessage
-                  {...orderSummaryMessages.paidWithGiftCard}
-                  values={{
-                    link: (
-                      <Link href={giftCardPath(usedGiftcard.id)}>
-                        {" "}
-                        {usedGiftcard.last4CodeChars}
-                      </Link>
-                    ),
-                  }}
-                />
-              }
+              text={<OrderUsedGiftCards giftCards={usedGiftcards} />}
               negative
               money={{
                 amount: giftCardAmount,
@@ -108,8 +86,8 @@ const OrderSummaryCard: React.FC<OrderPaymentProps> = ({ order }) => {
             money={order?.total?.gross}
           />
         </SummaryList>
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 

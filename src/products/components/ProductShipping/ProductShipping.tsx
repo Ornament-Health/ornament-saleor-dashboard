@@ -19,21 +19,21 @@ interface ProductShippingProps {
 
 export const ProductShipping: React.FC<ProductShippingProps> = props => {
   const { data, disabled, errors, weightUnit, onChange } = props;
-
   const intl = useIntl();
-
   const formErrors = getFormErrors(["weight"], errors);
   const handleChange = createNonNegativeValueChangeHandler(onChange);
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage({
-          id: "3rIMq/",
-          defaultMessage: "Shipping",
-          description: "product shipping",
-        })}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "3rIMq/",
+            defaultMessage: "Shipping",
+            description: "product shipping",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <Box __width="25%">
           <Input

@@ -1,10 +1,9 @@
-import { Typography } from "@material-ui/core";
 import { makeStyles } from "@saleor/macaw-ui";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 
 import ExtendedPageHeader from "../ExtendedPageHeader";
 import PreviewPill from "../PreviewPill";
-import Skeleton from "../Skeleton";
 
 const useStyles = makeStyles(
   theme => ({
@@ -56,17 +55,7 @@ interface PageHeaderProps {
 }
 
 const PageHeader: React.FC<PageHeaderProps> = props => {
-  const {
-    children,
-    className,
-    inline,
-    underline,
-    limitText,
-    title,
-    cardMenu,
-    preview,
-  } = props;
-
+  const { children, className, inline, underline, limitText, title, cardMenu, preview } = props;
   const classes = useStyles(props);
 
   return (
@@ -79,22 +68,18 @@ const PageHeader: React.FC<PageHeaderProps> = props => {
         underline={underline}
         title={
           <>
-            <Typography className={classes.title} variant="h3">
-              {title !== undefined ? (
-                title
-              ) : (
-                <Skeleton style={{ width: "10em" }} />
-              )}
-            </Typography>
+            <Text className={classes.title} size={6} fontWeight="bold" lineHeight={3}>
+              {title !== undefined ? title : <Skeleton style={{ width: "10em" }} />}
+            </Text>
             {cardMenu}
           </>
         }
       >
         <div className={classes.root}>
           {limitText && (
-            <Typography className={classes.limit} color="textSecondary">
+            <Text className={classes.limit} color="default2">
               {limitText}
-            </Typography>
+            </Text>
           )}
           {children}
         </div>

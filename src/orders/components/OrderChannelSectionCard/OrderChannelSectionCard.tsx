@@ -1,9 +1,8 @@
 import { channelUrl } from "@dashboard/channels/urls";
-import CardTitle from "@dashboard/components/CardTitle";
+import { DashboardCard } from "@dashboard/components/Card";
 import Link from "@dashboard/components/Link";
-import Skeleton from "@dashboard/components/Skeleton";
 import { ChannelFragment } from "@dashboard/graphql";
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Skeleton, Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -11,32 +10,32 @@ export interface OrderChannelSectionCardProps {
   channel?: Pick<ChannelFragment, "id" | "name">;
 }
 
-export const OrderChannelSectionCard: React.FC<
-  OrderChannelSectionCardProps
-> = ({ channel }) => {
+export const OrderChannelSectionCard: React.FC<OrderChannelSectionCardProps> = ({ channel }) => {
   const intl = useIntl();
 
   return (
-    <Card data-test-id="order-sales-channel">
-      <CardTitle
-        title={intl.formatMessage({
-          id: "aY0HAT",
-          defaultMessage: "Sales channel",
-          description: "section header",
-        })}
-      />
-      <CardContent>
+    <DashboardCard data-test-id="order-sales-channel">
+      <DashboardCard.Header>
+        <DashboardCard.Title>
+          {intl.formatMessage({
+            id: "aY0HAT",
+            defaultMessage: "Sales channel",
+            description: "section header",
+          })}
+        </DashboardCard.Title>
+      </DashboardCard.Header>
+      <DashboardCard.Content>
         {!channel ? (
           <Skeleton />
         ) : (
-          <Typography>
+          <Text>
             <Link href={channelUrl(channel.id) ?? ""} disabled={!channel.id}>
               {channel.name ?? "..."}
             </Link>
-          </Typography>
+          </Text>
         )}
-      </CardContent>
-    </Card>
+      </DashboardCard.Content>
+    </DashboardCard>
   );
 };
 OrderChannelSectionCard.displayName = "OrderChannelSectionCard";

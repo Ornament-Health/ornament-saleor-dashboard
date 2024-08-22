@@ -1,7 +1,9 @@
 import { AppPermissionsDialog } from "@dashboard/apps/components/AppPermissionsDialog";
-import Skeleton from "@dashboard/components/Skeleton";
+import { ButtonWithTooltip } from "@dashboard/components/ButtonWithTooltip";
 import { PermissionEnum } from "@dashboard/graphql";
-import { Box, BoxProps, Button, Text } from "@saleor/macaw-ui-next";
+import { useHasManagedAppsPermission } from "@dashboard/hooks/useHasManagedAppsPermission";
+import { buttonMessages } from "@dashboard/intl";
+import { Box, BoxProps, Skeleton, Text } from "@saleor/macaw-ui-next";
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -22,19 +24,22 @@ export const PermissionsCard: React.FC<PermissionsCardProps> = ({
   appId,
   ...boxProps
 }) => {
-  const [editPermissionDialogOpen, setEditPermissionDialogOpen] =
-    useState(false);
+  const [editPermissionDialogOpen, setEditPermissionDialogOpen] = useState(false);
   const intl = useIntl();
-
+  const { hasManagedAppsPermission } = useHasManagedAppsPermission();
   const editPermissionsButton = (
-    <Button
-      variant={"secondary"}
+    <ButtonWithTooltip
+      tooltip={
+        !hasManagedAppsPermission ? intl.formatMessage(buttonMessages.noPermission) : undefined
+      }
+      variant="secondary"
+      data-test-id="app-edit-permissions-button"
+      disabled={!hasManagedAppsPermission}
       onClick={() => setEditPermissionDialogOpen(true)}
     >
       {intl.formatMessage(messages.editPermissionsButton)}
-    </Button>
+    </ButtonWithTooltip>
   );
-
   const renderContent = () => {
     if (loading) {
       return <Skeleton />;
@@ -82,7 +87,7 @@ export const PermissionsCard: React.FC<PermissionsCardProps> = ({
         />
       )}
       <Box {...boxProps}>
-        <Text variant={"heading"} marginBottom={4} as={"h2"}>
+        <Text size={5} fontWeight="bold" marginBottom={4} as={"h2"}>
           {intl.formatMessage(messages.appPermissionsTitle)}
         </Text>
         <Box>{renderContent()}</Box>

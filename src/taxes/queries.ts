@@ -8,13 +8,7 @@ export const taxConfigurationsList = gql`
     $last: Int
     $filter: TaxConfigurationFilterInput
   ) {
-    taxConfigurations(
-      before: $before
-      after: $after
-      first: $first
-      last: $last
-      filter: $filter
-    ) {
+    taxConfigurations(before: $before, after: $after, first: $first, last: $last, filter: $filter) {
       edges {
         node {
           ...TaxConfiguration
@@ -70,6 +64,25 @@ export const taxClassAssign = gql`
       pageInfo {
         hasNextPage
         endCursor
+      }
+    }
+  }
+`;
+
+export const taxStrategyChoices = gql`
+  query TaxStrategyChoices {
+    shop {
+      availableTaxApps {
+        id
+        name
+        version
+        identifier
+        created
+        brand {
+          logo {
+            default
+          }
+        }
       }
     }
   }

@@ -1,12 +1,6 @@
-import Skeleton from "@dashboard/components/Skeleton";
 import { PermissionData } from "@dashboard/permissionGroups/components/PermissionGroupDetailsPage";
-import {
-  Checkbox,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
-import { Box } from "@saleor/macaw-ui-next";
+import { Checkbox, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { Box, Skeleton } from "@saleor/macaw-ui-next";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -37,23 +31,22 @@ export const PermissionList = ({
   }
 
   return (
-    <Box>
+    <Box data-test-id="permission-group-list">
       {permissions.map(perm => (
         <ListItem
+          data-test-id="permission-group-list-item"
           key={perm.code}
           disabled={disabled || perm.disabled}
           role={undefined}
           dense
           button
           onClick={() =>
-            onPermissionChange(
-              perm.code,
-              hasPermissionSelected(selectedPermissions, perm.code),
-            )
+            onPermissionChange(perm.code, hasPermissionSelected(selectedPermissions, perm.code))
           }
         >
           <ListItemIcon>
             <Checkbox
+              data-test-id="permission-group-checkbox"
               color="secondary"
               edge="start"
               checked={hasPermissionSelected(selectedPermissions, perm.code)}

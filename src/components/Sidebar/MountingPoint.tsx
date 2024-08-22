@@ -6,13 +6,12 @@ import React from "react";
 
 export const MountingPoint = () => {
   const { theme } = useLegacyThemeHandler();
-  const logo =
-    theme === "defaultLight" ? sideBarDefaultLogo : sideBarDefaultLogoDarkMode;
+  const logo = theme === "defaultLight" ? sideBarDefaultLogo : sideBarDefaultLogoDarkMode;
 
   return (
     <Box display="flex" gap={3} paddingX={4} paddingY={5} alignItems="center">
       <Avatar.Store src={logo} scheme="accent1" size="small" />
-      <Text variant="bodyStrong" size="small">
+      <Text size={3} fontWeight="bold">
         Saleor Dashboard
       </Text>
     </Box>

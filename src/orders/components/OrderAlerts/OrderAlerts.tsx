@@ -1,24 +1,23 @@
+import { Text } from "@saleor/macaw-ui-next";
 import React from "react";
 import { MessageDescriptor, useIntl } from "react-intl";
 
 interface OrderAlertsProps {
-  alertsHeader?: string;
   alerts: Array<string | MessageDescriptor>;
+  alertsHeader?: string;
+  values?: Record<string, any>;
 }
 
-export const OrderAlerts: React.FC<OrderAlertsProps> = ({
-  alertsHeader,
-  alerts,
-}) => {
+export const OrderAlerts: React.FC<OrderAlertsProps> = ({ alertsHeader, alerts, values }) => {
   const intl = useIntl();
-
   const formattedAlerts = alerts.map((alert, index) => {
     if (typeof alert === "string") {
       return { id: `${index}_${alert}`, text: alert };
     }
+
     return {
       id: alert.id,
-      text: intl.formatMessage(alert),
+      text: intl.formatMessage(alert, values),
     };
   });
 
@@ -27,7 +26,11 @@ export const OrderAlerts: React.FC<OrderAlertsProps> = ({
   }
 
   if (formattedAlerts.length === 1) {
-    return <>{formattedAlerts[0].text}</>;
+    return (
+      <Text size={2} fontWeight="bold">
+        {formattedAlerts[0].text}
+      </Text>
+    );
   }
 
   return (

@@ -15,7 +15,7 @@ export const groupsDiff = (
     return {};
   }
 
-  const newGroups = formData.permissionGroups;
+  const newGroups = formData.permissionGroups.map(u => u.value);
   const oldGroups = user.permissionGroups.map(u => u.id);
 
   return {
@@ -24,9 +24,7 @@ export const groupsDiff = (
   };
 };
 
-export const isMemberActive = (
-  staffMember: StaffMemberDetailsFragment | UserFragment,
-) => {
+export const isMemberActive = (staffMember: StaffMemberDetailsFragment | UserFragment) => {
   if (staffMember && "isActive" in staffMember) {
     return staffMember.isActive;
   }

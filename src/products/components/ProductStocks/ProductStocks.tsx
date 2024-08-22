@@ -10,29 +10,17 @@ import { renderCollection } from "@dashboard/misc";
 import { getFormErrors, getProductErrorMessage } from "@dashboard/utils/errors";
 import createNonNegativeValueChangeHandler from "@dashboard/utils/handlers/nonNegativeValueChangeHandler";
 import { Table, TableBody, TableCell, TableHead } from "@material-ui/core";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Dropdown,
-  Input,
-  List,
-  Text,
-  TrashBinIcon,
-  vars,
-} from "@saleor/macaw-ui-next";
-import React from "react";
+import { Box, Button, Checkbox, Input, Text, TrashBinIcon, vars } from "@saleor/macaw-ui-next";
+import React, { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
+import { ProductStocksAssignWarehouses } from "./components/ProductStocksAssignWarehouses";
 import { messages } from "./messages";
 
 export interface ProductStockFormsetData {
   quantityAllocated: number;
 }
-export type ProductStockInput = FormsetAtomicData<
-  ProductStockFormsetData,
-  string
->;
+export type ProductStockInput = FormsetAtomicData<ProductStockFormsetData, string, string>;
 export interface ProductStockFormData {
   sku: string;
   trackInventory: boolean;
@@ -52,9 +40,11 @@ export interface ProductStocksProps {
   warehouses: WarehouseFragment[];
   onChange: FormsetChange;
   onFormDataChange: FormChange;
-  onWarehouseStockAdd: (warehouseId: string) => void;
+  onWarehouseStockAdd: (warehouseId: string, warehouseName: string) => void;
   onWarehouseStockDelete: (warehouseId: string) => void;
   onWarehouseConfigure: () => void;
+  fetchMoreWarehouses: () => void;
+  hasMoreWarehouses: boolean;
 }
 
 export const ProductStocks: React.FC<ProductStocksProps> = ({
@@ -63,44 +53,44 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
   hasVariants,
   errors,
   stocks,
-  warehouses,
   productVariantChannelListings = [],
+  warehouses,
+  hasMoreWarehouses,
   onChange,
   onFormDataChange,
   onWarehouseStockAdd,
   onWarehouseStockDelete,
   onWarehouseConfigure,
+  fetchMoreWarehouses,
 }) => {
   const intl = useIntl();
   const [lastStockRowFocus, setLastStockRowFocus] = React.useState(false);
-
-  const warehousesToAssign =
-    warehouses?.filter(
-      warehouse => !stocks.some(stock => stock.id === warehouse.id),
-    ) || [];
   const formErrors = getFormErrors(["sku"], errors);
 
-  const handleWarehouseStockAdd = (warehouseId: string) => {
-    onWarehouseStockAdd(warehouseId);
+  const stocksIds = useMemo(() => stocks.map(stock => stock.id), [stocks]);
+
+  const warehousesToAssign =
+    warehouses?.filter(warehouse => !stocksIds.includes(warehouse.id)) || [];
+
+  const handleWarehouseStockAdd = (warehouseId: string, warehouseName: string) => {
+    onWarehouseStockAdd(warehouseId, warehouseName);
     setLastStockRowFocus(true);
   };
-
   const handleStockInputFocus = (input: HTMLDivElement) => {
     if (lastStockRowFocus && input) {
       input.focus();
       setLastStockRowFocus(false);
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFormDataChange(e);
   };
 
   return (
     <DashboardCard>
-      <DashboardCard.Title>
-        {intl.formatMessage(messages.title)}
-      </DashboardCard.Title>
+      <DashboardCard.Header>
+        <DashboardCard.Title>{intl.formatMessage(messages.title)}</DashboardCard.Title>
+      </DashboardCard.Header>
       <DashboardCard.Content>
         <Box __width="50%">
           <Input
@@ -133,20 +123,18 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
               </Box>
             </Checkbox>
 
-            <Text marginLeft={5} variant="caption" color="default2">
+            <Text marginLeft={5} size={2} color="default2">
               <FormattedMessage {...messages.trackInventoryDescription} />
             </Text>
           </Box>
           <Box display="grid" gap={2} marginTop={5}>
             <Box display="flex" flexDirection="column">
-              <Text variant="heading" size="small">
+              <Text size={4} fontWeight="bold">
                 <FormattedMessage {...messages.stock} />
               </Text>
               {!productVariantChannelListings?.length && (
-                <Text variant="caption" color="default2">
-                  <FormattedMessage
-                    {...messages.noChannelWarehousesAllocation}
-                  />
+                <Text size={2} color="default2">
+                  <FormattedMessage {...messages.noChannelWarehousesAllocation} />
                 </Text>
               )}
             </Box>
@@ -156,18 +144,14 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
                   <FormattedMessage
                     {...messages.configureWarehouseForVariant}
                     values={{
-                      a: chunks => (
-                        <Link onClick={onWarehouseConfigure}>{chunks}</Link>
-                      ),
+                      a: chunks => <Link onClick={onWarehouseConfigure}>{chunks}</Link>,
                     }}
                   />
                 ) : (
                   <FormattedMessage
                     {...messages.configureWarehouseForProduct}
                     values={{
-                      a: chunks => (
-                        <Link onClick={onWarehouseConfigure}>{chunks}</Link>
-                      ),
+                      a: chunks => <Link onClick={onWarehouseConfigure}>{chunks}</Link>,
                     }}
                   />
                 )}
@@ -182,17 +166,17 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
               <TableHead>
                 <TableRowLink>
                   <TableCell style={{ paddingLeft: vars.spacing[6] }}>
-                    <Text variant="caption" color="default2">
+                    <Text size={2} color="default2">
                       <FormattedMessage {...messages.warehouseName} />
                     </Text>
                   </TableCell>
                   <TableCell style={{ width: 100, verticalAlign: "middle" }}>
-                    <Text variant="caption" color="default2">
+                    <Text size={2} color="default2">
                       <FormattedMessage {...messages.allocated} />
                     </Text>
                   </TableCell>
                   <TableCell style={{ width: 200, verticalAlign: "middle" }}>
-                    <Text variant="caption" color="default2">
+                    <Text size={2} color="default2">
                       <FormattedMessage {...messages.quantity} />
                     </Text>
                   </TableCell>
@@ -201,10 +185,9 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
               </TableHead>
               <TableBody>
                 {renderCollection(stocks, (stock, index) => {
-                  const handleQuantityChange =
-                    createNonNegativeValueChangeHandler(event =>
-                      onChange(stock.id, event.target.value),
-                    );
+                  const handleQuantityChange = createNonNegativeValueChangeHandler(event =>
+                    onChange(stock.id, event.target.value),
+                  );
 
                   return (
                     <TableRowLink data-test-id={stock.label} key={stock.id}>
@@ -223,10 +206,7 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
                           size="small"
                           type="number"
                           min={0}
-                          ref={input =>
-                            stocks.length === index + 1 &&
-                            handleStockInputFocus(input)
-                          }
+                          ref={input => stocks.length === index + 1 && handleStockInputFocus(input)}
                         />
                       </TableCell>
                       <TableCell>
@@ -246,46 +226,13 @@ export const ProductStocks: React.FC<ProductStocksProps> = ({
 
         {productVariantChannelListings?.length > 0 &&
           warehouses?.length > 0 &&
-          warehousesToAssign.length > 0 && (
-            <Dropdown>
-              <Dropdown.Trigger>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  marginTop={5}
-                  data-test-id="assign-warehouse-button"
-                >
-                  <FormattedMessage {...messages.assignWarehouse} />
-                </Button>
-              </Dropdown.Trigger>
-
-              <Dropdown.Content align="end">
-                <Box>
-                  <List
-                    id="warehouse-list"
-                    padding={2}
-                    borderRadius={4}
-                    boxShadow="defaultOverlay"
-                    backgroundColor="default1"
-                    __maxHeight={400}
-                    overflowY="auto"
-                  >
-                    {warehousesToAssign.map(warehouse => (
-                      <Dropdown.Item key={warehouse.id}>
-                        <List.Item
-                          paddingX={1.5}
-                          paddingY={2}
-                          borderRadius={4}
-                          onClick={() => handleWarehouseStockAdd(warehouse.id)}
-                        >
-                          <Text>{warehouse.name}</Text>
-                        </List.Item>
-                      </Dropdown.Item>
-                    ))}
-                  </List>
-                </Box>
-              </Dropdown.Content>
-            </Dropdown>
+          (warehousesToAssign.length > 0 || hasMoreWarehouses) && (
+            <ProductStocksAssignWarehouses
+              warehousesToAssign={warehousesToAssign}
+              hasMoreWarehouses={hasMoreWarehouses}
+              loadMoreWarehouses={fetchMoreWarehouses}
+              onWarehouseSelect={handleWarehouseStockAdd}
+            />
           )}
       </DashboardCard.Content>
     </DashboardCard>

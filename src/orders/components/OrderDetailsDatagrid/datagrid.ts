@@ -1,5 +1,6 @@
 // @ts-strict-ignore
 import {
+  booleanCell,
   buttonCell,
   loadingCell,
   moneyCell,
@@ -16,9 +17,7 @@ import { IntlShape } from "react-intl";
 
 import { columnsMessages } from "./messages";
 
-export const orderDetailsStaticColumnsAdapter = (
-  intl: IntlShape,
-): AvailableColumn[] => [
+export const orderDetailsStaticColumnsAdapter = (intl: IntlShape): AvailableColumn[] => [
   {
     id: "product",
     title: intl.formatMessage(columnsMessages.product),
@@ -50,6 +49,11 @@ export const orderDetailsStaticColumnsAdapter = (
     width: 150,
   },
   {
+    id: "isGift",
+    title: intl.formatMessage(columnsMessages.isGift),
+    width: 150,
+  },
+  {
     id: "metadata",
     title: intl.formatMessage(commonMessages.metadata),
     width: 150,
@@ -72,9 +76,7 @@ export const createGetCellContent =
     }
 
     const columnId = columns[column]?.id;
-    const rowData = added.includes(row)
-      ? undefined
-      : data[getDatagridRowDataIndex(row, removed)];
+    const rowData = added.includes(row) ? undefined : data[getDatagridRowDataIndex(row, removed)];
 
     if (!rowData || !columnId) {
       return readonlyTextCell("", false);
@@ -106,13 +108,15 @@ export const createGetCellContent =
           rowData.totalPrice.gross.currency,
           readonyOptions,
         );
+      case "isGift":
+        return booleanCell(rowData?.isGift, {
+          readonly: true,
+          allowOverlay: false,
+        });
       case "metadata":
-        return buttonCell(
-          intl.formatMessage(commonMessages.viewMetadata),
-          () => {
-            onShowMetadata(rowData.id);
-          },
-        );
+        return buttonCell(intl.formatMessage(commonMessages.viewMetadata), () => {
+          onShowMetadata(rowData.id);
+        });
 
       default:
         return readonlyTextCell("", false);

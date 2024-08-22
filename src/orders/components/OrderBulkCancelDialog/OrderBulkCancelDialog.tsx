@@ -1,6 +1,5 @@
 import ActionDialog from "@dashboard/components/ActionDialog";
 import { ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
-import { DialogContentText } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -34,18 +33,17 @@ const OrderBulkCancelDialog: React.FC<OrderBulkCancelDialogProps> = ({
       onClose={onClose}
       onConfirm={onConfirm}
     >
-      <DialogContentText>
-        <FormattedMessage
-          id="i+JSEZ"
-          defaultMessage="{counter,plural,one{Are you sure you want to cancel this order?} other{Are you sure you want to cancel {displayQuantity} orders?}}"
-          values={{
-            counter: numberOfOrders,
-            displayQuantity: <strong>{numberOfOrders}</strong>,
-          }}
-        />
-      </DialogContentText>
+      <FormattedMessage
+        id="i+JSEZ"
+        defaultMessage="{counter,plural,one{Are you sure you want to cancel this order?} other{Are you sure you want to cancel {displayQuantity} orders?}}"
+        values={{
+          counter: numberOfOrders,
+          displayQuantity: <strong>{numberOfOrders}</strong>,
+        }}
+      />
     </ActionDialog>
   );
 };
+
 OrderBulkCancelDialog.displayName = "OrderBulkCancelDialog";
 export default OrderBulkCancelDialog;
